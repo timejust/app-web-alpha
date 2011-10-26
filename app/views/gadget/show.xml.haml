@@ -1,0 +1,145 @@
+!!! XML
+%Module
+  %ModulePrefs{title: gadget_title, height: "250", scaling: "false"}
+    %Require{feature: "views"}
+    %Require{feature: "opensocial-0.9"}
+    %Require{feature: "dynamic-height"}
+    %Require{feature: "google.calendar-0.5"}
+    %Require{feature: "google.calendar-0.5.read"}
+  %Content{type: "html", view: "home, canvas"}
+    :cdata
+      <style type='text/css'>
+        body { font-size: 0.7em; }
+        ul { margin: 0; padding: 0; }
+        ul li { list-style-type: none; }
+        .loader { display: none; }
+
+        #travels { max-height: 370px; overflow-y: auto; padding: 10px 5px; }
+        #travels > ul li { position: relative; margin: 0 0 3px 0; padding: 0 0 0 14px; font: normal 1em Arial; }
+        #travels > ul li:before { content: '•'; position: absolute; left: 5px; font: bold 1.4em/1em Arial; color: #99B3E6; }
+        #travels > ul li.title { padding: 0; }
+        #travels > ul li.title:before { display: none; content: ''; }
+        .before_offset select, .after_offset select { font: normal 10px Arial; }
+        .travel { margin: 10px 0 0 0; padding: 10px 0 0 0; border-top: 1px solid #ccc; }
+        .travel_step { margin: 0 0 15px 0; }
+        .travel_step ul {}
+        .travel_step ul li {}
+        .icon_and_price {}
+        .icon_and_price .icon { float: left; margin: 0 5px 0 0; }
+        .icon_and_price .price { display: inline-block; padding: 4px 5px; }
+        .GreenProposal { background: #88CB8C; color: #000; }
+        .PinkProposal { background: #EEA2BB; color: #000; }
+        .YellowProposal { background: #E0C240; color: #000; }
+        li.title { clear: both; margin: 5px 0 0 0; font: normal 1em Arial; }
+        .steps_toggle {
+          display: inline-block; width: 15px; height: 15px; margin: 0; vertical-align: sub;
+          #{img64('/public/icons/expand.png')}
+        }
+        .steps_toggle.on { background-position: 0 bottom; }
+        .travel_node_toggle {
+          display: inline-block; width: 15px; height: 15px; margin: 0; vertical-align: sub;
+          #{img64('/public/icons/expand.png')}
+        }
+        .travel_node_toggle.on { background-position: 0 bottom; }
+        .steps ul li { margin: 0 0 3px 0; }
+        .steps ul li:nth-child(odd) { background: #EEF; }
+        .actions { margin: 5px 0 0 0; }
+        .actions .confirm { color: green; }
+        .actions .bookmark { color: #000; }
+        .actions .destroy { color: red; }
+
+        .icon.metro {
+          display: inline-block; width: 22px; height: 22px; margin: 0; vertical-align: sub;
+          #{img64('/public/icons/metro.png')}
+        }
+        .icon.busratp {
+          display: inline-block; width: 22px; height: 22px; margin: 0; vertical-align: sub;
+          #{img64('/public/icons/busratp.png')}
+        }
+        .icon.rer {
+          display: inline-block; width: 22px; height: 22px; margin: 0; vertical-align: sub;
+          #{img64('/public/icons/rer.png')}
+        }
+        .icon.sncf {
+          display: inline-block; width: 22px; height: 22px; margin: 0; vertical-align: sub;
+          #{img64('/public/icons/sncf.png')}
+        }
+        .icon.tram {
+          display: inline-block; width: 22px; height: 22px; margin: 0; vertical-align: sub;
+          #{img64('/public/icons/tram.png')}
+        }
+        .icon.car {
+          display: inline-block; width: 22px; height: 22px; vertical-align: sub;
+          #{img64('/public/icons/car.png')}
+        }
+        .icon.walk {
+          display: inline-block; width: 22px; height: 22px; vertical-align: sub;
+          #{img64('/public/icons/walk.png')}
+        }
+
+
+        p { margin: 0; padding: 0 5px; }
+        .title { font: bold 1.1em/1.1em Arial; color: #8AB53E; }
+        .location { margin: 0 0 5px 0; }
+        .timefromto, .startTime, .endTime { position: relative; margin: 0 0 4px 0; padding: 0 0 0 14px; font: bold 1em Arial; }
+        .timefromto:before, .startTime:before, .endTime:before { content: '•'; position: absolute; left: 5px; font: bold 1.4em/1em Arial; color: #8AB53E; }
+        .steps { display: none; }
+        .travel_node_expand { display: none; }
+        a.generate_trip { color: #8AB53E; }
+        a.clear { color: #8AB53E; }
+
+        form h2 { margin: 10px 0 0 10px; font: bold 1.5em Arial; color: #8AB53E; }
+        form p { margin: 0 0 0 10px; }
+        form p span.favorite { margin: 0 0 0 50px; font: bold 1em Arial; }
+        form p.other_address { margin: 5px 0 20px 10px; font: italic 0.9em Arial; }
+      </style>
+
+      <script type="text/javascript">
+
+        #{configatron.gadget.js.home_canvas.map { |hc| open(Rails.root.join(hc)).read }.join}
+
+        App.config.web_url = '#{configatron.web.url}';
+        App.config.api_url = '#{configatron.api.url}';
+        App.config.basic_auth = #{@basic_auth};
+        App.config.auth_token = '#{current_user.authentication_token}';
+        App.config.calendar_names = #{User.shared_calendars_properties.map{|properties| properties[:name]}};
+
+        GoogleRequest.basic_auth = App.config.basic_auth;
+        GoogleRequest.additional_params = {
+          auth_token: App.config.auth_token
+        }
+        var app = new App.Controllers.GadgetController();
+
+      </script>
+  %Content{type: "html", view: "home"}
+    :cdata
+      <div id="notifications"></div>
+      <div id="selectedEvent"></div>
+      <img class="loader" src="data:image/png;base64,#{ActiveSupport::Base64.encode64(open(File.join(Rails.root, "/app/assets/images/loader.gif")).read)}" />
+      <div id="travels"></div>
+
+      <script type="text/javascript">
+
+        #{configatron.gadget.js.home.map { |h| open(Rails.root.join(h)).read }.join}
+
+        gadgets.util.registerOnLoadHandler(function(){
+          app.sidebar();
+        });
+
+      </script>
+  %Content{type: "html", view: "canvas"}
+    :cdata
+      <div id="travelNodesSelector">
+        <a href="#" class="cancel">Cancel</a>
+      </div>
+      <img class="loader" src="data:image/png;base64,#{ActiveSupport::Base64.encode64(open(File.join(Rails.root, "/app/assets/images/loader.gif")).read)}" />
+
+      <script type="text/javascript">
+
+        #{configatron.gadget.js.canvas.map { |c| open(Rails.root.join(c)).read }.join}
+
+        gadgets.util.registerOnLoadHandler(function(){
+          app.travel_node_selector();
+        });
+
+      </script>

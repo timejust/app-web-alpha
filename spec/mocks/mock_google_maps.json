@@ -1,0 +1,68 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "15",
+               "short_name" : "15",
+               "types" : [ "street_number" ]
+            },
+            {
+               "long_name" : "Rue Poissonnière",
+               "short_name" : "Rue Poissonnière",
+               "types" : [ "route" ]
+            },
+            {
+               "long_name" : "Paris 2",
+               "short_name" : "Paris 2",
+               "types" : [ "sublocality", "political" ]
+            },
+            {
+               "long_name" : "Paris",
+               "short_name" : "Paris",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Paris",
+               "short_name" : "75",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "Île-de-France",
+               "short_name" : "IdF",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "France",
+               "short_name" : "FR",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "75002",
+               "short_name" : "75002",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "15 Rue Poissonnière, 75002 Paris, France",
+         "geometry" : {
+            "location" : {
+               "lat" : 48.86928640,
+               "lng" : 2.34786430
+            },
+            "location_type" : "ROOFTOP",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 48.87063538029150,
+                  "lng" : 2.349213280291502
+               },
+               "southwest" : {
+                  "lat" : 48.86793741970850,
+                  "lng" : 2.346515319708498
+               }
+            }
+         },
+         "types" : [ "street_address" ]
+      }
+   ],
+   "status" : "OK"
+}

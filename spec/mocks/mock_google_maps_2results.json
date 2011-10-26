@@ -1,0 +1,121 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "Quai de la Rapée",
+               "short_name" : "Quai de la Rapée",
+               "types" : [ "route" ]
+            },
+            {
+               "long_name" : "Paris",
+               "short_name" : "Paris",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Paris",
+               "short_name" : "75",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "Île-de-France",
+               "short_name" : "IdF",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "France",
+               "short_name" : "FR",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "75012",
+               "short_name" : "75012",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Quai de la Rapée, 75012 Paris, France",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 48.84641430,
+                  "lng" : 2.37473170
+               },
+               "southwest" : {
+                  "lat" : 48.84003920,
+                  "lng" : 2.36678840
+               }
+            },
+            "location" : {
+               "lat" : 48.84313290,
+               "lng" : 2.37082390
+            },
+            "location_type" : "GEOMETRIC_CENTER",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 48.84641430,
+                  "lng" : 2.37473170
+               },
+               "southwest" : {
+                  "lat" : 48.84003920,
+                  "lng" : 2.36678840
+               }
+            }
+         },
+         "types" : [ "route" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Quai de la Rapée",
+               "short_name" : "Quai de la Rapée",
+               "types" : [ "subway_station", "establishment", "transit_station" ]
+            },
+            {
+               "long_name" : "Paris",
+               "short_name" : "Paris",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Paris",
+               "short_name" : "75",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "Île-de-France",
+               "short_name" : "IdF",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "France",
+               "short_name" : "FR",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "75012",
+               "short_name" : "75012",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Quai de la Rapée, 75012 Paris, France",
+         "geometry" : {
+            "location" : {
+               "lat" : 48.84655900000001,
+               "lng" : 2.3658750
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 48.84790798029151,
+                  "lng" : 2.367223980291502
+               },
+               "southwest" : {
+                  "lat" : 48.84521001970851,
+                  "lng" : 2.364526019708498
+               }
+            }
+         },
+         "types" : [ "subway_station", "establishment", "transit_station" ]
+      }
+   ],
+   "status" : "OK"
+}

@@ -1,0 +1,7 @@
+development:
+  host: localhost
+  database: timejust_development
+
+test:
+  host: localhost
+  database: timejust_test

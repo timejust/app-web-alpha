@@ -1,0 +1,3 @@
+dev:
+  host: localhost
+  database: timejust_dev

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ApplicationManifest xmlns="http://schemas.google.com/ApplicationManifest/2009">
+
+  <Name>TimejustDev</Name>
+  <Description>[Description]</Description>
+
+  <!-- Administrators and users will be sent to this URL for application support -->
+  <Support>
+    <!-- URL for application setup as an optional redirect during the install -->
+    <!--<Link rel="setup" href="[ApplicationSetupUrl]?domain=${DOMAIN_NAME}" />-->
+
+    <!-- URL for application configuration, accessed from the app settings page in the control panel -->
+    <Link rel="manage" href="[ApplicationAdminUrl]?domain=${DOMAIN_NAME}" />
+
+    <!-- URL explaining how customers get support. -->
+    <Link rel="support" href="[ApplicationHelpUrl]" />
+
+    <!-- URL that is displayed to admins during the deletion process, to specify policies such as data retention, how to claim accounts, etc. -->
+    <Link rel="deletion-policy" href="[ApplicationPolicyUrl]" />
+  </Support>
+
+  <!-- Show this link in Google's universal navigation for all users -->
+  <Extension id="navLink" type="link">
+    <Name>TimejustDev</Name>
+    <Url>http://timejust-dev.af83.com/login?domain=${DOMAIN_NAME}</Url>
+    <!-- Used API's -->
+    <Scope ref="calendarAPI"/>
+  </Extension>
+
+  <!-- Declare our OpenID realm so our app is white listed -->
+  <Extension id="realm" type="openIdRealm">
+    <Url>http://timejust-dev.af83.com/login</Url>
+  </Extension>
+
+  <Scope id="calendarAPI">
+    <Url>https://docs.google.com/feeds/</Url>
+    <Reason>[Reason]</Reason>
+  </Scope>
+
+</ApplicationManifest>

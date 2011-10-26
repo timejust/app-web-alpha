@@ -1,0 +1,7 @@
+%header
+  %h1
+    Timejust
+
+- if user_signed_in?
+  %p.hello
+    = "Hello #{current_user.email}"

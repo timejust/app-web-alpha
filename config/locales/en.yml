@@ -1,0 +1,5 @@
+en:
+  time:
+    formats:
+      date: "%e %B, %Y"
+      short: "%d %b %I:%M %p"

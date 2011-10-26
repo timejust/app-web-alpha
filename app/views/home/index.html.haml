@@ -1,0 +1,17 @@
+%h2 Get started with timejust !
+%ul
+  %li
+    1. Authorize timejust to read your calendar
+    = link_to "Grant Access", oauth2_authorize_path
+    = link_to "More information", "#"
+  %li
+    2. Install timejust pane in your calendar
+    - if user_signed_in?
+      = link_to "Install timejust pane and get started",
+        "https://www.google.com/calendar/render?gadgeturl=#{configatron.gadget.url}?auth_token=#{current_user.authentication_token}&#{Rails.env}=#{Time.now.to_i}",
+        :target => :_blank
+    - else
+      You must first accept timejust to read your calendar
+    = link_to "More information", "#"
+
+-#= link_to "Sign in with Google Apps Strategy (OpenId, will be usefull for google apps domains)", user_omniauth_authorize_path(:openid, :domain => 'gmail.com')
