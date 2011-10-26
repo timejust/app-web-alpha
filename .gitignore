@@ -1,0 +1,15 @@
+public/stylesheets/compiled
+log
+tmp
+tmp/**/*
+db/*.sqlite3
+db/*.sqlite3-journal
+public/system
+*.DS_Store
+public/assets/*
+coverage/*
+*.swp
+.bundle
+backup/
+Gemfile.bk
+.rvmrc
