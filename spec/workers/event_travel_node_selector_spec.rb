@@ -15,6 +15,7 @@ describe EventTravelNodeSelector do
       title: "My Event",
       location: "15 rue poisonnières, 75003, Paris",
       state: 'travel_nodes_progress'
+    event.stub(:fetch_around_events).and_return([])
     event.stub(:around_events).and_return([])
     event
   }

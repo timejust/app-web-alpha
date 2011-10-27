@@ -11,7 +11,7 @@ class TravelStep
   field :provider,            type: String
   field :departure_time,      type: Time
   field :arrival_time,        type: Time
-  field :distance,            type: Integer
+  field :distance,            type: String
   field :estimated_time,      type: Integer
   field :steps,               type: Array
   field :google_event_id,     type: String
@@ -22,11 +22,11 @@ class TravelStep
   field :travel_type,         type: String
   field :calendar,            type: String
   field :steps_count,         type: Integer
-  field :summary,             type: Array
+  field :summary,             type: Array, default: []
 
   # not validates_presence_of :departure_time, :arrival_time because we need to
   # save the step with error state
-  validates_presence_of :event, :user, :travel, :provider, :travel_type, :summary
+  validates_presence_of :event, :user, :travel, :provider, :travel_type
   validates_inclusion_of :travel_type, :in => %w{forward backward}
 
   before_destroy :destroy_google_event
@@ -154,7 +154,7 @@ class TravelStep
     if self.travel_type == 'forward'
       self.event.previous_travel_node.address
     else
-      self.event.next_travel_node.address
+      self.event.current_travel_node.address
     end
   end
 

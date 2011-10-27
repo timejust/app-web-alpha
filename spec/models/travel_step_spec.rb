@@ -9,7 +9,6 @@ describe TravelStep do
   it{ should validate_presence_of(:travel) }
   it{ should validate_presence_of(:provider) }
   it{ should validate_presence_of(:travel_type) }
-  it{ should validate_presence_of(:summary) }
   it{ should validate_inclusion_of(:travel_type) }
 
   describe "callbacks" do
@@ -185,6 +184,9 @@ describe TravelStep do
         previous_travel_node: {
           address: "previous address"
         },
+        current_travel_node: {
+          address: "current address"
+        },
         next_travel_node: {
           address: "next address"
         }
@@ -212,6 +214,9 @@ describe TravelStep do
         title: "Event Title",
         previous_travel_node: {
           address: "previous address"
+        },
+        current_travel_node: {
+          address: "current address"
         },
         next_travel_node: {
           address: "next address"
@@ -256,7 +261,7 @@ describe TravelStep do
       travel_step.update_attribute(:travel_type, 'forward')
       travel_step.invitation_location.should == "previous address"
       travel_step.update_attribute(:travel_type, 'backward')
-      travel_step.invitation_location.should == "next address"
+      travel_step.invitation_location.should == "current address"
     end
 
   end

@@ -124,6 +124,14 @@ describe Travel do
         travel.create_ratp_travel_step(mock_ratp_itinerary)
       end
 
+      it 'create departure_time and arrival_time with event start and duration' do
+        b = Time.now.beginning_of_day
+        event = Factory(:event, user: user, start_time: b, end_time: (b + 1.hours))
+        travel = Factory :travel, user: user, event: event
+        travel_step = travel.create_ratp_travel_step(mock_ratp_itinerary, :forward)
+        (travel_step.departure_time.day + 1).should == event.start_time.day
+      end
+
       describe "errors" do
         it 'should have state error with long duration' do
           travel = Factory :travel, user: user, event: event
@@ -140,6 +148,16 @@ describe Travel do
           travel_step = travel.create_ratp_travel_step(m)
           travel_step.reload.error?.should be_true
         end
+
+        it 'should have state error with not valid or long duration' do
+          travel = Factory :travel, user: user, event: event
+          m = mock_ratp_itinerary(:arrival_time => 2.years.from_now, :duration => 2.years)
+          m.unstub(:valid?)
+          m.stub!(:valid?).and_return(false)
+          travel_step = travel.create_ratp_travel_step(m)
+          travel_step.reload.error?.should be_true
+        end
+
       end
     end
 
@@ -160,6 +178,14 @@ describe Travel do
         travel = Factory :travel, user: user, event: event
         travel.should_receive(:update_attributes).with(transports: %w{car})
         travel.create_google_travel_step(mock_google_directions)
+      end
+
+      it 'should sanitize the steps' do
+        travel = Factory :travel, user: user, event: event
+        travel_step = travel.create_google_travel_step(mock_google_directions)
+        travel_step.steps.each do |t|
+          t.should_not include('<b>')
+        end
       end
     end
   end

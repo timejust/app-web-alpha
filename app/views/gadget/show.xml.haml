@@ -81,8 +81,9 @@
         p { margin: 0; padding: 0 5px; }
         .title { font: bold 1.1em/1.1em Arial; color: #8AB53E; }
         .location { margin: 0 0 5px 0; }
-        .timefromto, .startTime, .endTime { position: relative; margin: 0 0 4px 0; padding: 0 0 0 14px; font: bold 1em Arial; }
-        .timefromto:before, .startTime:before, .endTime:before { content: '•'; position: absolute; left: 5px; font: bold 1.4em/1em Arial; color: #8AB53E; }
+        .startTime, .endTime { position: relative; margin: 0 0 4px 0; padding: 0 0 0 14px; font: bold 1em Arial; }
+        .startTime:before, .endTime:before { content: '•'; position: absolute; left: 5px; font: bold 1.4em/1em Arial; color: #8AB53E; }
+        .timefromto { position: relative; margin: 0 0 4px 0; padding: 0 0 0 5px; font: normal 1em Arial; }
         .steps { display: none; }
         .travel_node_expand { display: none; }
         a.generate_trip { color: #8AB53E; }
@@ -92,7 +93,17 @@
         form p { margin: 0 0 0 10px; }
         form p span.favorite { margin: 0 0 0 50px; font: bold 1em Arial; }
         form p.other_address { margin: 5px 0 20px 10px; font: italic 0.9em Arial; }
+
+        .hasPlaceholder { color: #777; }
       </style>
+      <!--[if IE]>
+        <style>
+          #travels { height: 310px; overflow: auto; }
+          .travel_node_toggle { vertical-align: middle; }
+          .previous_travel_node span { line-height: 15px; vertical-alig middle; }
+          .steps_toggle { vertical-align: middle; }
+        </style>
+      <![endif]-->
 
       <script type="text/javascript">
 

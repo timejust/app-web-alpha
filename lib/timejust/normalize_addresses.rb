@@ -20,8 +20,7 @@ module Timejust
       nodes.each do |n|
         # TODO: Do request only if we dont have data
         # remove , and '" google dont like these even escape on the query
-        address = n.address.unistrip.gsub(/(\s+)?,(\s+)?/, ' ').gsub(/['"]/, ' ')
-        address = address.gsub('œ', 'oe')
+        address = n.address.gsub('œ', 'oe').unistrip.gsub(/(\s+)?,(\s+)?/, ' ').gsub(/['"]/, ' ')
         params = @@default_params.merge(:address => CGI.escape(address))
         req = Typhoeus::Request.new(@@url, :params => params)
         req.on_complete do |response|

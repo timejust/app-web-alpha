@@ -175,10 +175,10 @@ describe("TravelsView", function(){
         expect($(this.view.el).find('.previous_travel_node .travel_node_expand .address')).toHaveText(
           this.view.model.get('previous_travel_node')['address']
         );
-        //expect($(this.view.el).find('.current_travel_node')).toContain('.travel_node_toggle.off');
-        //expect($(this.view.el).find('.current_travel_node .travel_node_expand .address')).toHaveText(
-          //this.view.model.get('current_travel_node')['address']
-        //);
+        expect($(this.view.el).find('.current_travel_node')).toContain('.travel_node_toggle.off');
+        expect($(this.view.el).find('.current_travel_node .travel_node_expand .address')).toHaveText(
+          this.view.model.get('current_travel_node')['address']
+        );
         expect($(this.view.el).find('.next_travel_node')).toContain('.travel_node_toggle.off');
         expect($(this.view.el).find('.next_travel_node .travel_node_expand .address')).toHaveText(
           this.view.model.get('next_travel_node')['address']

@@ -4,7 +4,9 @@ require 'spec_helper'
 describe Event do
 
   it{ should belong_to(:user) }
+  it{ should belong_to(:event) }
   it{ should have_many(:travels) }
+  it{ should have_many(:around_events) }
   it{ should validate_presence_of(:user) }
   it{ should validate_presence_of(:start_time) }
   it{ should validate_presence_of(:end_time) }
@@ -398,7 +400,7 @@ describe Event do
     end
   end
 
-  describe "around_events" do
+  describe "fetch_around_events" do
 
     let(:access_token) {mock_oauth2_access_token}
     let(:user) {
@@ -444,8 +446,8 @@ describe Event do
           'when' => [ {'start' => events.first.start_time, 'end' => events.first.end_time} ]
         }
       ).and_return(events)
-      events = event.around_events(2)
-      events.should == events
+      event.fetch_around_events(2)
+      event.around_events.should == events
     end
   end
 

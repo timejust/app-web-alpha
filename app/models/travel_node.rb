@@ -28,22 +28,15 @@ class TravelNode
 
   # Get event informations from google api
   #
-  # TODO spec
-  #
-  def add_google_info(access_token, calendar_id)
+  def add_google_info(related_event)
     unless self.event_google_id.blank?
-      google_event = Google::Event.get(
-        access_token,
-        calendar_id,
-        self.event_google_id
-      )
-      $stderr.puts google_event.inspect
-      if google_event && !google_event['error']
+      google_event = Event.where(google_id: self.event_google_id, event_id: related_event.id).first
+      if google_event
         self.update_attributes(
-          event_title: google_event['data']['title'],
-          event_start_time: google_event['data']['when'][0]['start'],
-          event_end_time: google_event['data']['when'][0]['end'],
-          event_location: google_event['data']['location']
+          event_title: google_event.title,
+          event_start_time: google_event.start_time,
+          event_end_time: google_event.end_time,
+          event_location: google_event.location
         )
       end
     end

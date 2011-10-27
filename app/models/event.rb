@@ -4,6 +4,11 @@ class Event
 
   belongs_to :user
   has_many :travels
+
+  # Around events relations
+  belongs_to :event
+  has_many :around_events, class_name: "Event"
+
   field :google_id,           type: String
   field :google_calendar_id,  type: String
   field :title,               type: String
@@ -15,8 +20,6 @@ class Event
   field :created_at,          type: Time
   field :before_start_time,   type: Integer, default: 10
   field :after_end_time,      type: Integer, default: 15
-
-  attr :around_events_cache
 
   # travels propositions
   embeds_many :previous_travel_nodes, as: :previous_travel_nodes,  class_name: "TravelNode", :order => :weight.desc
@@ -31,7 +34,8 @@ class Event
   validates_presence_of :start_time
   validates_presence_of :end_time
 
-  after_create :push_to_worker
+  # don't send event to worklers if this is an around event
+  after_create :push_to_worker, unless: "self.event.present?"
 
   state_machine initial: :waiting do
     # waiting for workers to search for travel nodes proposals
@@ -263,7 +267,7 @@ class Event
       selected_node = self.send(selected)
       if selected_node && selected_node.confirmed?
         selected_node.update_attribute(:weight, 500)
-        selected_node.add_google_info(self.user.access_token, self.google_calendar_id)
+        selected_node.add_google_info(self)
         self.add_travel_node_proposal(type, selected_node.address, selected_node)
       end
     end
@@ -327,38 +331,41 @@ class Event
   #
   # @return  [Array]    Collection of Event
   #
-  def around_events(offset = 1)
-    unless around_events_cache
-      google_events = Google::Event.search_by_date_range(
-        self.user.access_token,
-        (self.start_time - offset.to_i.days).at_beginning_of_day,
-        (self.end_time + offset.to_i.days).end_of_day,
-        self.google_calendar_id
-      )
-      events = []
-      if google_events && !google_events['error'] && google_events['data']['totalResults'].to_i > 0
-        google_events['data']['items'].each do |event|
-          events = events | Event.parse_from_google_data(event)
-        end
+  def fetch_around_events(offset = 1)
+    google_events = Google::Event.search_by_date_range(
+      self.user.access_token,
+      (self.start_time - offset.to_i.days).at_beginning_of_day,
+      (self.end_time + offset.to_i.days).end_of_day,
+      self.google_calendar_id
+    )
+    events = []
+    if google_events && !google_events['error'] && google_events['data']['totalResults'].to_i > 0
+      self.around_events.delete_all
+      google_events['data']['items'].each do |event|
+        events = events | Event.parse_from_google_data(event)
       end
-      around_events_cache = events
+      events.each do |e|
+        e.user = self.user
+        self.around_events << e
+      end
+      self.save
     end
-    around_events_cache
+    self.around_events
   end
 
   # Get the last located event before the current one
   #
   def previous_events
     self.around_events.select{|event|
-      event.location.present? && event.end_time < self.start_time
-    }.sort{|a,b| a.end_time <=> b.end_time}
+      event.location.present? && event.start_time < self.start_time
+    }.sort{|a,b| b.start_time <=> a.start_time}
   end
 
   # Get the first located event after the current one
   #
   def next_events
     self.around_events.select{|event|
-      event.location.present? && event.start_time > self.end_time
+      event.location.present? && event.start_time > self.start_time
     }.sort{|a,b| a.start_time <=> b.start_time}
   end
 
@@ -401,8 +408,7 @@ class Event
     }
     query = query.merge(:proxy => configatron.ratp_proxy.url) if configatron.ratp_proxy.url.present?
     RATP::Itinerary.new({:datestart => 'false', # Arrivée à
-                        :datehour => self.forward_arrival.hour.to_s,
-                        :dateminute => self.forward_arrival.min.to_s,
+                        :datedate => self.forward_arrival.strftime('%Y%m%d%H%M'),
                         :name1 => self.previous_travel_node.address.unistrip,
                         :name2 => self.current_travel_node.address.unistrip}.merge(query))
   end
@@ -418,8 +424,7 @@ class Event
     }
     query = query.merge(:proxy => configatron.ratp_proxy.url) if configatron.ratp_proxy.url.present?
     RATP::Itinerary.new({:datestart => 'true', # Départ à
-                        :datehour => self.backward_departure.hour.to_s,
-                        :dateminute => self.backward_departure.min.to_s,
+                        :datedate => self.backward_departure.strftime('%Y%m%d%H%M'),
                         :traveltype => traveltype,
                         :name1 => self.current_travel_node.address.unistrip,
                         :name2 => self.next_travel_node.address.unistrip}.merge(query))

@@ -33,7 +33,8 @@ describe("TravelStepView", function(){
       expect(el.find('.departure_time')).toHaveText($.format.date(travel_step.get('departure_time'), App.config.time));
       expect(el.find('.arrival_time')).toHaveText($.format.date(travel_step.get('arrival_time'), App.config.time));
       expect(el.find('.estimated_time')).toHaveText(travel_step.get('estimated_time') + " min");
-      expect(el.find('.steps_count')).toHaveText(travel_step.get('steps_count') + " steps");
+      expect(el.find(".steps_count")).toBeTruthy();
+      expect(el.find('.steps_count')).toHaveText(travel_step.get('steps_count') + " stop(s)");
       expect(el.find('.steps')).toHaveText(/step1/);
       expect(el.find('.steps')).toHaveText(/step2/);
       expect(el.find('.public_url')).toHaveHtml('<a href="http://example.com" target="_blank">Show</a>');
@@ -47,12 +48,11 @@ describe("TravelStepView", function(){
         departure_time: 'Wed Aug 31 2011 11:29:05 GMT+0200 (CEST)',
         arrival_time: 'Wed Aug 31 2011 12:29:05 GMT+0200 (CEST)',
         estimated_time: 9,
-        distance: 42,
+        distance: "42 km",
         steps: ['step1', 'step2'],
         public_url: "http://example.com",
         travel_type: 'backward',
         calendar: 'BlackProposal',
-        steps_count: 8,
         summary: ['car']
       });
       var view = new App.Views.TravelStepView({ model: travel_step });
@@ -70,8 +70,7 @@ describe("TravelStepView", function(){
       expect(el.find('.departure_time')).toHaveText($.format.date(travel_step.get('departure_time'), App.config.time));
       expect(el.find('.arrival_time')).toHaveText($.format.date(travel_step.get('arrival_time'), App.config.time));
       expect(el.find('.estimated_time')).toHaveText(travel_step.get('estimated_time') + " min");
-      expect(el.find('.distance')).toHaveText(/42 km/);
-      expect(el.find('.steps_count')).toHaveText(travel_step.get('steps_count') + " steps");
+      expect(el.find('.distance')).toHaveText(/42/);
       expect(el.find('.steps')).toHaveText(/step1/);
       expect(el.find('.steps')).toHaveText(/step2/);
       expect(el.find('.public_url')).toHaveHtml('<a href="http://example.com" target="_blank">Show</a>');
@@ -100,7 +99,29 @@ describe("TravelStepView", function(){
       var el = $(view.render().el);
 
       expect(el).toHaveClass('travel_step');
-      expect(el.find('p')).toHaveText(/Sorry, we cannot find a trip with ratp for forward, try another address or another time for your trip/);
+      expect(el.find('p')).toHaveText(/Address not yet supported for public transportation./);
+    });
+
+    it("should not render steps_count", function() {
+      var travel_step = new App.Models.TravelStep();
+      travel_step.set({
+        _id: 42,
+        provider: 'ratp',
+        departure_time: 'Wed Aug 31 2011 11:29:05 GMT+0200 (CEST)',
+        arrival_time: 'Wed Aug 31 2011 12:29:05 GMT+0200 (CEST)',
+        estimated_time: 9,
+        steps: ['step1', 'step2'],
+        public_url: "http://example.com",
+        travel_type: 'backward',
+        calendar: "BlackProposal",
+        steps_count: 0,
+        summary: ['metro', 'tram']
+      });
+      var view = new App.Views.TravelStepView({ model: travel_step });
+      var el = $(view.render().el);
+
+      expect(el.find(".steps_count").html()).not.toBeTruthy();
+      expect(el.find('.steps_count')).not.toHaveText(travel_step.get('steps_count') + " stop(s)");
     });
 
   });
@@ -246,6 +267,7 @@ describe("TravelStepView", function(){
         gadgets_mock.expects('adjustHeight').once();
         var view_mock = sinon.mock(this.view);
         view_mock.expects('lock').once();
+        view_mock.expects('removeTravelHeaders').once();
 
         this.view.successOnDestroy();
 
@@ -267,6 +289,7 @@ describe("TravelStepView", function(){
         var view_mock = sinon.mock(this.view);
         view_mock.expects('removeSameTravelSteps').once();
         view_mock.expects('lock').once();
+        view_mock.expects('removeTravelHeaders').once();
 
         this.view.successOnConfirm();
 
@@ -290,6 +313,7 @@ describe("TravelStepView", function(){
         var view_mock = sinon.mock(this.view);
         view_mock.expects('removeSameTravelSteps').once();
         view_mock.expects('lock').once();
+        view_mock.expects('removeTravelHeaders').once();
 
         expect($(this.view.el).find('.bookmark')).toBeHidden();
         expect($(this.view.el)).toContain('.loader');

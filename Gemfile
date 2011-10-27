@@ -55,6 +55,7 @@ gem 'typhoeus', '~>0.2.4'
 
 # string cleaner
 gem 'utf8proc', '~>1.1.5'
+gem 'sanitize', '~>2.0.3'
 
 # faster json
 gem 'yajl-ruby', '~>0.8.2', :require => 'yajl/json_gem'
@@ -64,7 +65,7 @@ gem 'google_directions',       '~>0.1.3',
   :git => 'git://github.com/spk/google-directions-ruby.git',
   :branch => 'ruby1.9_and_otherfix'
 
-gem 'ratp-api-ruby', '~>0.1.4'
+gem 'ratp-api-ruby', '~>0.1.8'
 
 gem 'icalendar'
 

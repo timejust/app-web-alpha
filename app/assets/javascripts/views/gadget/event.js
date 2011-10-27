@@ -72,8 +72,14 @@ App.Views.EventView = Backbone.View.extend({
   // Also start polling from API to get travels proposals
   showTravelNodesSelector: function(){
     gadgets.views.requestNavigateTo('canvas', { apiEventId: this.model.get('_id') });
-    $('#travels').empty();
-    new App.Views.TravelsView({ el: $('#travels').get(0), apiEventId: this.model.get('_id') });
+    if (this.travels_view) {
+      this.travels_view.clear();
+      this.travels_view.apiEventId = this.model.get('_id');
+      this.travels_view.waitForTravels();
+    }
+    else{
+      this.travels_view = new App.Views.TravelsView({ el: $('#travels').get(0), apiEventId: this.model.get('_id') });
+    }
   },
   // Render the selected Event in gadget sidebar
   render: function(){
@@ -106,13 +112,15 @@ App.Views.EventView = Backbone.View.extend({
         google.calendar.refreshEvents();
         self.selectedEvent = undefined;
         self.render();
-        $('#travels').html("");
+        if(self.travels_view) {
+          self.travels_view.clear();
+        }
         gadgets.window.adjustHeight();
         hideLoader();
       },
       error: function(){
         hideLoader();
       }
-    })
+    });
   }
 });

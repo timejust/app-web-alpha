@@ -9,7 +9,7 @@ class Travel
   field :travel_mode,  type: Symbol
   field :calendar,     type: String
   field :provider,     type: String
-  field :transports,   type: Array
+  field :transports,   type: Array, default: []
 
   @@shared_calendars = configatron.shared_calendars.to_hash
   cattr_reader :shared_calendars
@@ -57,10 +57,8 @@ class Travel
     estimated_time = itinerary.duration.seconds
     departure_time, arrival_time = nil, nil
     if itinerary.valid? && itinerary.departure_hour
-      # init departure and arrival time
-      init_time = direction == :forward ? event.start_time : event.end_time
-      departure_time = Time.parse(itinerary.departure_hour, init_time)
-      arrival_time = departure_time + estimated_time
+      departure_time = event.send("#{direction}_departure", estimated_time)
+      arrival_time = event.send("#{direction}_arrival", estimated_time)
     end
     travel_step_param = {
       event_id: event.id,
@@ -74,15 +72,16 @@ class Travel
       state: 'waiting',
       travel_type: direction,
       steps: itinerary.travel_formated,
-      steps_count: itinerary.steps_count,
-      summary: itinerary.summary,
+      steps_count: (itinerary.steps_count - 1),
+      summary: itinerary.summary.reject(&:blank?),
     }
-    unless estimated_time.between?(1, @@max_travel_hours) && itinerary.valid?
-      travel_step_param.merge!(state: 'error')
+    if estimated_time.between?(1, @@max_travel_hours) && itinerary.valid?
+      # transports
+      self.update_attributes(transports: itinerary.transports.reject(&:blank?))
     else
-      # transports and summary
-      self.update_attributes(transports: itinerary.transports)
+      travel_step_param.merge!(state: 'error')
     end
+    Rails.logger.info('#INFO travel_step_param RATP: ' + travel_step_param.inspect)
     self.travel_steps.create(travel_step_param)
   end
 
@@ -105,11 +104,10 @@ class Travel
       estimated_time: itinerary.drive_time_in_minutes.to_i,
       departure_time: event.send("#{direction}_departure", estimated_time),
       arrival_time: event.send("#{direction}_arrival", estimated_time),
-      distance: (itinerary.distance.to_i / 1000),
+      distance: itinerary.distance_text,
       state: 'waiting',
       travel_type: direction,
-      steps: itinerary.steps,
-      steps_count: itinerary.steps.size,
+      steps: itinerary.steps.map{|s| Sanitize.clean(s) },
       summary: %w{car},
     }
     unless estimated_time.between?(1, @@max_travel_hours)

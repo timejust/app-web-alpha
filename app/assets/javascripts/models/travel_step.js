@@ -25,5 +25,13 @@ App.Models.TravelStep = Backbone.Model.extend({
         if (options.error) {options.error();}
       }
     });
+  },
+  locomotion: function(){
+    if (this.get('provider') == 'ratp'){
+      return 'public transportation';
+    }
+    else if (this.get('provider') == 'google-directions'){
+      return 'car travel';
+    }
   }
 });

@@ -1,2 +1,6 @@
 "event_initial,event_travel_node_selector,event_normalizer": 3
 "event_travel_type, event_api_provider,event_abstract_api_provider,event_travel_sorter,event_saver": 3
+
+staging:
+  "event_initial,event_travel_node_selector,event_normalizer": 4
+  "event_travel_type, event_api_provider,event_abstract_api_provider,event_travel_sorter,event_saver": 4

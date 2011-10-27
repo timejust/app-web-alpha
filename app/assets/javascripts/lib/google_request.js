@@ -69,15 +69,14 @@ var GoogleRequest = {
     if (GoogleRequest.basic_auth) {
       g_params[gadgets.io.RequestParameters.HEADERS] = {
         "Authorization": "Basic " + GoogleRequest.basic_auth
-      }
+      };
     }
     url = this.addAdditionalParams(url);
     g_params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
     gadgets.io.makeRequest(
       url,
       this.prepareCallbacks(options),
-      g_params
-    );
+      g_params);
   },
 
   /**
@@ -91,14 +90,13 @@ var GoogleRequest = {
     return function(response) {
       if (options.error && (
           String(response.rc).indexOf('4') == 0 ||
-          String(response.rc).indexOf('5') == 0
-      )) {
+          String(response.rc).indexOf('5') == 0)) {
         options.error(response);
       }
       else if (options.success) {
         options.success(response);
       }
-    }
+    };
   },
 
   /*

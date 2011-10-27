@@ -23,6 +23,8 @@ class EventTravelNodeSelector
     # add confirmed travel_node in travel nodes proposals
     event.add_confirmed_travel_node_to_proposals
 
+    event.fetch_around_events
+
     # try to find previous and next locations
     event.previous_events.each do |previous_event|
       event.previous_travel_nodes.create(

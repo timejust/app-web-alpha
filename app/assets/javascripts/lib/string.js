@@ -4,7 +4,7 @@
       return $('<pre>').text(string).html();
     },
     truncate: function(string, length){
-      omission = '...'
+      omission = '...';
       if (string.length > length - omission.length){
         return string.substring(0, length) + omission;
       }

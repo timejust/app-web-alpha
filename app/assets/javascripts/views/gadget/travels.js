@@ -8,6 +8,9 @@ App.Views.TravelsView = Backbone.View.extend({
     showLoader();
     gadgets.window.adjustHeight();
     this.apiEventId = this.options.apiEventId;
+    this.waitForTravels();
+  },
+  waitForTravels: function(){
     var self = this;
     // Start polling for Travel proposals
     $.poll(function(retry){
@@ -47,7 +50,7 @@ App.Views.TravelsView = Backbone.View.extend({
   travel_nodes_template: _.template('\
     <ul>\
       <li class="previous_travel_node title">\
-        <a class="travel_node_toggle off" href="#"></a>From\
+        <a class="travel_node_toggle off" href="#"></a><span>From</span>\
         <ul class="travel_node_expand">\
           <li class="address"><%= previous_travel_node["address"] %></li>\
           <% if (previous_travel_node["event_google_id"] != ""){ %>\
@@ -56,8 +59,18 @@ App.Views.TravelsView = Backbone.View.extend({
           <% } %>\
         </ul>\
       </li>\
+      <li class="current_travel_node title">\
+        <a class="travel_node_toggle off" href="#"></a><span>To</span>\
+        <ul class="travel_node_expand">\
+          <li class="address"><%= current_travel_node["address"] %></li>\
+          <% if (current_travel_node["event_google_id"] != ""){ %>\
+            <li><%= current_travel_node["event_title"] %></li>\
+            <li><%= $.format.date(current_travel_node["event_start_time"], App.config.time) %> - <%= $.format.date(current_travel_node["event_end_time"], App.config.time) %></li>\
+          <% } %>\
+        </ul>\
+      </li>\
       <li class="next_travel_node title">\
-        <a class="travel_node_toggle off" href="#"></a>Then\
+        <a class="travel_node_toggle off" href="#"></a><span>Then</span>\
         <ul class="travel_node_expand">\
           <li class="address"><%= next_travel_node["address"] %></li>\
           <% if (next_travel_node["event_google_id"] != ""){ %>\
@@ -92,5 +105,8 @@ App.Views.TravelsView = Backbone.View.extend({
     $(e.currentTarget).toggleClass('off');
     $(e.currentTarget).siblings('.travel_node_expand').toggle();
     gadgets.window.adjustHeight();
+  },
+  clear: function(){
+    $(this.el).empty();
   }
 });

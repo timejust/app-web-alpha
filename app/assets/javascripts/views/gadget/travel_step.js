@@ -26,8 +26,8 @@ App.Views.TravelStepView = Backbone.View.extend({
          -> \
         <span class="arrival_time"><%= $.format.date(arrival_time, App.config.time) %></span>\
         - <span class="estimated_time"><%= estimated_time %> min</span>\
-        <% if (typeof(steps_count) != "undefined" && steps_count != null){ %>\
-          - <span class="steps_count"><%= steps_count %> steps</span>\
+        <% if (typeof(steps_count) != "undefined" && steps_count != null && steps_count > 0){ %>\
+          - <span class="steps_count"><%= steps_count %> stop(s)</span>\
         <% } %>\
       </li>\
       <li class="steps"><ul>\
@@ -39,7 +39,7 @@ App.Views.TravelStepView = Backbone.View.extend({
         <% } %>\
       </ul></li>\
       <% if (typeof(distance) != "undefined"){ %>\
-        <li class="distance">Distance: <%= distance %> km</li>\
+        <li class="distance">Distance: <%= distance %></li>\
       <% } %>\
       <li class="actions"><a href="#" class="confirm">Save</a> | <a href="#" class="bookmark">Bookmark</a> | <a href="#" class="destroy">Destroy</a></li>\
       <li class="error"></li>\
@@ -49,13 +49,13 @@ App.Views.TravelStepView = Backbone.View.extend({
     <p>Travel provider <%= provider %> not supported by gadget</p>\
   '),
   error: _.template('\
-    <p>Sorry, we cannot find a trip with <%= provider %> for <%= travel_type %>, try another address or another time for your trip.</p>\
+    <p>Address not yet supported for <%= model.locomotion() %>.</p>\
   '),
   render: function(){
     $(this.el).addClass(this.model.get('provider'));
     $(this.el).addClass(this.model.get('travel_type'));
     if (this.model.get('state') == 'error') {
-      $(this.el).append(this.error(this.model.toJSON()));
+      $(this.el).append(this.error({model: this.model}));
     }
     else if ($.inArray(this.model.get('provider'), ["google-directions", "ratp"]) != -1) {
       $(this.el).append(this.travel_step(this.model.toJSON()));
@@ -111,21 +111,25 @@ App.Views.TravelStepView = Backbone.View.extend({
     this.removeSameTravelSteps();
     google.calendar.refreshEvents();
     $(this.el).html("<p>Please check your inbox</p>");
+    this.removeTravelHeaders();
     gadgets.window.adjustHeight();
   },
   successOnDestroy: function(){
     this.lock();
     google.calendar.refreshEvents();
     $(this.el).html("<p>Travel canceled</p>");
+    this.removeTravelHeaders();
     gadgets.window.adjustHeight();
   },
   successOnBookmark: function(){
     this.lock();
+    $(this.el).addClass('bookmark');
     this.removeSameTravelSteps();
     google.calendar.refreshEvents();
-    gadgets.window.adjustHeight();
     this.$('.bookmark').show();
     this.$('.loader').remove();
+    this.removeTravelHeaders();
+    gadgets.window.adjustHeight();
   },
   errorOnConfirm: function(){
     this.$('.loader').remove();
@@ -152,5 +156,17 @@ App.Views.TravelStepView = Backbone.View.extend({
   },
   lock: function(){
     $(this.el).addClass('lock');
+  },
+  removeTravelHeaders: function(){
+    $('.travel').each(function(){
+      if(
+        (
+          $(this).find('.travel_step').length == 0 ||
+          $(this).find('.travel_step').length == $(this).find('.travel_step.lock').length
+        ) && $(this).find('.travel_step.bookmark').length == 0
+        ){
+        $(this).find('.icon_and_price').remove();
+      }
+    });
   }
 });
