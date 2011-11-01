@@ -20,7 +20,6 @@ gem 'oauth2'
 
 # Models
 gem 'state_machine'
-gem 'SystemTimer'
 
 # Asset template engines
 gem 'sass-rails'
