@@ -7,7 +7,7 @@ set :stages,                  %w(development staging production)
 set :default_stage,           "development"
 
 # Common options
-set :use_sudo,                false
+set :use_sudo,                true
 set :application,             "app-web-alpha"
 set :scm,                     "git"
 set :repository,              "git@github.com:timejust/#{application}.git"
