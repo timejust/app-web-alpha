@@ -36,5 +36,8 @@
   :gapps:
     :oauth:
       :for_gmail:
-        :consumer_key: '723050567289.apps.googleusercontent.com'
-        :consumer_secret: 'jnE2VYzhwcfUsy9BC29TL9t6'
+        :consumer_key: '492334720932.apps.googleusercontent.com'
+        :consumer_secret: 'JgfEGLXljg6zQfrOL--h2MKw'
+    :for_domains:
+        :consumer_key: '492334720932.apps.googleusercontent.com'
+        :consumer_secret: 'JgfEGLXljg6zQfrOL--h2MKw'

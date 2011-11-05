@@ -22,13 +22,13 @@
     :url: "http://proxy.bearstech.lan:8080/"
 :staging:
   :api:
-    :url: "http://api.timejust-staging.af83.com/v1"
+    :url: "http://api-staging.timejust.com/v1"
     :basic_auth:
       :user: "timejust"
       :password: "t1m3ju$t"
   :gadget:
-    :url: "http://timejust-staging.af83.com/gadget/timejust.xml"
+    :url: "http://staging.timejust.com/gadget/timejust.xml"
   :web:
-    :url: "http://timejust-staging.af83.com"
+    :url: "http://staging.timejust.com"
   :ratp_proxy:
     :url: "http://proxy.bearstech.lan:8080/"
