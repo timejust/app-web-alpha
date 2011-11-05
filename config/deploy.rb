@@ -7,7 +7,7 @@ set :stages,                  %w(development staging production)
 set :default_stage,           "development"
 
 # Common options
-set :use_sudo,                true
+set :use_sudo,                false
 set :application,             "app-web-alpha"
 set :scm,                     "git"
 set :repository,              "git@github.com:timejust/#{application}.git"
@@ -48,15 +48,15 @@ end
 namespace :resque do
   desc "start resque queues"
   task :start do
-    run "cd #{current_path} && bundle exec rake resque:pool:start RAILS_ENV=#{rails_env}"
+    run "cd #{current_path} && sudo bundle exec rake resque:pool:start RAILS_ENV=#{rails_env}"
   end
   desc "stop resque queues"
   task :stop do
-    run "cd #{current_path} && bundle exec rake resque:pool:stop RAILS_ENV=#{rails_env}"
+    run "cd #{current_path} && sudo bundle exec rake resque:pool:stop RAILS_ENV=#{rails_env}"
   end
   desc "restart resque queues"
   task :restart do
-    run "cd #{current_path} && bundle exec rake resque:pool:restart RAILS_ENV=#{rails_env}§"
+    run "cd #{current_path} && sudo bundle exec rake resque:pool:restart RAILS_ENV=#{rails_env}§"
   end
 end
 
