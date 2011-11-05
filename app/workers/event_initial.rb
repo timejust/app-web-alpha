@@ -3,6 +3,8 @@ class EventInitial
   @queue = :event_initial
 
   def self.perform(event_id)
+    Rails.logger.info "event_initial called****************"
+    
     event = Event.first(conditions: {id: event_id})
     return unless event.waiting?
 
