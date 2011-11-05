@@ -19,15 +19,13 @@ set :copy_exclude,            [".DS_Store", ".git"]
 default_run_options[:pty]      = true
 ssh_options[:forward_agent]    = true
 
-set :whenever_command, "bundle exec whenever"
-set :whenever_environment, defer { rails_env }
+set :whenever_command,        "bundle exec whenever"
+set :whenever_environment,    defer { rails_env }
 
-after "deploy:update_code", "mongoid:symlink"
-after "deploy:restart",        "resque:stop", "resque:start", "thin:restart"
-after "deploy",                "deploy:cleanup"
-before "deploy:restart",       "sass:update"
-after "deploy:setup",          "mongoid:copy"
-
+after "deploy:update_code",   "mongoid:symlink"
+after "deploy:restart",       "resque:stop", "resque:start", "thin:restart"
+after "deploy",               "deploy:cleanup"
+after "deploy:setup",         "mongoid:copy"
 
 
 namespace :logs do
