@@ -22,15 +22,11 @@ ssh_options[:forward_agent]    = true
 set :whenever_command, "bundle exec whenever"
 set :whenever_environment, defer { rails_env }
 
-# Maintenance page
-before 'deploy:update', 'deploy:web:disable'
 after "deploy:update_code", "mongoid:symlink"
-
-after "deploy:restart",        "resque:stop", "resque:start", "thin:restart", 'deploy:web:enable', 'deploy:cleanup'
-after "deploy",                "deploy:cleanup", "loadbalancer:add"
+after "deploy:restart",        "resque:stop", "resque:start", "thin:restart"
+after "deploy",                "deploy:cleanup"
 before "deploy:restart",       "sass:update"
 after "deploy:setup",          "mongoid:copy"
-
 
 
 
