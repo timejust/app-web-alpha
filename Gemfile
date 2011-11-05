@@ -8,7 +8,7 @@ gem 'rails', '3.1.0'
 
 # database
 gem 'mongoid'
-gem 'bson_ext', '1.3.1'
+gem 'bson_ext'
 
 # Configuration
 gem 'configatron'
