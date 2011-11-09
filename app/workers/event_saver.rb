@@ -17,12 +17,14 @@ class EventSaver
   #end
 
   def self.perform(event_id)
-    Timejust::LatencySniffer.new('Event:EventSaver', event_id, 'perform')
+    Timejust::LatencySniffer.new('Resque:EventSaver:enqueue', event_id, 'ended')
+    Timejust::LatencySniffer.new('Event:EventSaver', event_id, 'started')
     event = Event.first(conditions: {id: event_id})
     user = User.first(conditions: {id: event.user_id})
 
     event.remove_duplicate_provider_errors
 
     event.write_travels_to_calendar
+    Timejust::LatencySniffer.new('Event:EventSaver', event_id, 'ended')
   end
 end

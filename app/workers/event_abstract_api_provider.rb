@@ -6,7 +6,8 @@ class EventAbstractApiProvider
   @queue = :event_abstract_api_provider
 
   def self.perform(event_id)
-    Timejust::LatencySniffer.new('Event:EventAbstractApiProvider', event_id, 'perform')
+    Timejust::LatencySniffer.new('Resque:EventAbstractApiProvider:enqueue', event_id, 'ended')
+    Timejust::LatencySniffer.new('Event:EventAbstractApiProvider', event_id, 'started')
     event = Event.first(conditions: {id: event_id})
 
     # RATP
@@ -43,8 +44,9 @@ class EventAbstractApiProvider
     # arrival
     google_dir_arr = GoogleDirections.new(event.current_travel_node.address, event.next_travel_node.address)
     google.create_google_travel_step(google_dir_arr, :backward)
-
-    Timejust::LatencySniffer.new('Event:EventTravelSorter', event_id, 'enqueue')
+    
+    Timejust::LatencySniffer.new('Resque:EventTravelSorter:enqueue', event_id, 'started')
     Resque.enqueue(EventTravelSorter, event_id)
+    Timejust::LatencySniffer.new('Event:EventAbstractApiProvider', event_id, 'ended')
   end
 end

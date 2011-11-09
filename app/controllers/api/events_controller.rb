@@ -27,7 +27,7 @@ class Api::EventsController < Api::BaseController
       else
         render :json => @event.errors, :status => :unprocessable_entity
       end
-      Timejust::LatencySniffer.new('Event:create', params[:event], 'completed')
+      Timejust::LatencySniffer.new('Event:create', params[:event], 'ended')
     else
       render :nothing => true, :status => :unprocessable_entity
     end

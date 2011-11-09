@@ -8,7 +8,8 @@ class EventTravelNodeSelector
   end
 
   def self.perform(event_id)
-    Timejust::LatencySniffer.new('Event:EventTravelNodeSelector', event_id, 'perform')
+    Timejust::LatencySniffer.new('Resque:EventTravelNodeSelector:enqueue', event_id, 'ended')
+    Timejust::LatencySniffer.new('Event:EventTravelNodeSelector', event_id, 'started')
     event = Event.first(conditions: {id: event_id})
 
     # only travel_nodes_progress
@@ -78,8 +79,9 @@ class EventTravelNodeSelector
       event.current_travel_nodes.create(address: location['address'], title: location['title'], weight: 50, tag: 'favorite')
       event.next_travel_nodes.create(address: location['address'], title: location['title'], weight: 50, tag: 'favorite')
     end
-
-    Timejust::LatencySniffer.new('Event:EventNormalizer', event_id, 'enqueue')
+    
+    Timejust::LatencySniffer.new('Resque:EventNormalizer:enqueue', event_id, 'started')
     Resque.enqueue(EventNormalizer, event_id)
+    Timejust::LatencySniffer.new('Event:EventTravelNodeSelector', event_id, 'ended')
   end
 end
