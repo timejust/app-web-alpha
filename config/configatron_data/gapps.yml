@@ -1,0 +1,20 @@
+:all:
+  :shared_calendars:
+    :public_transport_faster:
+      :name: 'GreenProposal'
+      :color: '#0D7813'
+    :public_transport_minimum_change:
+      :name: 'PinkProposal'
+      :color: '#B1365F'
+    :car:
+      :name: 'YellowProposal'
+      :color: '#AB8B00'
+:development:
+  :gapps:
+    :oauth:
+      :for_domains:
+        :consumer_key: '42901100597.apps.googleusercontent.com'
+        :consumer_secret: '4vY64qUlVQDdd3uYbH0k9hmD'
+      :for_gmail:
+        :consumer_key: '42901100597.apps.googleusercontent.com'
+        :consumer_secret: '4vY64qUlVQDdd3uYbH0k9hmD'

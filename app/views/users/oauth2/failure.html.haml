@@ -1,0 +1,11 @@
+%div
+  - if @reason == 'unauthorized'
+    %p You have denied access to Timejust, we will not be able to guide you this time. 
+    %p If you would like to try Timejust, try again and click "Grant access".
+    
+    %p If the authorization does not complete properly, please contact us at contact(at)timejust(dot)com and we will try to fix it.
+    
+  - elsif @reason == 'user_has_no_calendar'
+    %p You must activate google calendar service for your account to use Timejust.
+
+  %p= link_to "back to Timejust Home Page", root_path

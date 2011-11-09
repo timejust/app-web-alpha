@@ -1,0 +1,33 @@
+# Préambule
+
+* Le terme af83 désigne l'entreprise af83.
+* Le terme timejust désigne l'entreprise représentée par Axel Adida et
+  Benoit-Jérôme Tessier, clients d'af83 et maitrise d'ouvrage du projet relatif au
+  "Programme Timejust"
+* le terme Projet ou "Projet Timejust" désigne le projet relatif au développement
+  du "Programme Timejust"
+* Le terme Programme ou "Programme Timejust" désigne l'entièreté du code source
+  et documents fourni par af83 à timejust sous la forme d'un dépôt git
+  accessible à l'adresse git+ssh://af83@git.af83.com/timejust-api.git et
+  contenant au moins deux branches "develop" et "master"
+
+# Objet 
+
+Ce document précise les conditions d'utilisation du Programme timejust.
+
+# Propriété du Programme 
+
+L'entiereté du Programme est propriété d'af83 jusqu'à finalisation du Projet
+Timejust par la signature d'un procès verbal de livraison.
+
+# Conditions d'utilisation 
+
+af83 concède à timejust les droits de lecture et d'execution du Programme a
+fins d'évaluations.
+
+En aucun cas af83 ne cède de droits de modification, de publication ni même
+d'utilisation à des fins autres que l'évaluation des capacités du Programme.
+
+
+Jérôme Andrieux, le 12 Octobre 2011, pour af83
+

@@ -1,0 +1,14 @@
+---
+pid: /var/www/timejust/production/timejust-api/current/tmp/pids/thin.pid
+address: 127.0.0.1
+timeout: 5
+port: 5000
+log: /var/www/timejust/production/timejust-api/current/log/thin.log
+max_conns: 1024
+require: ['rubygems']
+
+environment: production
+max_persistent_conns: 512
+servers: 8
+daemonize: true
+chdir: /var/www/timejust/production/timejust-api/current
