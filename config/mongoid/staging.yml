@@ -1,3 +1,0 @@
-staging:
-  host: localhost
-  database: app_web_staging
