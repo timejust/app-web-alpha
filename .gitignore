@@ -12,4 +12,6 @@ coverage/*
 .bundle
 backup/
 Gemfile.bk
+config/mongoid.yml
+.rspec
 .rvmrc

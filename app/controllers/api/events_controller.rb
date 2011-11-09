@@ -15,6 +15,8 @@ class Api::EventsController < Api::BaseController
   #
   def create
     if params[:event]
+      Timejust::LatencySniffer.new('Event:create', params[:event], 'started')
+      
       current_user.find_or_create_calendars
       current_user.purge_travels
       @event = Event.parse_from_google_gadget(params[:event])
@@ -25,6 +27,7 @@ class Api::EventsController < Api::BaseController
       else
         render :json => @event.errors, :status => :unprocessable_entity
       end
+      Timejust::LatencySniffer.new('Event:create', params[:event], 'completed')
     else
       render :nothing => true, :status => :unprocessable_entity
     end

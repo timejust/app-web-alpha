@@ -17,6 +17,7 @@ class EventSaver
   #end
 
   def self.perform(event_id)
+    Timejust::LatencySniffer.new('Event:EventSaver', event_id, 'perform')
     event = Event.first(conditions: {id: event_id})
     user = User.first(conditions: {id: event.user_id})
 
