@@ -1,9 +1,0 @@
-:development:
- :redis:
-   :server:
-     :host: localhost
-     :port: 6379
-     :namespace: timejust:development
-   :services:
-     :resque:
-       :namespace: resque
