@@ -13,4 +13,3 @@ coverage/*
 backup/
 Gemfile.bk
 .rvmrc
-config/configatron_data

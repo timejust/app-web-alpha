@@ -1,0 +1,50 @@
+:all:
+  :shared_calendars:
+    :public_transport_faster:
+      :name: 'GreenProposal'
+      :color: '#0D7813'
+    :public_transport_minimum_change:
+      :name: 'PinkProposal'
+      :color: '#B1365F'
+    :car:
+      :name: 'YellowProposal'
+      :color: '#AB8B00'
+  :gapps:
+    :oauth:
+      :for_domains:
+        :consumer_key: '502137022926.apps.googleusercontent.com'
+        :consumer_secret: 'RFvbtQoJM4wmxftpy17o1OJk'
+      :for_gmail:
+        :consumer_key: '54779436562.apps.googleusercontent.com'
+        :consumer_secret: '0DoZNgo2ZJx3mT0D-QxdhJPF'
+
+:development:
+  :gapps:
+    :oauth:
+      :for_gmail:
+        :consumer_key: '42901100597.apps.googleusercontent.com'
+        :consumer_secret: '4vY64qUlVQDdd3uYbH0k9hmD'
+      :for_domains:
+        :consumer_key: '42901100597.apps.googleusercontent.com'
+        :consumer_secret: '4vY64qUlVQDdd3uYbH0k9hmD'
+            
+:staging:
+  :gapps:
+    :oauth:
+      :for_gmail:
+        :consumer_key: '492334720932.apps.googleusercontent.com'
+        :consumer_secret: 'JgfEGLXljg6zQfrOL--h2MKw'
+      :for_domains:
+        :consumer_key: '492334720932.apps.googleusercontent.com'
+        :consumer_secret: 'JgfEGLXljg6zQfrOL--h2MKw'
+      
+:production:
+  :gapps:
+    :oauth:
+      :for_gmail:
+        :consumer_key: '723050567289.apps.googleusercontent.com'
+        :consumer_secret: 'jnE2VYzhwcfUsy9BC29TL9t6'
+      :for_domains:
+        :consumer_key: '502137022926.apps.googleusercontent.com'
+        :consumer_secret: 'RFvbtQoJM4wmxftpy17o1OJk'
+      
