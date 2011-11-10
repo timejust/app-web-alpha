@@ -247,7 +247,7 @@ GEM
       thor (~> 0.14.6)
     rainbow (1.1.1)
     rake (0.9.2)
-    ratp-api-ruby (0.1.8)
+    ratp-api-ruby (0.1.9)
       chronic_duration (~> 0.9.6)
       hashery (~> 1.4.0)
       nokogiri (~> 1.4.7)
@@ -373,7 +373,7 @@ DEPENDENCIES
   omniauth
   rails (= 3.1.0)
   rails3-generators
-  ratp-api-ruby (~> 0.1.8)
+  ratp-api-ruby (~> 0.1.9)
   rb-inotify
   redis-namespace (= 1.0.3)
   resque (~> 1.19.0)!

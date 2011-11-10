@@ -21,12 +21,23 @@ class EventSaver
     timer = Timejust::LatencySniffer.new('Event:EventSaver')
     timer.start()
     
+    etimer = Timejust::LatencySniffer.new('Task:MongoSingleEventQuery')
+    utimer = Timejust::LatencySniffer.new('Task:MongoSingleUserQuery')
+    etimer.start()
     event = Event.first(conditions: {id: event_id})
+    etimer.end()
+       
+    utimer.start()
     user = User.first(conditions: {id: event.user_id})
+    utimer.end()
 
     event.remove_duplicate_provider_errors
 
+    ctimer = Timejust::LatencySniffer.new('Task:TravelToGoogleCalendar')
+    ctimer.start()
     event.write_travels_to_calendar
+    ctimer.end()
+        
     timer.end()
   end
 end

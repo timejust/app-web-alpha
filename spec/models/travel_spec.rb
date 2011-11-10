@@ -112,7 +112,9 @@ describe Travel do
 
       it 'should have the good date for backward' do
         b = Time.now.beginning_of_day
-        event = Factory(:event, user: user, start_time: (b - 2.hours), end_time: (b + 2.hours))
+        start_time = (b - 2.hours)
+        end_time = (b + 2.hours)
+        event = Factory(:event, user: user, start_time: start_time, end_time: end_time)
         travel = Factory :travel, user: user, event: event
         travel_step = travel.create_ratp_travel_step(mock_ratp_itinerary, :backward)
         travel_step.departure_time.day.should == event.end_time.day
@@ -128,7 +130,7 @@ describe Travel do
         b = Time.now.beginning_of_day
         event = Factory(:event, user: user, start_time: b, end_time: (b + 1.hours))
         travel = Factory :travel, user: user, event: event
-        travel_step = travel.create_ratp_travel_step(mock_ratp_itinerary, :forward)
+        travel_step = travel.create_ratp_travel_step(mock_ratp_itinerary(:departure_hour => event.start_time.strftime('%H:%M')), :forward)
         (travel_step.departure_time.day + 1).should == event.start_time.day
       end
 

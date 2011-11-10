@@ -48,6 +48,16 @@ class Travel
     end
   end
 
+  def ratp_init_time(estimated_time=0, direction=:forward)
+    start_time = event.send("#{direction}_departure", estimated_time)
+    end_time = event.send("#{direction}_arrival", estimated_time)
+    if direction == :forward
+      init_time = start_time
+    else
+      init_time = end_time
+    end
+  end
+
   ##
   # @param [Event]
   # @param [RATP::Itinerary]
@@ -56,9 +66,9 @@ class Travel
   def create_ratp_travel_step(itinerary, direction=:forward)
     estimated_time = itinerary.duration.seconds
     departure_time, arrival_time = nil, nil
-    if itinerary.valid? && itinerary.departure_hour
-      departure_time = event.send("#{direction}_departure", estimated_time)
-      arrival_time = event.send("#{direction}_arrival", estimated_time)
+    if itinerary.valid? && itinerary.departure_hour.present?
+      departure_time = Time.parse(itinerary.departure_hour, ratp_init_time(estimated_time, direction))
+      arrival_time = departure_time + estimated_time
     end
     travel_step_param = {
       event_id: event.id,
