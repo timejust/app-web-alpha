@@ -27,6 +27,12 @@ after "deploy:restart",       "resque:stop", "resque:start", "thin:restart"
 after "deploy",               "deploy:cleanup"
 after "deploy:setup",         "mongoid:copy"
 
+namespace :chown do
+  desc "change ownership of some directories"
+  task :start do
+    run "sudo chown -R deploy:deploy #{release_path}"
+  end
+end
 
 namespace :logs do
   desc "Watch jobs log"
