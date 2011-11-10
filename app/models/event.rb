@@ -447,7 +447,7 @@ class Event
   protected
 
   def push_to_worker
-    Timejust::LatencySniffer.new('Resque:EventInitial:enqueue', self.id.to_s, 'started')
+    #Timejust::LatencySniffer.new('Resque:EventInitial:enqueue', self.id.to_s, 'started')
     Resque.enqueue(EventInitial, self.id.to_s)
   end
 end

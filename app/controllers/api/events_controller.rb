@@ -15,7 +15,8 @@ class Api::EventsController < Api::BaseController
   #
   def create
     if params[:event]
-      Timejust::LatencySniffer.new('Event:create', params[:event], 'started')
+      timer = Timejust::LatencySniffer.new('Event:create')
+      timer.start()
       
       current_user.find_or_create_calendars
       current_user.purge_travels
@@ -27,7 +28,7 @@ class Api::EventsController < Api::BaseController
       else
         render :json => @event.errors, :status => :unprocessable_entity
       end
-      Timejust::LatencySniffer.new('Event:create', params[:event], 'ended')
+      timer.end()
     else
       render :nothing => true, :status => :unprocessable_entity
     end

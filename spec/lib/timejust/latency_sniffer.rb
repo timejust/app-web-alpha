@@ -5,16 +5,18 @@ describe Timejust::LatencySniffer do
 
   it 'write a log now and 1 sec later' do
     # write a log now
-    Timejust::LatencySniffer.new('testing task', '00010', 'starting task')
+    timer = Timejust::LatencySniffer.new('testing task')
+    timer.start
     sleep 1
-    Timejust::LatencySniffer.new('testing task', '00010', 'ended task')
+    timer.end
   end
   
   it 'write a log now and 1 sec later without additional text' do
     # write a log now
-    Timejust::LatencySniffer.new('testing task', '00010')
+    timer = Timejust::LatencySniffer.new('testing task')
+    timer.start
     sleep 1
-    Timejust::LatencySniffer.new('testing task', '00010')
+    timer.end
   end
   
 end

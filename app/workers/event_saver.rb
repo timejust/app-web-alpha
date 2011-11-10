@@ -16,15 +16,17 @@ class EventSaver
     #res = Typhoeus::Request.post(url, opts)
   #end
 
-  def self.perform(event_id)
-    Timejust::LatencySniffer.new('Resque:EventSaver:enqueue', event_id, 'ended')
-    Timejust::LatencySniffer.new('Event:EventSaver', event_id, 'started')
+  def self.perform(event_id)    
+    #Timejust::LatencySniffer.new('Resque:EventSaver:enqueue', event_id, 'ended')
+    timer = Timejust::LatencySniffer.new('Event:EventSaver')
+    timer.start()
+    
     event = Event.first(conditions: {id: event_id})
     user = User.first(conditions: {id: event.user_id})
 
     event.remove_duplicate_provider_errors
 
     event.write_travels_to_calendar
-    Timejust::LatencySniffer.new('Event:EventSaver', event_id, 'ended')
+    timer.end()
   end
 end
