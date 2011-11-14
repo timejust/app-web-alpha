@@ -17,7 +17,6 @@ class EventSaver
   #end
 
   def self.perform(event_id)    
-    #Timejust::LatencySniffer.new('Resque:EventSaver:enqueue', event_id, 'ended')
     timer = Timejust::LatencySniffer.new('Event:EventSaver')
     timer.start()
     

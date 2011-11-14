@@ -122,10 +122,15 @@ class TravelStep
     event.start         = self.departure_time.utc.iso8601.gsub(/[-:]/, '')
     event.end           = self.arrival_time.utc.iso8601.gsub(/[-:]/, '')
     event.summary       = "#{self.invitation_title}"
-    event.organizer     = 'plan@timejust.com'
+    event.organizer     = %w(mailto:plan@timejust.com)
     event.description   = strip_tags(self.google_event_detail).gsub('&nbsp;', ' ')
     event.location      = self.invitation_location
-    event.attendees     = %w(mailto:plan@timejust.com)
+    #event.attendees     = %w(mailto:plan@timejust.com)
+    event.add_attendee "#{self.user.email}", {"PARTSTAT" => "ACCEPTED", "RSVP=FALSE" => "FALSE"} 
+    event.status        = 'CONFIRMED'
+    event.transp        = 'OPAQUE'
+    event.created       = Time.now.utc.iso8601.gsub(/[-:]/, '')
+    cal.ip_method       = 'REQUEST'
     cal.add_event(event)
     cal.to_ical
   end
