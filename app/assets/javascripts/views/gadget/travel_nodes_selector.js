@@ -5,7 +5,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     'click .cancel'                 : 'cancel',
     'click .google_maps'            : 'openGoogleMaps',
     'blur .other_address input'     : 'changeSearchState',
-    'keyup .other_address input'    : 'changeSearchState'
+    'keyup .other_address input'    : 'changeSearchState',
+    'keydown .other_address input'  : 'getGeoAutocomplete'
   },
   initialize: function(){
     this.model = new App.Models.Event({_id: this.options.apiEventId});
@@ -58,7 +59,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         <span class=\"favorite\">Add it to favorite: <input type=\"text\" name=\"<%= type %>[title]\" placeholder=\"alias\"/></span>\
       </p>\
     <% } %>\
-    <p class=\"other_address\">Or enter: <input type=\"text\" name=\"<%= type %>[address]\" placeholder=\"address\"/><input type=\"submit\" value=\"Replace\" class=\"search\" data-target=\"<%= type %>\"/></p>\
+    <p class=\"other_address\">Or enter: <input type=\"text\" width=\"300px\" id=\"location\" name=\"<%= type %>[address]\" placeholder=\"address\"/><input type=\"submit\" value=\"Replace\" class=\"search\" data-target=\"<%= type %>\"/></p>\
     </div>\
   "),
   // Template for option elements
@@ -155,10 +156,9 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   getTravelNodeState: function(travel_node_type) {
     text_value = this.$('form').find('input[name="' + travel_node_type + '\[address\]"]').val();
     select_value = this.$('form').find('select[name="' + travel_node_type + '\[address\]"]').val();
-    if (text_value == "" && select_value) {
+    if (select_value != "") {
       return "confirmed";
-    }
-    else {
+    } else {
       return "unconfirmed";
     }
   },
@@ -166,8 +166,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   getTravelNodeTitle: function(travel_node_type) {
     if (this.$('form').find('input[name="' + travel_node_type + '\[title\]"]').val()){
       return this.$('form').find('input[name="' + travel_node_type + '\[title\]"]').val();
-    }
-    else{
+    } else{
       return '';
     }
   },
@@ -176,10 +175,43 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     select_value = this.$('form').find('select[name="' + travel_node_type + '\[address\]"]').val();
     if (text_value == "" && select_value) {
       return this.$('form').find('select[name="' + travel_node_type + '\[address\]"] option:selected').data('event-google-id');
-    }
-    else {
+    } else {
       return "";
     }
+  },
+  getGeoAutocomplete: function(e) {
+    if ($(e.currentTarget).val().length > 1) {
+      $(e.currentTarget).geo_autocomplete(new google.maps.Geocoder, {
+    		mapkey: 'ABQIAAAAbnvDoAoYOSW2iqoXiGTpYBTIx7cuHpcaq3fYV4NM0BaZl8OxDxS9pQpgJkMv0RxjVl6cDGhDNERjaQ', 
+    		selectFirst: false,
+    		minChars: 3,
+    		cacheLength: 50,
+    		width: 300,
+    		scroll: true,
+    		scrollHeight: 300,
+    		autoFill: true
+    	}).result(function(_event, _data) {
+    	  if (_data) {
+    	    e.currentTarget.value = _data.formatted_address;
+    	    $(e.currentTarget).parent('.other_address').find('.search').attr('disabled', 'disabled');    	    
+    	    var select = $(e.currentTarget).parent('.other_address').parent('.travel_node').find('.selected_address');
+    	    select = $(this).parent('.other_address').parent('.travel_node').find('.selected_address');      
+          selected = -1;
+          for (i = 0; i < select[0].length; i++) {
+            if (select[0].options[i].value == _data.formatted_address) {
+              selected = i;
+              break;
+            } 
+          }
+          if (selected == -1) {
+            a = "<option value=\"" + _data.formatted_address + "\" data-event-google-id=\"\">" + _data.formatted_address + "</option>" + select.html();      
+    	      select.html(a)
+    	      selected = 0
+          } 
+    	    select[0].selectedIndex = selected
+  	    }
+  	  });
+	  }
   },
   // Close travel node selector view and show home view
   close: function(){

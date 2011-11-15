@@ -125,7 +125,6 @@ class TravelStep
     event.organizer     = %w(mailto:plan@timejust.com)
     event.description   = strip_tags(self.google_event_detail).gsub('&nbsp;', ' ')
     event.location      = self.invitation_location
-    #event.attendees     = %w(mailto:plan@timejust.com)
     event.add_attendee "#{self.user.email}", {"PARTSTAT" => "ACCEPTED", "RSVP=FALSE" => "FALSE"} 
     event.status        = 'CONFIRMED'
     event.transp        = 'OPAQUE'

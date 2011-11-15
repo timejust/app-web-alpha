@@ -1,5 +1,8 @@
 :all:
   :gadget:
+    :css:
+      :canvas:
+        - vendor/assets/stylesheets/jquery.autocomplete.css
     :js:
       :home_canvas:
         - vendor/assets/javascripts/jquery.js
@@ -21,4 +24,6 @@
         - app/assets/javascripts/views/gadget/travel.js
         - app/assets/javascripts/views/gadget/travel_step.js
       :canvas:
+        - vendor/assets/javascripts/jquery.autocomplete_geomod.js
+        - vendor/assets/javascripts/geo_autocomplete.js
         - app/assets/javascripts/views/gadget/travel_nodes_selector.js
