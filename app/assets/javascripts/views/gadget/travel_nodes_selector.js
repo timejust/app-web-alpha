@@ -6,12 +6,44 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     'click .google_maps'            : 'openGoogleMaps',
     // 'blur .other_address input'     : 'changeSearchState',
     // 'keyup .other_address input'    : 'changeSearchState',
-    'keydown .other_address input'  : 'getGeoAutocomplete'
+    // 'keydown .other_address input'  : 'getGeoAutocomplete'
   },
   initialize: function(){
     this.model = new App.Models.Event({_id: this.options.apiEventId});
     _.bindAll(this, 'waitForTravelNodes');
-    this.waitForTravelNodes();
+    this.waitForTravelNodes();    
+  },
+  getGeoAutocomplete: function(node) {
+    $('#' + node).geo_autocomplete(new google.maps.Geocoder, {
+  		mapkey: 'ABQIAAAAbnvDoAoYOSW2iqoXiGTpYBTIx7cuHpcaq3fYV4NM0BaZl8OxDxS9pQpgJkMv0RxjVl6cDGhDNERjaQ', 
+  		selectFirst: false,
+  		minChars: 3,
+  		cacheLength: 50,
+  		width: 300,
+  		scroll: true,
+  		scrollHeight: 300,
+  		autoFill: false
+  	}).result(function(_event, _data) {
+  	  if (_data) {
+  	    this.value = _data.formatted_address;
+  	    // $(this).parent('.other_address').find('.search').attr('disabled', 'disabled');    	    
+  	    var select = $(this).parent('.other_address').parent('.travel_node').find('.selected_address');
+  	    // select = $(this).parent('.other_address').parent('.travel_node').find('.selected_address');      
+        selected = -1;
+        for (i = 0; i < select[0].length; i++) {
+          if (select[0].options[i].value == _data.formatted_address) {
+            selected = i;
+            break;
+          } 
+        }
+        if (selected == -1) {
+          a = "<option value=\"" + _data.formatted_address + "\" data-event-google-id=\"\">" + _data.formatted_address + "</option>" + select.html();      
+  	      select.html(a)
+  	      selected = 0
+        } 
+  	    select[0].selectedIndex = selected
+	    }
+	  });
   },
   // Start polling API for travel nodes proposals
   // when API ready, display the confirmation form
@@ -60,7 +92,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         <span class=\"favorite\">Add it to favorite: <input type=\"text\" name=\"<%= type %>[title]\" placeholder=\"alias\"/></span>\
       </p>\
     <% } %>\
-    <p class=\"other_address\">Or enter: <input type=\"text\" width=\"300px\" id=\"location\" name=\"<%= type %>[address]\" placeholder=\"address\"/></p>\
+    <p class=\"other_address\">Or enter: <input type=\"text\" size=\"30\" id=\"<%= name %>\" name=\"<%= type %>[address]\" placeholder=\"address\"/></p>\
     </div>\
   "),
   // Template for option elements
@@ -81,26 +113,30 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         });
       });
     }
-    inputs += this.input_template( { label_type: this.travel_nodes_type_label(travel_nodes_type), type: travel_nodes_type, options: options } );
+    inputs += this.input_template( { 
+      label_type: this.travel_nodes_type_label(travel_nodes_type), type: travel_nodes_type, options: options, name: name } );
     return inputs;
   },
   travel_nodes_type_label: function(travel_nodes_type){
-    if (travel_nodes_type == 'current_travel_node'){
+    if (travel_nodes_type == 'current_travel_node') {
       return "To (" + $.truncate(this.model.get('title'), 70) + ")";
-    }
-    else if (travel_nodes_type == 'previous_travel_node'){
+    } else if (travel_nodes_type == 'previous_travel_node') {
       return "From";
-    }
-    else if (travel_nodes_type == 'next_travel_node'){
+    } else if (travel_nodes_type == 'next_travel_node') {
       return "Then";
     }
   },
   // render the form for all travel nodes
   render: function(){
     $(this.el).html(this.form_template({
-      inputs: this.formInputsFor('previous_travel_node') + this.formInputsFor('current_travel_node') + this.formInputsFor('next_travel_node')
+      inputs: this.formInputsFor('previous_travel_node', 'previous_location') + 
+        this.formInputsFor('current_travel_node', 'current_location') + 
+        this.formInputsFor('next_travel_node', 'next_location')
     }));
-    hideLoader();
+    hideLoader();    
+    this.getGeoAutocomplete('previous_location');
+    this.getGeoAutocomplete('current_location');
+    this.getGeoAutocomplete('next_location');    
     // this.disableAllSearchSubmit();
     this.$('.next').removeAttr('disabled');
     gadgets.window.adjustHeight();
@@ -180,6 +216,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       return "";
     }
   },
+  /*
   getGeoAutocomplete: function(e) {
     if ($(e.currentTarget).val().length > 1) {
       $(e.currentTarget).geo_autocomplete(new google.maps.Geocoder, {
@@ -190,7 +227,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     		width: 300,
     		scroll: true,
     		scrollHeight: 300,
-    		autoFill: true
+    		autoFill: false
     	}).result(function(_event, _data) {
     	  if (_data) {
     	    e.currentTarget.value = _data.formatted_address;
@@ -214,6 +251,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   	  });
 	  }
   },
+  */
   // Close travel node selector view and show home view
   close: function(){
     // Cannot pass parameters to home views !?!
