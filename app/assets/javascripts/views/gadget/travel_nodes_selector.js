@@ -1,11 +1,11 @@
 App.Views.TravelNodesSelectorView = Backbone.View.extend({
   events: {
     'submit form'                   : 'submitTravelNodes',
-    'click .search'                 : 'searchForAddress',
+    // 'click .search'                 : 'searchForAddress',
     'click .cancel'                 : 'cancel',
     'click .google_maps'            : 'openGoogleMaps',
-    'blur .other_address input'     : 'changeSearchState',
-    'keyup .other_address input'    : 'changeSearchState',
+    // 'blur .other_address input'     : 'changeSearchState',
+    // 'keyup .other_address input'    : 'changeSearchState',
     'keydown .other_address input'  : 'getGeoAutocomplete'
   },
   initialize: function(){
@@ -49,6 +49,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     </form>\
   "),
   // Template for each travel node confirmation
+  // <p class=\"other_address\">Or enter: <input type=\"text\" width=\"300px\" id=\"location\" name=\"<%= type %>[address]\" placeholder=\"address\"/><input type=\"submit\" value=\"Replace\" class=\"search\" data-target=\"<%= type %>\"/></p>\
   input_template: _.template("\
     <div class=\"travel_node\">\
     <h2><%= label_type %>:</h2>\
@@ -59,7 +60,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         <span class=\"favorite\">Add it to favorite: <input type=\"text\" name=\"<%= type %>[title]\" placeholder=\"alias\"/></span>\
       </p>\
     <% } %>\
-    <p class=\"other_address\">Or enter: <input type=\"text\" width=\"300px\" id=\"location\" name=\"<%= type %>[address]\" placeholder=\"address\"/><input type=\"submit\" value=\"Replace\" class=\"search\" data-target=\"<%= type %>\"/></p>\
+    <p class=\"other_address\">Or enter: <input type=\"text\" width=\"300px\" id=\"location\" name=\"<%= type %>[address]\" placeholder=\"address\"/></p>\
     </div>\
   "),
   // Template for option elements
@@ -100,7 +101,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       inputs: this.formInputsFor('previous_travel_node') + this.formInputsFor('current_travel_node') + this.formInputsFor('next_travel_node')
     }));
     hideLoader();
-    this.disableAllSearchSubmit();
+    // this.disableAllSearchSubmit();
     this.$('.next').removeAttr('disabled');
     gadgets.window.adjustHeight();
   },
@@ -193,7 +194,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     	}).result(function(_event, _data) {
     	  if (_data) {
     	    e.currentTarget.value = _data.formatted_address;
-    	    $(e.currentTarget).parent('.other_address').find('.search').attr('disabled', 'disabled');    	    
+    	    // $(e.currentTarget).parent('.other_address').find('.search').attr('disabled', 'disabled');    	    
     	    var select = $(e.currentTarget).parent('.other_address').parent('.travel_node').find('.selected_address');
     	    select = $(this).parent('.other_address').parent('.travel_node').find('.selected_address');      
           selected = -1;
@@ -222,7 +223,11 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   openGoogleMaps: function(event){
     event.preventDefault();
     window.open("http://google.com/maps?q=" + $(event.currentTarget).closest('.travel_node').find('.selected_address').val(), 'google_maps');
-  },
+  }
+  /*
+  // Since today Nov 16, 2011, we don't allow users search location from this page. 
+  // We implemented google map autocompletion instead of it 
+  ,
   // TODO spec
   searchForAddress: function(e){
     var text_value = this.$('form').find('input[name="' + $(e.currentTarget).data('target') + '\[address\]"]').val();
@@ -243,4 +248,5 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   disableAllSearchSubmit: function(){
     this.$('.search').attr('disabled', 'disabled');
   }
+  */
 });
