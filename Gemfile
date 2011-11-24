@@ -65,7 +65,7 @@ gem 'google_directions',       '~>0.1.3',
   :git => 'git://github.com/spk/google-directions-ruby.git',
   :branch => 'ruby1.9_and_otherfix'
 
-gem 'ratp-api-ruby', '~>0.1.9'
+gem 'ratp-api-ruby', '~>0.2.0'
 
 gem 'icalendar'
 

@@ -56,6 +56,10 @@
           display: inline-block; width: 22px; height: 22px; margin: 0; vertical-align: sub;
           #{img64('/public/icons/busratp.png')}
         }
+        .icon.noctilienratp {
+          display: inline-block; width: 22px; height: 22px; margin: 0; vertical-align: sub;
+          #{img64('/public/icons/busratp.png')}
+        }
         .icon.rer {
           display: inline-block; width: 22px; height: 22px; margin: 0; vertical-align: sub;
           #{img64('/public/icons/rer.png')}
@@ -145,13 +149,8 @@
       </div>
       <img class="loader" src="data:image/png;base64,#{ActiveSupport::Base64.encode64(open(File.join(Rails.root, "/app/assets/images/loader.gif")).read)}" />
 
-      <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
-      <style type="text/css">
-        #{configatron.gadget.css.canvas.map { |c| open(Rails.root.join(c)).read }.join}
-      </style>
-
       <script type="text/javascript">
-        
+
         #{configatron.gadget.js.canvas.map { |c| open(Rails.root.join(c)).read }.join}
 
         gadgets.util.registerOnLoadHandler(function(){
