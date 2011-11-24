@@ -149,8 +149,13 @@
       </div>
       <img class="loader" src="data:image/png;base64,#{ActiveSupport::Base64.encode64(open(File.join(Rails.root, "/app/assets/images/loader.gif")).read)}" />
 
-      <script type="text/javascript">
+      <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+      <style type="text/css">
+        #{configatron.gadget.css.canvas.map { |c| open(Rails.root.join(c)).read }.join}
+      </style>
 
+      <script type="text/javascript">
+        
         #{configatron.gadget.js.canvas.map { |c| open(Rails.root.join(c)).read }.join}
 
         gadgets.util.registerOnLoadHandler(function(){
@@ -158,3 +163,4 @@
         });
 
       </script>
+
