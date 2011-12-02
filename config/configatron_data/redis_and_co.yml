@@ -1,15 +1,3 @@
----
-:all:
- # Basic config: default values for Redis server on all hosts and envs
-  :redis:
-    :server:
-      :host: localhost
-      :port: 6379
-      :namespace: timejust:development
-    :services:
-      :resque:
-        :namespace: resque
-
 :development:
   :redis:
     :server:
@@ -19,7 +7,7 @@
     :services:
       :resque:
         :namespace: resque
-
+        
 :staging:
   :redis:
     :server:
@@ -29,13 +17,16 @@
     :services:
       :resque:
         :namespace: resque
-
-:staging:
+        
+:production:
   :redis:
     :server:
       :host: localhost
       :port: 6379
-      :namespace: timejust:staging
+      :namespace: timejust:production
     :services:
       :resque:
         :namespace: resque
+
+
+

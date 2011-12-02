@@ -1,49 +1,36 @@
-:all:
-  :api:
-    :url: "http://api.timejust.local/v1"
-    :basic_auth:
-      :user: "timejust"
-      :password: "t1m3ju$t"
-  :gadget:
-    :url: "http://timejust-dev.af83.com/gadget/timejust.xml"
-  :web:
-    :url: "http://timejust-dev.af83.com"
-    
 :development:
   :api:
     :url: "http://api.timejust.com:50001/v1"
     :basic_auth:
       :user: "timejust"
-      :password: "t1m3ju$t"
+      :password: "t1m3ju$t" 
   :gadget:
     :url: "http://staging.timejust.com:50001/gadget/timejust.xml"
   :web:
     :url: "http://staging.timejust.com:50001"
   :ratp_proxy:
     :url: "http://proxy.timejust.com:80"
-
 :staging:
   :api:
     :url: "http://api-staging.timejust.com/v1"
     :basic_auth:
       :user: "timejust"
-      :password: "t1m3ju$t"
+      :password: "t1m3ju$t" 
   :gadget:
     :url: "http://staging.timejust.com/gadget/timejust.xml"
   :web:
     :url: "http://staging.timejust.com"
   :ratp_proxy:
     :url: "http://proxy.timejust.com:80"
-
 :production:
   :api:
-    :url: "http://api-staging.timejust.com/v1"
+    :url: "http://api.timejust.com/v1"
     :basic_auth:
       :user: "timejust"
-      :password: "t1m3ju$t"
+      :password: "t1m3ju$t" 
   :gadget:
-    :url: "http://staging.timejust.com/gadget/timejust.xml"
+    :url: "http://www.timejust.com/gadget/timejust.xml"
   :web:
-    :url: "http://staging.timejust.com"
+    :url: "http://www.timejust.com"
   :ratp_proxy:
     :url: "http://proxy.timejust.com:80"
