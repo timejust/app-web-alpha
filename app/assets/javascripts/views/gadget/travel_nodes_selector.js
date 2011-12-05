@@ -1,12 +1,8 @@
 App.Views.TravelNodesSelectorView = Backbone.View.extend({
   events: {
     'submit form'                   : 'submitTravelNodes',
-    // 'click .search'                 : 'searchForAddress',
     'click .cancel'                 : 'cancel',
     'click .google_maps'            : 'openGoogleMaps',
-    // 'blur .other_address input'     : 'changeSearchState',
-    // 'keyup .other_address input'    : 'changeSearchState',
-    // 'keydown .other_address input'  : 'getGeoAutocomplete'
   },
   initialize: function(){
     this.model = new App.Models.Event({_id: this.options.apiEventId});
@@ -26,22 +22,37 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   	}).result(function(_event, _data) {
   	  if (_data) {
   	    this.value = _data.formatted_address;
-  	    // $(this).parent('.other_address').find('.search').attr('disabled', 'disabled');    	    
   	    var select = $(this).parent('.other_address').parent('.travel_node').find('.selected_address');
-  	    // select = $(this).parent('.other_address').parent('.travel_node').find('.selected_address');      
-        selected = -1;
-        for (i = 0; i < select[0].length; i++) {
-          if (select[0].options[i].value == _data.formatted_address) {
-            selected = i;
-            break;
+        var latitude = _data.geometry.location.Pa
+        var longitude = _data.geometry.location.Qa        
+        var selected = -1;
+        if (select[0]) {
+          for (i = 0; i < select[0].length; i++) {
+            if (select[0].options[i].value == _data.formatted_address) {
+              selected = i;
+              break;
+            } 
           } 
-        }
+        } else {
+          var node_type = this.name.substring(0, this.name.indexOf("["))
+          var label_type = $(this).parent('.other_address').parent('.travel_node').find('h2').value
+          $(this).parent('.other_address').parent('.travel_node').find('.history').html("\
+            <p>\
+              <select name=\"" + node_type + "[address]\" class=\"selected_address\"></select>\
+              <input type=\"button\" value=\"Maps\" class=\"google_maps\"/>\
+              <span class=\"favorite\">Add it to favorite: <input type=\"text\" name=\"" + node_type + "[title]\" placeholder=\"alias\"/></span>\
+            </p>\
+          ")
+          select = $(this).parent('.other_address').parent('.travel_node').find('.selected_address');
+        }        
         if (selected == -1) {
-          a = "<option value=\"" + _data.formatted_address + "\" data-event-google-id=\"\">" + _data.formatted_address + "</option>" + select.html();      
+          a = "<option value=\"" + _data.formatted_address + "\" data-event-google-id=\"\" data-geo-pos=\"" + 
+            latitude + "," + longitude + "\">" + _data.formatted_address + "</option>" + select.html();      
   	      select.html(a)
   	      selected = 0
-        } 
-  	    select[0].selectedIndex = selected
+        }         
+        if (select[0])
+  	      select[0].selectedIndex = selected
 	    }
 	  });
   },
@@ -85,6 +96,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   input_template: _.template("\
     <div class=\"travel_node\">\
     <h2><%= label_type %>:</h2>\
+    <div class=\"history\">\
     <% if (options != '') { %>\
       <p>\
         <select name=\"<%= type %>[address]\" class=\"selected_address\"><%= options %></select>\
@@ -92,6 +104,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         <span class=\"favorite\">Add it to favorite: <input type=\"text\" name=\"<%= type %>[title]\" placeholder=\"alias\"/></span>\
       </p>\
     <% } %>\
+    </div>\
     <p class=\"other_address\">Or enter: <input type=\"text\" size=\"30\" id=\"<%= name %>\" name=\"<%= type %>[address]\" placeholder=\"address\"/></p>\
     </div>\
   "),
@@ -153,14 +166,17 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         'previous_travel_node[title]': this.getTravelNodeTitle('previous_travel_node'),
         'previous_travel_node[state]': this.getTravelNodeState('previous_travel_node'),
         'previous_travel_node[event_google_id]': this.getEventGoogleId('previous_travel_node'),
+        'previous_travel_node[geo_pos]' : this.getGeoPosition('previous_travel_node'),
         'current_travel_node[address]': this.getTravelNodeAddress('current_travel_node'),
         'current_travel_node[title]': this.getTravelNodeTitle('current_travel_node'),
         'current_travel_node[state]': this.getTravelNodeState('current_travel_node'),
         'current_travel_node[event_google_id]': this.getEventGoogleId('current_travel_node'),
+        'current_travel_node[geo_pos]' : this.getGeoPosition('current_travel_node'),
         'next_travel_node[address]': this.getTravelNodeAddress('next_travel_node'),
         'next_travel_node[title]': this.getTravelNodeTitle('next_travel_node'),
         'next_travel_node[state]': this.getTravelNodeState('next_travel_node'),
-        'next_travel_node[event_google_id]': this.getEventGoogleId('next_travel_node')
+        'next_travel_node[event_google_id]': this.getEventGoogleId('next_travel_node'),
+        'next_travel_node[geo_pos]' : this.getGeoPosition('next_travel_node')
       },
       success: this.waitForTravelNodes
     });
@@ -216,42 +232,15 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       return "";
     }
   },
-  /*
-  getGeoAutocomplete: function(e) {
-    if ($(e.currentTarget).val().length > 1) {
-      $(e.currentTarget).geo_autocomplete(new google.maps.Geocoder, {
-    		mapkey: 'ABQIAAAAbnvDoAoYOSW2iqoXiGTpYBTIx7cuHpcaq3fYV4NM0BaZl8OxDxS9pQpgJkMv0RxjVl6cDGhDNERjaQ', 
-    		selectFirst: false,
-    		minChars: 3,
-    		cacheLength: 50,
-    		width: 300,
-    		scroll: true,
-    		scrollHeight: 300,
-    		autoFill: false
-    	}).result(function(_event, _data) {
-    	  if (_data) {
-    	    e.currentTarget.value = _data.formatted_address;
-    	    // $(e.currentTarget).parent('.other_address').find('.search').attr('disabled', 'disabled');    	    
-    	    var select = $(e.currentTarget).parent('.other_address').parent('.travel_node').find('.selected_address');
-    	    select = $(this).parent('.other_address').parent('.travel_node').find('.selected_address');      
-          selected = -1;
-          for (i = 0; i < select[0].length; i++) {
-            if (select[0].options[i].value == _data.formatted_address) {
-              selected = i;
-              break;
-            } 
-          }
-          if (selected == -1) {
-            a = "<option value=\"" + _data.formatted_address + "\" data-event-google-id=\"\">" + _data.formatted_address + "</option>" + select.html();      
-    	      select.html(a)
-    	      selected = 0
-          } 
-    	    select[0].selectedIndex = selected
-  	    }
-  	  });
-	  }
+  getGeoPosition: function(travel_node_type) {
+    text_value = this.$('form').find('input[name="' + travel_node_type + '\[address\]"]').val();
+    select_value = this.$('form').find('select[name="' + travel_node_type + '\[address\]"]').val();
+    if (select_value) {
+      return this.$('form').find('select[name="' + travel_node_type + '\[address\]"] option:selected').data('geo-pos');
+    } else {
+      return "";
+    }
   },
-  */
   // Close travel node selector view and show home view
   close: function(){
     // Cannot pass parameters to home views !?!
@@ -264,7 +253,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   }
   /*
   // Since today Nov 16, 2011, we don't allow users search location from this page. 
-  // We implemented google map autocompletion instead of it 
+  // We implemented google map autocompletion instead
   ,
   // TODO spec
   searchForAddress: function(e){

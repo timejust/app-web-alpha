@@ -8,6 +8,10 @@ After logging, go to https://code.google.com/apis/console
   gem install bundler
   bundle install
 
+== Development == 
+
+ssh -v -nNT4 -R *:50002:192.168.15.101:80 ubuntu@staging.timejust.com
+
 == Tests ==
 
 Api:

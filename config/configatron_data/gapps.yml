@@ -9,6 +9,7 @@
     :car:
       :name: 'YellowProposal'
       :color: '#AB8B00'
+      
 :development:
   :gapps:
     :oauth:
@@ -18,6 +19,7 @@
       :for_gmail:
         :consumer_key: '42901100597.apps.googleusercontent.com'
         :consumer_secret: '4vY64qUlVQDdd3uYbH0k9hmD'
+        
 :staging:
   :gapps:
     :oauth:
@@ -27,6 +29,7 @@
       :for_gmail:
         :consumer_key: '492334720932.apps.googleusercontent.com'
         :consumer_secret: 'JgfEGLXljg6zQfrOL--h2MKw'
+        
 :production:
   :gapps:
     :oauth:
