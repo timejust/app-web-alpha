@@ -7,8 +7,7 @@ class EventTravelNodeSelector
     "#{truncate(event.title, length: 50)} - #{I18n.l(event.start_time, format: :short)} - #{I18n.l(event.end_time, format: :short)}"
   end
 
-  def self.perform(event_id)
-    #Timejust::LatencySniffer.new('Resque:EventTravelNodeSelector:enqueue', event_id, 'ended')
+  def self.perform(event_id, ip)
     timer = Timejust::LatencySniffer.new('Event:EventTravelNodeSelector')
     timer.start()
     
@@ -94,8 +93,7 @@ class EventTravelNodeSelector
     
     ftimer.end()
     
-    #Timejust::LatencySniffer.new('Resque:EventNormalizer:enqueue', event_id, 'started')
-    Resque.enqueue(EventNormalizer, event_id)
+    Resque.enqueue(EventNormalizer, event_id, ip)
     timer.end()
   end
 end

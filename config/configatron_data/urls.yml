@@ -10,6 +10,9 @@
     :url: "http://staging.timejust.com:50001"
   :ratp_proxy:
     :url: "http://proxy.timejust.com:80"
+  :service:
+    :url: "http://service-staging.timejust.com:8080"
+    :geo_recognition: "service-geo/v1/geo/recognition"
 :staging:
   :api:
     :url: "http://api-staging.timejust.com/v1"
@@ -22,6 +25,9 @@
     :url: "http://staging.timejust.com"
   :ratp_proxy:
     :url: "http://proxy.timejust.com:80"
+  :service:
+    :url: "http://service-staging.timejust.com:8080"
+    :geo_recognition: "service-geo/v1/geo/recognition"  
 :production:
   :api:
     :url: "http://api.timejust.com/v1"
@@ -34,3 +40,6 @@
     :url: "http://www.timejust.com"
   :ratp_proxy:
     :url: "http://proxy.timejust.com:80"
+  :service:
+    :url: "http://service-staging.timejust.com:8080"
+    :geo_recognition: "service-geo/v1/geo/recognition"

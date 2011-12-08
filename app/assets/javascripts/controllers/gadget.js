@@ -6,7 +6,9 @@ App.Controllers.GadgetController = Backbone.Router.extend({
     _.bindAll(this, 'initSidebarViews');
     this.user.bind('status:loaded', this.initSidebarViews);
   },
-
+  getip: function(json){
+    this.ip = json.ip;
+  },
   // Initialize Views from user status and pending events
   initSidebarViews: function(){
     if (this.user.state == "not_registered") {
@@ -36,7 +38,7 @@ App.Controllers.GadgetController = Backbone.Router.extend({
           google.calendar.refreshEvents();
         }
       });
-      new App.Views.EventView({ el: $('#selectedEvent').get(0) });
+      new App.Views.EventView({ el: $('#selectedEvent').get(0), ip: this.ip });
     }
   },
 
@@ -44,7 +46,8 @@ App.Controllers.GadgetController = Backbone.Router.extend({
   travel_node_selector: function(){
     new App.Views.TravelNodesSelectorView({
       el: $('#travelNodesSelector').get(0),
-      apiEventId: gadgets.views.getParams()['apiEventId']
+      apiEventId: gadgets.views.getParams()['apiEventId'],
+      ip: this.ip
     });
   }
 });

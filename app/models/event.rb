@@ -25,6 +25,7 @@ class Event
   embeds_many :previous_travel_nodes, as: :previous_travel_nodes,  class_name: "TravelNode", :order => :weight.desc
   embeds_many :current_travel_nodes,  as: :current_travel_nodes,   class_name: "TravelNode", :order => :weight.desc
   embeds_many :next_travel_nodes,     as: :next_travel_nodes,      class_name: "TravelNode", :order => :weight.desc
+  
   # travel nodes confirmed by user
   embeds_one :previous_travel_node,   as: :previous_travel_node,   class_name: "TravelNode"
   embeds_one :current_travel_node,    as: :current_travel_node,    class_name: "TravelNode"
@@ -37,6 +38,8 @@ class Event
   # don't send event to worklers if this is an around event
   after_create :push_to_worker, unless: "self.event.present?"
 
+  @ip = ""
+  
   state_machine initial: :waiting do
     # waiting for workers to search for travel nodes proposals
     state :waiting
@@ -72,6 +75,11 @@ class Event
     end
   end
 
+  # Set ip address where the request from
+  def set_current_ip(ip)
+    @ip = ip
+  end
+  
   # Is this event is pending
   #
   # A pending event is an event with was not totally performed
@@ -210,20 +218,20 @@ class Event
   end
 
   # Normalize all travel nodes associated with this event
-  def normalize_travel_nodes
+  def normalize_travel_nodes(request_ip)
     [:previous, :current, :next].each do |type|
       proposals = "#{type.to_s}_travel_nodes"
       selected = "#{type.to_s}_travel_node"
 
       # normalize all travel nodes proposals
       self.send(proposals).each do |travel_node|
-        travel_node.normalize
+        travel_node.normalize(request_ip)
       end
 
       # if an address has been submitted by user
       if self.send(selected)
         # Normalize user submitted addresses
-        self.send(selected).normalize
+        self.send(selected).normalize(request_ip)
       end
     end
   end
@@ -447,7 +455,6 @@ class Event
   protected
 
   def push_to_worker
-    #Timejust::LatencySniffer.new('Resque:EventInitial:enqueue', self.id.to_s, 'started')
-    Resque.enqueue(EventInitial, self.id.to_s)
+    Resque.enqueue(EventInitial, self.id.to_s, @ip)
   end
 end

@@ -2,8 +2,7 @@
 class EventInitial
   @queue = :event_initial
 
-  def self.perform(event_id)
-    #Timejust::LatencySniffer.new('Resque:EventInitial:enqueue', event_id, 'ended')
+  def self.perform(event_id, ip)    
     timer = Timejust::LatencySniffer.new('Event:EventInitial')
     timer.start()
     
@@ -26,8 +25,7 @@ class EventInitial
 
     event.update_attribute(:state, "travel_nodes_progress")
 
-    #Timejust::LatencySniffer.new('Resque:EventTravelNodeSelector:enqueue', event_id, 'started')
-    Resque.enqueue(EventTravelNodeSelector, event_id)
+    Resque.enqueue(EventTravelNodeSelector, event_id, ip)
     timer.end()
   rescue Exception => e
     Rails.logger.error e

@@ -51,9 +51,10 @@ App.Views.EventView = Backbone.View.extend({
           this.selectedEvent,
           {
             before_start_time: this.$('select[name=before_offset]').val(),
-            after_end_time: this.$('select[name=after_offset]').val()
+            after_end_time: this.$('select[name=after_offset]').val(),            
           }
-        ))
+        )),
+        current_ip: this.options.ip
       },
       success: this.generateTripCallback,
       error: this.error

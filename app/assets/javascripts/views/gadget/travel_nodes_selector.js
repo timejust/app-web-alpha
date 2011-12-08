@@ -7,6 +7,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   initialize: function(){
     this.model = new App.Models.Event({_id: this.options.apiEventId});
     _.bindAll(this, 'waitForTravelNodes');
+    // alert(this.options.ip)
     this.waitForTravelNodes();    
   },
   getGeoAutocomplete: function(node) {
@@ -47,7 +48,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         }        
         if (selected == -1) {
           a = "<option value=\"" + _data.formatted_address + "\" data-event-google-id=\"\" data-geo-pos=\"" + 
-            latitude + "," + longitude + "\">" + _data.formatted_address + "</option>" + select.html();      
+            latitude + "," + longitude + "\" data-formatted-address=\"1\">" + _data.formatted_address + 
+            "</option>" + select.html();      
   	      select.html(a)
   	      selected = 0
         }         
@@ -167,16 +169,20 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         'previous_travel_node[state]': this.getTravelNodeState('previous_travel_node'),
         'previous_travel_node[event_google_id]': this.getEventGoogleId('previous_travel_node'),
         'previous_travel_node[geo_pos]' : this.getGeoPosition('previous_travel_node'),
+        'previous_travel_node[formatted_address]' : this.isFormattedAddress('previous_travel_node'),
         'current_travel_node[address]': this.getTravelNodeAddress('current_travel_node'),
         'current_travel_node[title]': this.getTravelNodeTitle('current_travel_node'),
         'current_travel_node[state]': this.getTravelNodeState('current_travel_node'),
         'current_travel_node[event_google_id]': this.getEventGoogleId('current_travel_node'),
         'current_travel_node[geo_pos]' : this.getGeoPosition('current_travel_node'),
+        'current_travel_node[formatted_address]' : this.isFormattedAddress('next_travel_node'),
         'next_travel_node[address]': this.getTravelNodeAddress('next_travel_node'),
         'next_travel_node[title]': this.getTravelNodeTitle('next_travel_node'),
         'next_travel_node[state]': this.getTravelNodeState('next_travel_node'),
         'next_travel_node[event_google_id]': this.getEventGoogleId('next_travel_node'),
-        'next_travel_node[geo_pos]' : this.getGeoPosition('next_travel_node')
+        'next_travel_node[geo_pos]' : this.getGeoPosition('next_travel_node'),
+        'next_travel_node[formatted_address]' : this.isFormattedAddress('next_travel_node'),
+        'current_ip' : this.options.ip
       },
       success: this.waitForTravelNodes
     });
@@ -237,6 +243,15 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     select_value = this.$('form').find('select[name="' + travel_node_type + '\[address\]"]').val();
     if (select_value) {
       return this.$('form').find('select[name="' + travel_node_type + '\[address\]"] option:selected').data('geo-pos');
+    } else {
+      return "";
+    }
+  },
+  isFormattedAddress: function(travel_node_type) {
+    text_value = this.$('form').find('input[name="' + travel_node_type + '\[address\]"]').val();
+    select_value = this.$('form').find('select[name="' + travel_node_type + '\[address\]"]').val();
+    if (select_value) {
+      return this.$('form').find('select[name="' + travel_node_type + '\[address\]"] option:selected').data('formatted-address');
     } else {
       return "";
     }
