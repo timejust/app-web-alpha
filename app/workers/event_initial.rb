@@ -27,9 +27,9 @@ class EventInitial
 
     Resque.enqueue(EventTravelNodeSelector, event_id, ip)
     timer.end()
-  rescue Exception => e
-    Rails.logger.error e
-    event.error
-    $stderr.puts e
+  #rescue Exception => e
+  #  Rails.logger.error e
+  #  event.error
+  #  $stderr.puts e
   end
 end

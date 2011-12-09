@@ -133,7 +133,7 @@
       <img class="loader" src="data:image/png;base64,#{ActiveSupport::Base64.encode64(open(File.join(Rails.root, "/app/assets/images/loader.gif")).read)}" />
       <div id="travels"></div>
 
-      <script type="application/javascript" src="http://jsonip.appspot.com/?callback=app.getip"> </script>
+      <script type="application/javascript" src="http://service-staging.timejust.com:8080/service-geo/v1/geo/ip?callback=app.getip"> </script>
       <script type="text/javascript">
 
         #{configatron.gadget.js.home.map { |h| open(Rails.root.join(h)).read }.join}
