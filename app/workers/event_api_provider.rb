@@ -16,7 +16,6 @@ class EventApiProvider
     
     event.update_attributes('applicable_travel_api' => ['ratp', 'google-directions'])
 
-    #Timejust::LatencySniffer.new('Resque:EventAbstractApiProvider:enqueue', event_id, 'started')
     Resque.enqueue(EventAbstractApiProvider, event_id)
     timer.end
   end

@@ -18,12 +18,12 @@ module Timejust
       i = 1
       geos = Array.new      
       nodes.each do |n|
-        geo = {"geo"=>n.address, "id"=>i.to_s, "src"=>ip}
+        geo = {"geo"=>CGI.escape(n.address), "id"=>i.to_s, "src"=>ip}
         geos.push(geo)
         i+=1
       end
       
-      json = JSON.generate(geos)      
+      json = JSON.generate(geos)
       Rails.logger.info "******************* request from google geocode #{json}"                           
       req = Typhoeus::Request.new(@@url, :request => :post, :body => json)      
       req.on_complete do |response|
