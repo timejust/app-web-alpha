@@ -25,15 +25,20 @@ class TravelNode
   end
 
   def normalize(ip)
-    Rails.logger.info "normalize #{self.address} from #{ip} - #{self.formatted_address}"
-    #if self.formatted_address == 1
+    Rails.logger.info "*************** normalize #{self.address} from #{ip} - #{self.formatted_address}"
+    if self.formatted_address == 1
+      norm = self.normalized_addresses.find_or_initialize_by(formatted_address: self.address)
+      norm.save      
+    else
+      Timejust::NormalizeAddresses.new(self, ip) if self.unconfirmed?
+    end
+        
     #Rails.logger.info "we do not normalize for #{self.address} from #{ip} - #{self.formatted_address}"
       
-      # If the address came from google geo code, we skip to normalize it
-      #norm = self.normalized_addresses.find_or_initialize_by(formatted_address: self.address)
-      #norm.save      
+    # If the address came from google geo code, we skip to normalize it
+    #norm = self.normalized_addresses.find_or_initialize_by(formatted_address: self.address)
+    #norm.save      
     #else
-    Timejust::NormalizeAddresses.new(self, ip) if self.unconfirmed?
     #end
   end
 

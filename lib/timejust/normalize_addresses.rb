@@ -13,30 +13,40 @@ module Timejust
       nodes.flatten!
       nodes.reject!{|node| node.nil? || node.address.blank?}
       
-      Rails.logger.info "******************* result from google geocode #{@@url}"                  
-      
+      Rails.logger.info "******************* result step00 **************"                           
       i = 1
       geos = Array.new      
       nodes.each do |n|
+        if ip == "undefined"
+          ip = ""
+        end
+        
         geo = {"geo"=>CGI.escape(n.address), "id"=>i.to_s, "src"=>ip}
         geos.push(geo)
         i+=1
       end
       
+      Rails.logger.info "******************* result step01 **************"                           
+      
       json = JSON.generate(geos)
-      Rails.logger.info "******************* request from google geocode #{json}"                           
       req = Typhoeus::Request.new(@@url, :request => :post, :body => json)      
+      Rails.logger.info "******************* result step02 #{@@url}, #{json}**************"                           
       req.on_complete do |response|
+        Rails.logger.info "******************* result step03 **************"                           
         if response.success? && (data = JSON.parse(response.body))
+          Rails.logger.info "******************* result step04 **************"                           
           if data['status'] == 'ok'          
+            Rails.logger.info "******************* result #{data}**************"                           
             i = 1            
             data['results'].each do |d|
               n = nodes[i-1]
               n.normalized_addresses.destroy_all
-              if d[i.to_s]['status'] == 'ok'
-                d[i.to_s]['addresses'].each do |addr|         
-                  Rails.logger.info "******************* result from google geocode #{addr}"                           
-                  norm = n.normalized_addresses.find_or_initialize_by(formatted_address: addr)                  
+              if d[i.to_s]['status'] == 'ok'                
+                d[i.to_s]['results'].each do |result|         
+                  Rails.logger.info "******************* result from google geocode #{result}, #{result['address']}"                           
+                  norm = n.normalized_addresses.find_or_initialize_by(formatted_address: result['address'])
+                    #lat: result['location']['lat'],
+                    #lng: result['location']['lng'])                  
                   # FIXME : don't destroy old normalized adresses if travel node adress has not changed                  
                   norm.save
                 end
