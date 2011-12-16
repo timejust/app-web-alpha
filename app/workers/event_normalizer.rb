@@ -8,7 +8,7 @@ class EventNormalizer
     timer.start()
     
     etimer = Timejust::LatencySniffer.new('Task:MongoSingleEventQuery')
-    gtimer = Timejust::LatencySniffer.new('Task:GoogleNormalize')
+    gtimer = Timejust::LatencySniffer.new('Task:TimejustNormalize')
     
     etimer.start
     event = Event.first(conditions: {id: event_id})

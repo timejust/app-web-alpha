@@ -34,11 +34,11 @@ App.Views.TravelStepView = Backbone.View.extend({
         <% if (typeof(steps) != "undefined" && steps != null){ %>\
           <li><%= steps.join("</li><li>") %></li>\
         <% } %>\
-        <% if (typeof(public_url) != "undefined"){ %>\
+        <% if (typeof(public_url) != "undefined" && public_url != ""){ %>\
           <li class="public_url"><a href="<%= public_url %>" target="_blank">Show</a></li>\
         <% } %>\
       </ul></li>\
-      <% if (typeof(distance) != "undefined"){ %>\
+      <% if (typeof(distance) != "undefined" && distance != "0"){ %>\
         <li class="distance">Distance: <%= distance %></li>\
       <% } %>\
       <li class="actions"><a href="#" class="confirm">Save</a> | <a href="#" class="bookmark">Bookmark</a> | <a href="#" class="destroy">Destroy</a></li>\
@@ -57,7 +57,7 @@ App.Views.TravelStepView = Backbone.View.extend({
     if (this.model.get('state') == 'error') {
       $(this.el).append(this.error({model: this.model}));
     }
-    else if ($.inArray(this.model.get('provider'), ["google-directions", "ratp"]) != -1) {
+    else if ($.inArray(this.model.get('provider'), ["google-directions", "ratp", "timejust"]) != -1) {
       $(this.el).append(this.travel_step(this.model.toJSON()));
     }
     else {

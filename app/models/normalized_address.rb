@@ -2,11 +2,9 @@
 class NormalizedAddress
   include Mongoid::Document
 
-  field :address_components, type: Array
   field :formatted_address,  type: String
-  field :geometry,           type: Hash
-  field :partial_match,      type: Boolean
-  field :types,              type: Array
+  field :lat,                type: Float
+  field :lng,                type: Float
 
   embedded_in :travel_node
 

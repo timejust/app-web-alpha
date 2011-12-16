@@ -13,6 +13,7 @@
   :service:
     :url: "http://service-staging.timejust.com:8080"
     :geo_recognition: "service-geo/v1/geo/recognition"
+    :geo_direction: "service-geo/v1/geo/direction"
 :staging:
   :api:
     :url: "http://api-staging.timejust.com/v1"
@@ -28,6 +29,7 @@
   :service:
     :url: "http://service-staging.timejust.com:8080"
     :geo_recognition: "service-geo/v1/geo/recognition"  
+    :geo_direction: "service-geo/v1/geo/direction"
 :production:
   :api:
     :url: "http://api.timejust.com/v1"
@@ -43,3 +45,4 @@
   :service:
     :url: "http://service-staging.timejust.com:8080"
     :geo_recognition: "service-geo/v1/geo/recognition"
+    :geo_direction: "service-geo/v1/geo/direction"

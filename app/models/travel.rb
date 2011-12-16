@@ -58,6 +58,92 @@ class Travel
     end
   end
 
+  # This below is temporary function. It can be ugly :)
+  def to_formatted_text(dir) 
+    if dir["text_direction"] == ""
+      departure_time = DateTime.strptime(dir["dep_time"], "%Y-%m-%d %H:%M:%S").to_time
+      arrival_time = DateTime.strptime(dir["arr_time"], "%Y-%m-%d %H:%M:%S").to_time
+      line = dir["line"]
+      if dir["line"] == "base" || dir["line"] == "connections" 
+        line = "walk" 
+      end      
+      headsign = dir["headsign"]
+      if line == "walk"
+        headsign = ((arrival_time.to_i - departure_time.to_i) / 60).to_s + " min" 
+      end
+      
+      dir["dep_name"] + " (" + departure_time.strftime("%H:%M") + ") > (" + 
+        line + " " + headsign +") > " + dir["arr_name"] + " (" + 
+        arrival_time.strftime("%H:%M") + ")"
+    else
+      dir["text_direction"]
+    end
+  end
+  
+  def create_travel_step(travel, mode, direction=:forward)
+    # if return status is not ok, we cannot create a step.
+    if travel["status"] == "ok"
+      trip = travel["trip"]
+      format = "%Y-%m-%d %H:%M:%S"
+      
+      self.update_attributes(transports: [mode])
+            
+      if trip["arr_time"] != "" && trip["dep_time"] != ""
+        arrival_time = DateTime.strptime(trip["arr_time"], format).to_time
+        departure_time = DateTime.strptime(trip["dep_time"], format).to_time
+        estimated_time = arrival_time.to_i - departure_time.to_i
+      else
+        # If arrival time and departure time are not provided, we have to 
+        # calculate either arrival time or departure time based on the time 
+        # from event schedule with the given duration => we need to implement
+        # duration in direction response <= *******
+        arrival_time = departure_time = estimated_time = 0
+      end
+          
+      steps = []    
+      distance = 0
+      trip["steps"].each do |step|
+        step["directions"].each do |dir|
+          distance += dir["distance"]
+          steps.push(to_formatted_text(dir))
+        end
+      end
+      
+      travel_step_param = {
+        event_id: event.id,
+        user_id: event.user.id,
+        provider: 'timejust',
+        public_url: "",
+        api_url: configatron.service.url + "/" + configatron.service.geo_direction,
+        estimated_time: (estimated_time / 60).round,
+        departure_time: departure_time,
+        arrival_time: arrival_time,
+        distance: (distance.to_f / 1000).to_f.round(2).to_s + " km",
+        state: 'waiting',
+        travel_type: direction,
+        steps: steps,
+        steps_count: (steps.size - 1),
+        summary: [mode]
+      }                          
+      
+      #unless estimated_time.between?(1, @@max_travel_hours)
+      #  travel_step_param.merge!(state: 'error')
+      #end      
+    else
+      travel_step_param = {
+        event_id: event.id,
+        user_id: event.user.id,
+        provider: 'timejust',
+        public_url: "",
+        api_url: configatron.service.url + "/" + configatron.service.geo_direction,
+        state: 'error',
+        travel_type: direction        
+      }
+    end
+    
+    self.travel_steps.create(travel_step_param)    
+  end
+  
   ##
   # @param [Event]
   # @param [RATP::Itinerary]

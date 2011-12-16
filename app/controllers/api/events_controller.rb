@@ -87,14 +87,6 @@ class Api::EventsController < Api::BaseController
   # @return [JSON]    JSON representation of event
   #
   def travel_nodes_confirmation
-    Rails.logger.info "geo*****->#{params[:previous_travel_node][:geo_pos]}"
-    Rails.logger.info "geo*****->#{params[:current_travel_node][:geo_pos]}"
-    Rails.logger.info "geo*****->#{params[:next_travel_node][:geo_pos]}"
-    Rails.logger.info "ip*****->#{params[:current_ip]}"
-    Rails.logger.info "formatted? *****->#{params[:previous_travel_node][:formatted_address]}"
-    Rails.logger.info "formatted? *****->#{params[:current_travel_node][:formatted_address]}"
-    Rails.logger.info "formatted? *****->#{params[:next_travel_node][:formatted_address]}"
-
     @event.set_current_ip(params[:current_ip])
     @event.create_previous_travel_node(params[:previous_travel_node]) if params[:previous_travel_node] && params[:previous_travel_node][:address].present?
     @event.create_current_travel_node(params[:current_travel_node]) if params[:current_travel_node] && params[:current_travel_node][:address].present?

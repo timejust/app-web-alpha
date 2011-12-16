@@ -24,8 +24,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   	  if (_data) {
   	    this.value = _data.formatted_address;
   	    var select = $(this).parent('.other_address').parent('.travel_node').find('.selected_address');
-        var latitude = _data.geometry.location.Pa
-        var longitude = _data.geometry.location.Qa        
+        var lng = _data.geometry.location.Ra
+        var lat = _data.geometry.location.Qa        
         var selected = -1;
         if (select[0]) {
           for (i = 0; i < select[0].length; i++) {
@@ -47,8 +47,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
           select = $(this).parent('.other_address').parent('.travel_node').find('.selected_address');
         }        
         if (selected == -1) {
-          a = "<option value=\"" + _data.formatted_address + "\" data-event-google-id=\"\" data-geo-pos=\"" + 
-            latitude + "," + longitude + "\" data-formatted-address=\"1\">" + _data.formatted_address + 
+          a = "<option value=\"" + _data.formatted_address + "\" data-event-google-id=\"\" data-lat=\"" + 
+            lat + "\" data-lng=\"" + lng + "\" data-has-normalized=\"1\">" + _data.formatted_address + 
             "</option>" + select.html();      
   	      select.html(a)
   	      selected = 0
@@ -111,7 +111,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     </div>\
   "),
   // Template for option elements
-  option_template: _.template("<option value=\"<%= value %>\" <%= selected %> data-event-google-id=\"<%= event_id %>\"><%= label %></option>"),
+  option_template: _.template("<option value=\"<%= value %>\" <%= selected %> data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\" data-has-normalized=\"<%=has_normalized%>\" data-event-google-id=\"<%= event_id %>\"><%= label %></option>"),
   // Return the form inputs for a given travel node
   formInputsFor: function(travel_nodes_type, name){
     var self = this;
@@ -124,7 +124,10 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
           value: e.address,
           label: (e.title ? e.title + ' - ' + e.address : e.address),
           selected: (selected_address && selected_address.address == e.address ? 'selected' : ''),
-          event_id: e.event_google_id
+          event_id: e.event_google_id,
+          has_normalized: e.has_normalized,
+          lat: e.lat,
+          lng: e.lng
         });
       });
     }
@@ -168,20 +171,23 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         'previous_travel_node[title]': this.getTravelNodeTitle('previous_travel_node'),
         'previous_travel_node[state]': this.getTravelNodeState('previous_travel_node'),
         'previous_travel_node[event_google_id]': this.getEventGoogleId('previous_travel_node'),
-        'previous_travel_node[geo_pos]' : this.getGeoPosition('previous_travel_node'),
-        'previous_travel_node[formatted_address]' : this.isFormattedAddress('previous_travel_node'),
+        'previous_travel_node[lat]' : this.getLatitude('previous_travel_node'),
+        'previous_travel_node[lng]' : this.getLongitude('previous_travel_node'),
+        'previous_travel_node[has_normalized]' : this.hasNormalized('previous_travel_node'),
         'current_travel_node[address]': this.getTravelNodeAddress('current_travel_node'),
         'current_travel_node[title]': this.getTravelNodeTitle('current_travel_node'),
         'current_travel_node[state]': this.getTravelNodeState('current_travel_node'),
         'current_travel_node[event_google_id]': this.getEventGoogleId('current_travel_node'),
-        'current_travel_node[geo_pos]' : this.getGeoPosition('current_travel_node'),
-        'current_travel_node[formatted_address]' : this.isFormattedAddress('next_travel_node'),
+        'current_travel_node[lat]' : this.getLatitude('current_travel_node'),
+        'current_travel_node[lng]' : this.getLongitude('current_travel_node'),
+        'current_travel_node[has_normalized]' : this.hasNormalized('current_travel_node'),
         'next_travel_node[address]': this.getTravelNodeAddress('next_travel_node'),
         'next_travel_node[title]': this.getTravelNodeTitle('next_travel_node'),
         'next_travel_node[state]': this.getTravelNodeState('next_travel_node'),
         'next_travel_node[event_google_id]': this.getEventGoogleId('next_travel_node'),
-        'next_travel_node[geo_pos]' : this.getGeoPosition('next_travel_node'),
-        'next_travel_node[formatted_address]' : this.isFormattedAddress('next_travel_node'),
+        'next_travel_node[lat]' : this.getLatitude('next_travel_node'),
+        'next_travel_node[lng]' : this.getLongitude('next_travel_node'),
+        'next_travel_node[has_normalized]' : this.hasNormalized('next_travel_node'),
         'current_ip' : this.options.ip
       },
       success: this.waitForTravelNodes
@@ -238,20 +244,29 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       return "";
     }
   },
-  getGeoPosition: function(travel_node_type) {
+  getLatitude: function(travel_node_type) {
     text_value = this.$('form').find('input[name="' + travel_node_type + '\[address\]"]').val();
     select_value = this.$('form').find('select[name="' + travel_node_type + '\[address\]"]').val();
     if (select_value) {
-      return this.$('form').find('select[name="' + travel_node_type + '\[address\]"] option:selected').data('geo-pos');
+      return this.$('form').find('select[name="' + travel_node_type + '\[address\]"] option:selected').data('lat');
     } else {
       return "";
     }
   },
-  isFormattedAddress: function(travel_node_type) {
+  getLongitude: function(travel_node_type) {
     text_value = this.$('form').find('input[name="' + travel_node_type + '\[address\]"]').val();
     select_value = this.$('form').find('select[name="' + travel_node_type + '\[address\]"]').val();
     if (select_value) {
-      return this.$('form').find('select[name="' + travel_node_type + '\[address\]"] option:selected').data('formatted-address');
+      return this.$('form').find('select[name="' + travel_node_type + '\[address\]"] option:selected').data('lng');
+    } else {
+      return "";
+    }
+  },
+  hasNormalized: function(travel_node_type) {
+    text_value = this.$('form').find('input[name="' + travel_node_type + '\[address\]"]').val();
+    select_value = this.$('form').find('select[name="' + travel_node_type + '\[address\]"]').val();
+    if (select_value) {
+      return this.$('form').find('select[name="' + travel_node_type + '\[address\]"] option:selected').data('has-normalized');
     } else {
       return "";
     }

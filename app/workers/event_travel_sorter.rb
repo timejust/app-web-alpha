@@ -3,7 +3,6 @@ class EventTravelSorter
   @queue = :event_travel_sorter
 
   def self.perform(event_id)
-    #Timejust::LatencySniffer.new('Resque:EventTravelSorter:enqueue', event_id, 'ended')
     timer = Timejust::LatencySniffer.new('Event:EventTravelSorter')
     timer.start()
     
@@ -16,7 +15,6 @@ class EventTravelSorter
       end
     end
     
-    #Timejust::LatencySniffer.new('Resque:EventSaver:enqueue', event_id, 'started')
     Resque.enqueue(EventSaver, event_id)
     timer.end()
   end

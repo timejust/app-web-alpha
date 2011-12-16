@@ -12,7 +12,9 @@ class TravelNode
   field :event_end_time,    type: Time
   field :event_location,    type: String
   field :event_google_id,   type: String
-  field :formatted_address, type: Integer, default: 0
+  field :has_normalized,    type: Integer, default: 0
+  field :lat,               type: Float,   default: 0.0
+  field :lng,               type: Float,   default: 0.0
   
   embedded_in :event
 
@@ -25,21 +27,12 @@ class TravelNode
   end
 
   def normalize(ip)
-    Rails.logger.info "*************** normalize #{self.address} from #{ip} - #{self.formatted_address}"
-    if self.formatted_address == 1
-      norm = self.normalized_addresses.find_or_initialize_by(formatted_address: self.address)
-      norm.save      
-    else
+    Rails.logger.info "******************* TravelNode: normalize #{self.address} from #{ip} - already normalized ? #{self.has_normalized}"
+    # Even it's unconfirmed, if the given address has already normalized, 
+    # we don't go through normalization process.
+    if self.has_normalized == 0
       Timejust::NormalizeAddresses.new(self, ip) if self.unconfirmed?
     end
-        
-    #Rails.logger.info "we do not normalize for #{self.address} from #{ip} - #{self.formatted_address}"
-      
-    # If the address came from google geo code, we skip to normalize it
-    #norm = self.normalized_addresses.find_or_initialize_by(formatted_address: self.address)
-    #norm.save      
-    #else
-    #end
   end
 
   # Get event informations from google api

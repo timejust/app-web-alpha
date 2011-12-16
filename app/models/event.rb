@@ -248,7 +248,11 @@ class Event
         # If this travel node is not confirmed
         if travel_node.unconfirmed?
           travel_node.normalized_addresses.each do |normalized_address|
-            self.add_travel_node_proposal(type, normalized_address.formatted_address, travel_node)
+            self.add_travel_node_proposal(type, 
+                normalized_address.formatted_address, 
+                normalized_address.lat,
+                normalized_address.lng,
+                travel_node)
           end
           travel_node.destroy
         end
@@ -259,7 +263,11 @@ class Event
       selected_node.update_attribute(:weight, 200) if selected_node
       if selected_node && selected_node.unconfirmed?
         selected_node.normalized_addresses.each do |normalized_address|
-          self.add_travel_node_proposal(type, normalized_address.formatted_address, selected_node)
+          self.add_travel_node_proposal(type, 
+              normalized_address.formatted_address, 
+              normalized_address.lat,
+              normalized_address.lng,
+              selected_node)
         end
       end
     end
@@ -276,7 +284,8 @@ class Event
       if selected_node && selected_node.confirmed?
         selected_node.update_attribute(:weight, 500)
         selected_node.add_google_info(self)
-        self.add_travel_node_proposal(type, selected_node.address, selected_node)
+        self.add_travel_node_proposal(type, selected_node.address, 
+            selected_node.lat, selected_node.lng, selected_node)
       end
     end
   end
@@ -287,12 +296,15 @@ class Event
   # @param  [String]      address, the address to submit
   # @param  [TravelNode]  related travel node
   #
-  def add_travel_node_proposal(type, address, travel_node)
+  def add_travel_node_proposal(type, address, lat, lng, travel_node)
     self.send("#{type.to_s}_travel_nodes").create(
       address: address,
       title: travel_node.title,
       weight: travel_node.weight,
       tag: travel_node.tag,
+      lat: lat,
+      lng: lng,
+      has_normalized: 1,
       event_title: travel_node.event_title,
       event_start_time: travel_node.event_start_time,
       event_end_time: travel_node.event_end_time,
@@ -405,6 +417,35 @@ class Event
     end
   end
 
+  #
+  # @param mode [String] type of transporataion
+  # @param direction 
+  # @return neccesary parameters for timejust geo direction services
+  def itinerary(key, mode, direction=:forward)
+    origin_travel = nil
+    destination_travel = nil
+    time = 0
+    base = "arrival"
+    
+    if direction == :forward
+      origin_travel = self.previous_travel_node
+      destination_travel = self.current_travel_node 
+      time = self.forward_arrival
+    else
+      origin_travel = self.current_travel_node
+      destination_travel = self.next_travel_node
+      time = self.backward_departure
+      base = "departure"     
+    end
+   
+    { :id => key.to_s,
+      :origin => "#{origin_travel.lat},#{origin_travel.lng}", 
+      :destination => "#{destination_travel.lat},#{destination_travel.lng}", 
+      :time => time.to_i.to_s, 
+      :mode => mode,
+      :base => base }
+  end
+  
   ##
   # @param [String] RATP travetype see RATP::Itinerary initialize
   # @return [RATP::Itinerary]

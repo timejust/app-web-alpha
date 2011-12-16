@@ -88,7 +88,7 @@ App.Views.EventView = Backbone.View.extend({
       $(this.el).html(this.template(this.selectedEvent));
     }
     else{
-      $(this.el).html("No event selected");
+      $(this.el).html("<p class=\"title\">Select an event</p>");
     }
     gadgets.window.adjustHeight();
   },

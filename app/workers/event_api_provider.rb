@@ -14,7 +14,7 @@ class EventApiProvider
 
     mtimer.end
     
-    event.update_attributes('applicable_travel_api' => ['ratp', 'google-directions'])
+    event.update_attributes('applicable_travel_api' => ['ratp', 'google-directions', 'timejust'])
 
     Resque.enqueue(EventAbstractApiProvider, event_id)
     timer.end
