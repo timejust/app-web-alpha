@@ -1,0 +1,292 @@
+.title { 
+  font: bold 1.1em/1.1em Arial; 
+  color: #8AB53E; 
+  font-size: 13px; 
+  margin-bottom: 5px 
+}
+.location { 
+  margin: 0 0 5px 0; 
+  font: bold Arial; 
+  font-size: 10px; 
+  color: #8f8f8f; 
+}
+.schedule { 
+  margin-left: 5px; 
+}
+.schedule li { 
+  margin: 0 0 0 0; 
+  padding: 0; 
+  font: bold Arial; 
+  font-size: 10px; 
+  color: #8f8f8f; 
+  display: inline; 
+  line-height: 11px; 
+  text-align: center 
+}
+.schedule .event_date {
+  overflow: hidden;
+  display: inline-block; 
+  width: 12px; 
+  height: 11px; 
+  vertical-align: sub;
+  background-image:url(/icons/rdv.png);
+  background-position: 0px -1px;
+  background-repeat: no-repeat;
+}
+.schedule .event_time {
+  overflow: hidden;
+  display: inline-block; 
+  margin-left: 5px;
+  width: 13px; 
+  height: 11px; 
+  vertical-align: sub;
+  background-image:url(/icons/rdv.png);
+  background-position: -12px -1px;
+  background-repeat: no-repeat;
+}
+a.generate_trip { 
+  border-top: 7px solid #8AB53E;
+  border-left: 38px solid #8AB53E;
+  border-right: 38px solid #8AB53E;
+  border-bottom: 7px solid #8AB53E;
+  padding: 0 0 0em 0;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  font-size: 12px;
+  background-color: #8AB53E;
+  color: #ffffff;
+  text-decoration: none;
+}
+a.clear { 
+  color: #8AB53E; 
+}
+.gray {
+  margin-bottom: 3px;
+  border-style: solid;
+  border-color: #8e8e8e;
+  background-color: #a8a8a8;
+  color: #ffffff;  
+  border-width: 1px;
+}
+.blue {
+  margin-bottom: 3px;
+  border-style: solid;
+  border-color: #1587bd;
+  background-color: #9fc6e7;
+  color: #1d1d1d;  
+  border-width: 1px;
+}
+.green {
+  margin-bottom: 3px;
+  border-style: solid;
+  border-color: #52a884;
+  background-color: #92e1c0;
+  color: #1d1d1d;  
+  border-width: 1px;
+}
+.green ul { 
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #52a884;
+}    
+ul { 
+  margin-top: 5px;
+}
+ul li {
+  display: inline; 
+}
+ul .event_title {
+  font: bold 11px Arial; 
+}        
+ul .address { 
+  width: 120px;
+  display: inline-block; 
+  font: normal 10px Arial; 
+  margin: -3px 0px 5px 16px;
+}
+.pink {
+  margin-bottom: 3px;
+  border-style: solid;
+  border-color: #bd6f89;
+  background-color: #fe96b8;
+  color: #1d1d1d; 
+  border-width: 1px; 
+}
+.pink ul { 
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #bd6f89;
+}  
+.yellow {
+  margin-bottom: 3px;
+  border-style: solid;
+  border-color: #e0c240;
+  background-color: #fbe983;
+  color: #1d1d1d; 
+  border-width: 1px; 
+}
+.yellow ul { 
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #e0c240;
+}  
+.gt_button { 
+  margin-top: 20px; 
+  margin-bottom: 5px 
+}
+.reload {
+  width: 8px; 
+  height: 12px;
+  margin-right: 5px;
+  background-image: url(/icons/bt_address.png);
+  float: right;
+}
+.place {
+  width: 8px; 
+  height: 12px;
+  margin: -4px 5px 0 0;
+  background-image: url(/icons/bt_address.png);
+  background-position: 0px 12px;
+  float: right;
+}
+.white_reload {
+  width: 8px; 
+  height: 12px;
+  margin-right: 5px;
+  background-image: url(/icons/bt_address.png);
+  background-position: 8px 0px;
+  float: right;
+}
+.white_place {
+  width: 8px; 
+  height: 12px;
+  margin: -4px 5px 0 0;
+  background-image: url(/icons/bt_address.png);
+  background-position: 8px 12px;
+  float: right;
+}
+.previous_travel_toggle.on {
+  vertical-align: middle;
+  background-position: 0px -2px; 
+}
+.previous_travel_toggle {
+  overflow: hidden;
+  display: inline-block; 
+  width: 8px; 
+  height: 8px; 
+  margin-left: 5px;
+  background-image: url(/icons/bt_expand-white.png);
+  background-position: -7px 0px;
+  background-repeat: no-repeat;
+}
+.current_travel_toggle.on {
+  vertical-align: middle;
+  background-position: 0px -2px; 
+}
+.current_travel_toggle {
+  overflow: hidden;
+  display: inline-block; 
+  width: 8px; 
+  height: 8px; 
+  margin-left: 5px;
+  background-image: url(/icons/bt_expand-blue.png);
+  background-position: -7px 0px;
+  background-repeat: no-repeat;
+}
+.green_toggle.on {
+  vertical-align: middle;
+  background-position: 0px -2px; 
+}
+.green_toggle {
+  overflow: hidden;
+  display: inline-block; 
+  width: 8px; 
+  height: 8px; 
+  margin-left: 5px;
+  background-image: url(/icons/bt_expand-green.png);
+  background-position: -7px 0px;
+  background-repeat: no-repeat;
+}
+.pink_toggle.on {
+  vertical-align: middle;
+  background-position: 0px -2px; 
+}
+.pink_toggle {
+  overflow: hidden;
+  display: inline-block; 
+  width: 8px; 
+  height: 8px; 
+  margin-left: 5px;
+  background-image: url(/icons/bt_expand-pink.png);
+  background-position: -7px 0px;
+  background-repeat: no-repeat;
+}
+.yellow_toggle.on {
+  vertical-align: middle;
+  background-position: 0px -2px; 
+}
+.yellow_toggle {
+  overflow: hidden;
+  display: inline-block; 
+  width: 8px; 
+  height: 8px; 
+  margin-left: 5px;
+  background-image: url(/icons/bt_expand-yellow.png);
+  background-position: -7px 0px;
+  background-repeat: no-repeat;
+}
+.steps_toggle.on { 
+  background-position: 0px -2px; 
+}
+.travel_node_toggle.on { 
+  background-position: 7px 0px; 
+}
+.steps_toggle {
+  overflow: hidden;
+  display: inline-block; 
+  width: 8px; 
+  height: 8px; 
+  vertical-align: sub;
+  margin-top: -5px;
+  background-image: url(/icons/bt_expand-blue.png);
+  background-position: -7px 0px;
+  background-repeat: no-repeat;
+}
+.travel_node_toggle {
+  display: inline-block; 
+  width: 15px; 
+  height: 15px; 
+  margin: 0; 
+  vertical-align: sub;
+  background-image:url(/icons/expand.png);
+}        
+.icon.bus {
+  display: inline-block; 
+  width: 22px; 
+  height: 22px; 
+  margin: 0; 
+  vertical-align: sub;
+  background-image:url(/icons/busratp.png);
+}
+.icon.car {
+  display: inline-block; 
+  width: 22px; 
+  height: 22px; 
+  vertical-align: sub;
+  background-image:url(/icons/car.png);
+}
+.icon.walk {
+  display: inline-block; 
+  width: 22px; 
+  height: 22px; 
+  vertical-align: sub;
+  background-image:url(/icons/walk.png);
+}
+.icon.train {
+  display: inline-block; 
+  width: 22px; 
+  height: 22px; 
+  margin: 0; 
+  vertical-align: sub;
+  background-image:url(/icons/metro.png);
+}

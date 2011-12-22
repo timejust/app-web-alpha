@@ -4,7 +4,8 @@ var App = {
   Controllers: {},
   config: {
     time: "hh:mm a",
-    date: "ddd dd MMM yyyy hh:mm"
+    date: "ddd dd MMM yyyy hh:mm",
+    dateOnly: "dd MMM yyyy"
   }
 };
 

@@ -91,7 +91,7 @@ GEM
     coffee-script-source (1.1.2)
     configatron (2.8.2)
       yamler (>= 0.1.0)
-    daemons (1.1.4)
+    daemons (1.1.5)
     devise (1.4.7)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.0.3)

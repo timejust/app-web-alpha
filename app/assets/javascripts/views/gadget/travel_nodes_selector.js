@@ -88,9 +88,10 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   },
   // global template for form
   form_template: _.template("\
-    <form action=\"#\">\
+    <%= title %>\
+    <form width=500px action=\"#\">\
       <%= inputs %>\
-      <p><a href=\"#\" class=\"cancel\">Cancel</a><input type=\"submit\" value=\"Next\" class=\"next\"/></p>\
+      <p style=\"text-align:right\"><a href=\"#\" class=\"cancel\">Cancel</a><input type=\"submit\" value=\"Next\" class=\"next\"/></p>\
     </form>\
   "),
   // Template for each travel node confirmation
@@ -109,6 +110,9 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     </div>\
     <p class=\"other_address\">Or enter: <input type=\"text\" size=\"30\" id=\"<%= name %>\" name=\"<%= type %>[address]\" placeholder=\"address\"/></p>\
     </div>\
+  "),
+  title_template: _.template("\
+    <ul class=\"travel_title\"><li class=\"prefix\">New trip</li><li class=\"title_address\">Confirm address</li></ul>\
   "),
   // Template for option elements
   option_template: _.template("<option value=\"<%= value %>\" <%= selected %> data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\" data-has-normalized=\"<%=has_normalized%>\" data-event-google-id=\"<%= event_id %>\"><%= label %></option>"),
@@ -147,6 +151,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   // render the form for all travel nodes
   render: function(){
     $(this.el).html(this.form_template({
+      title: this.title_template(),
       inputs: this.formInputsFor('previous_travel_node', 'previous_location') + 
         this.formInputsFor('current_travel_node', 'current_location') + 
         this.formInputsFor('next_travel_node', 'next_location')

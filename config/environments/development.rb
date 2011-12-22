@@ -9,15 +9,15 @@ TimejustApi::Application.configure do
   # config.action_controller.perform_caching = true
 
   # Disable Rails's static asset server (Apache or nginx will already do this)
-  config.serve_static_assets = true
+  # config.serve_static_assets = true
 
   # Compress JavaScripts and CSS
-  config.assets.compress = true
+  config.assets.compress = false
 
   # Specify the default JavaScript compressor
-  config.assets.js_compressor  = :uglifier
+  #config.assets.js_compressor  = :uglifier
 
-  config.assets.enabled = true
+  #config.assets.enabled = true
   
   # Specifies the header that your server uses for sending files
   # (comment out if your front-end server doesn't support this)

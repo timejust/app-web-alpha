@@ -1,0 +1,151 @@
+body {
+  font-size: 0.7em;
+}
+ul { 
+  margin: 0; 
+  padding: 0; 
+}
+ul li { 
+  list-style-type: none; 
+}
+.loader { 
+  margin-top: 20px; 
+  display: none; 
+}
+#travels { 
+  max-height: 370px; 
+  overflow-y: auto; 
+  padding: 10px 5px; 
+}
+#travels > ul li { 
+  position: relative; 
+  margin: 0 0 3px 0; 
+  padding: 0 0 0 14px; 
+  font: normal 1em Arial; 
+}
+#travels > ul li:before { 
+  content: '•'; 
+  position: absolute; 
+  left: 5px; 
+  font: bold 1.4em/1em Arial; 
+  color: #99B3E6; 
+}
+#travels > ul li.title { 
+  padding: 0; 
+}
+#travels > ul li.title:before { 
+  display: none; 
+  content: ''; 
+}
+.before_offset select, .after_offset select { 
+  font: normal 10px Arial; 
+}
+.travel { 
+  margin: 10px 0 0 0; 
+  padding: 10px 0 0 0; 
+  border-top: 1px solid #ccc; 
+}
+.travel_step { 
+  margin: 0 0 15px 0; 
+}
+.travel_step ul {}
+.travel_step ul li {}
+.icon_and_price {}
+.icon_and_price .icon { 
+  float: left; 
+  margin: 0 5px 0 0; 
+}
+.icon_and_price .price { 
+  display: inline-block; 
+  padding: 4px 5px; 
+}
+.GreenProposal { 
+  background: #88CB8C; 
+  color: #000; 
+}
+.PinkProposal { 
+  background: #EEA2BB; 
+  color: #000; 
+}
+.YellowProposal { 
+  background: #E0C240; 
+  color: #000; 
+}
+li.title { 
+  clear: both; 
+  margin: 5px 0 0 0; 
+  font: normal 1em Arial; 
+}
+.steps ul li { 
+  margin: 0 0 3px 0; 
+}
+.steps ul li:nth-child(odd) { 
+  background: #EEF; 
+}
+.actions { 
+  margin: 5px 0 0 0; 
+}
+.actions .confirm { 
+  color: green; 
+}
+.actions .bookmark { 
+  color: #000; 
+}
+.actions .destroy { 
+  color: red; 
+}                  
+p { 
+  margin: 0; 
+  padding: 0 5px; 
+}
+.travel_title { 
+  margin-left: 10px; 
+  margin-top: 10px; 
+  font: normal Arial; 
+  font-size: 20px; 
+}
+.travel_title .prefix { 
+  color: #8AB53E; 
+  margin-right: 5px; 
+  font: bold 1.5em; 
+}
+.travel_title .title_address { 
+  color: #8f8f8f; 
+  font: bold 1.5em; 
+}
+.travel_title ul { 
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
+.travel_title li { 
+  margin: 0 0 0 0; 
+  padding: 0 0 0 0; 
+  display: inline; 
+  text-align: center 
+}
+.steps { 
+  display: none; 
+}
+.travel_node_expand { 
+  display: none; 
+}
+form h2 { 
+  margin: 10px 0 0 10px; 
+  font: bold 1.5em Arial; 
+  color: #8f8f8f; 
+}
+form p { 
+  margin: 0 0 0 10px; 
+}
+form p span.favorite { 
+  margin: 0 0 0 50px; 
+  font: bold 1em Arial; 
+}
+form p.other_address { 
+  margin: 5px 0 20px 10px; 
+  font: italic 0.9em Arial; 
+}
+.hasPlaceholder { 
+  color: #777; 
+}
+

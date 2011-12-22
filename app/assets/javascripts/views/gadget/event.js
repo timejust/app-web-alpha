@@ -15,18 +15,13 @@ App.Views.EventView = Backbone.View.extend({
   template: _.template('\
     <p class="title"><%= title %></p>\
     <p class="location"><%= location %></p>\
-    <p class="timefromto"><%= $.format.date(google.calendar.utils.toDate(startTime), App.config.time) %> - <%=  $.format.date(google.calendar.utils.toDate(endTime), App.config.time) %></p>\
-    <p class="before_offset">Arrive <select name="before_offset">\
-      <% $.each([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60], function(index, i){ %>\
-        <option value="<%= i %>" <% if (i==10){ %>selected<% } %>><%= i %> \'</option>\
-      <% }); %>\
-    </select> before <%= $.format.date(google.calendar.utils.toDate(startTime), App.config.time) %></p>\
-    <p class="after_offset">Leave <select name="after_offset">\
-      <% $.each([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60], function(index, i){ %>\
-        <option value="<%= i %>" <% if (i==15){ %>selected<% } %>><%= i %> \'</option>\
-      <% }); %>\
-    </select> after <%= $.format.date(google.calendar.utils.toDate(endTime), App.config.time) %></p>\
-    <p><a href="#" class="generate_trip">Generate Trip</a> | <a href="#" class="clear">Clear</a></p>\
+    <ul class="schedule">\
+      <li class="event_date"></li>\
+      <li><%= $.format.date(google.calendar.utils.toDate(startTime), App.config.dateOnly) %></li>\
+      <li class="event_time"></li>\
+      <li><%= $.format.date(google.calendar.utils.toDate(startTime), App.config.time) %></li>\
+    </ul>\
+    <p class="gt_button"><a href="#" class="generate_trip">GET THERE !</a></p>\
   '),
   // Calendar event was clicked, store and display it
   calendarEventOccured: function(calendarEvent){
@@ -43,6 +38,7 @@ App.Views.EventView = Backbone.View.extend({
   generateTrip: function(event){
     event.preventDefault();
     showLoader();
+    
     // TODO : use Event model and bind callback on created event
     GoogleRequest.post({
       url: App.config.api_url + "/events",
@@ -50,8 +46,10 @@ App.Views.EventView = Backbone.View.extend({
         event: JSON.stringify($.extend(
           this.selectedEvent,
           {
-            before_start_time: this.$('select[name=before_offset]').val(),
-            after_end_time: this.$('select[name=after_offset]').val(),            
+            before_start_time: 0,
+            after_end_time: 0,
+            // before_start_time: this.$('select[name=before_offset]').val(),
+            // after_end_time: this.$('select[name=after_offset]').val(),            
           }
         )),
         current_ip: this.options.ip

@@ -1,4 +1,38 @@
 :all:
+  :gadget_helper:
+    :css:
+      :home_canvas:
+        - gadget/home_canvas.css
+      :home:
+        - gadget/home.css
+      :canvas:
+        - gadget/canvas.css
+        - jquery.autocomplete.css
+    :js:
+      :home_canvas:
+        - jquery.js
+        - underscore.js
+        - backbone.min.js
+        - jquery.dateFormat.js
+        - lib/poll.js
+        - lib/google_request.js
+        - lib/string.js
+        - gadget_common.js
+        - models/user.js
+        - models/event.js
+        - models/travel.js
+        - models/travel_step.js
+        - controllers/gadget.js
+      :home:
+        - views/gadget/event.js
+        - views/gadget/travels.js
+        - views/gadget/travel.js
+        - views/gadget/trips.js
+        - views/gadget/travel_step.js
+      :canvas:
+        - jquery.autocomplete_geomod.js
+        - geo_autocomplete.js
+        - views/gadget/travel_nodes_selector.js
   :gadget:
     :css:
       :canvas:

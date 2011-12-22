@@ -2,7 +2,9 @@
 App.Views.TravelsView = Backbone.View.extend({
   className: 'travels',
   events: {
-    'click .travel_node_toggle':  'toggleTravelNode'
+    'click .travel_node_toggle':  'toggleTravelNode',
+    'click .white_toggle':  'whiteToggleSteps',
+    'click .blue_toggle':  'blueToggleSteps'
   },
   initialize: function(){
     showLoader();
@@ -46,8 +48,118 @@ App.Views.TravelsView = Backbone.View.extend({
       this.render();
     }
   },
+  // Template to show confirmed travel node results
+  travel_results_template: _.template('\
+    <div class="travel_results">\
+      <%= current_travel%>\
+      <%= event_travel%>\
+      <%= return_travel%>\
+    </div>\
+  '),
+  // Template to show single travel node
+  travel_node_template: _.template('\
+    <div class="travel_node">\
+      <%= head%>\
+      <%= trips%>\
+    </div>\
+  '),
+  // Template to show head box with alias information
+  travel_head_with_alias: _.template('\
+    <div class="gray">\
+      <ul>\
+        <li><a class="white_toggle off" href="#"></a></li>\
+        <li class="event_title"><%= prefix%> <%= alias%></li>\
+        <li><a class="reload" href="#"></a></li>\
+      </ul>\
+      <ul>\
+        <li class="address"><%= address%></li>\
+        <li><a class="place" href="#"></a></li>\
+      </ul>\
+    </div>\
+  '),
+  // Template to show head box with schedule information
+  travel_head_with_schedule: _.template('\
+    <div class="blue">\
+      <ul>\
+        <li><a class="blue_toggle off" href="#"></a></li>\
+        <li class="event_title"><%= title%></li>\
+        <li><a class="reload" href="#"></a></li>\
+      </ul>\
+      <ul>\
+        <li class="address"><%= address%></li>\
+        <li><a class="place" href="#"></a></li>\
+      </ul>\
+    </div>\
+  '),
+  // Template to show head box with schedule information
+  travel_green: _.template('\
+    <div class="green">\
+      <ul>\
+        <li><a class="green_toggle off" href="#"></a></li>\
+        <li class="event_title">test</li>\
+      </ul>\
+      <ul>\
+        <li class="address">test</li>\
+      </ul>\
+    </div>\
+  '),
   // Template to show confirmed travel nodes
   travel_nodes_template: _.template('\
+    <div class="gray">\
+      <ul>\
+        <li><img src="http://staging.timejust.com:50001/icons/white-arrow-down.png"></img></li>\
+        <li class="alias">from</li>\
+        <li class="accessory"><img src="http://staging.timejust.com:50001/icons/refresh-white.png"></img></li>\
+      </ul>\
+      <ul>\
+        <li class="address"><%= previous_travel_node["address"] %></img></li>\
+        <li><div class="accessory"><img src="http://staging.timejust.com:50001/icons/place-white.png"></img></li>\
+      </ul>\
+    </div>\
+    <div class="green">\
+      <ul>\
+        <li><img src="http://staging.timejust.com:50001/icons/white-arrow-down.png"></img></li>\
+        <li class="alias">from</li>\
+        <li class="accessory"><img src="http://staging.timejust.com:50001/icons/refresh-white.png"></img></li>\
+      </ul>\
+      <ul>\
+        <li class="address"><%= previous_travel_node["address"] %></img></li>\
+        <li><div class="accessory"><img src="http://staging.timejust.com:50001/icons/place-white.png"></img></li>\
+      </ul>\
+    </div>\
+    <div class="pink">\
+      <ul>\
+        <li><img src="http://staging.timejust.com:50001/icons/white-arrow-down.png"></img></li>\
+        <li class="alias">from</li>\
+        <li class="accessory"><img src="http://staging.timejust.com:50001/icons/refresh-white.png"></img></li>\
+      </ul>\
+      <ul>\
+        <li class="address"><%= previous_travel_node["address"] %></img></li>\
+        <li><div class="accessory"><img src="http://staging.timejust.com:50001/icons/place-white.png"></img></li>\
+      </ul>\
+    </div>\
+    <div class="yellow">\
+      <ul>\
+        <li><img src="http://staging.timejust.com:50001/icons/white-arrow-down.png"></img></li>\
+        <li class="alias">from</li>\
+        <li class="accessory"><img src="http://staging.timejust.com:50001/icons/refresh-white.png"></img></li>\
+      </ul>\
+      <ul>\
+        <li class="address"><%= previous_travel_node["address"] %></img></li>\
+        <li><div class="accessory"><img src="http://staging.timejust.com:50001/icons/place-white.png"></img></li>\
+      </ul>\
+    </div>\
+    <div class="blue">\
+      <ul>\
+        <li><img src="http://staging.timejust.com:50001/icons/white-arrow-down.png"></img></li>\
+        <li class="alias">from</li>\
+        <li class="accessory"><img src="http://staging.timejust.com:50001/icons/refresh-white.png"></img></li>\
+      </ul>\
+      <ul>\
+        <li class="address"><%= previous_travel_node["address"] %></img></li>\
+        <li><div class="accessory"><img src="http://staging.timejust.com:50001/icons/place-white.png"></img></li>\
+      </ul>\
+    </div>\
     <ul>\
       <li class="previous_travel_node title">\
         <a class="travel_node_toggle off" href="#"></a><span>From</span>\
@@ -83,7 +195,28 @@ App.Views.TravelsView = Backbone.View.extend({
   '),
   render: function(){
     var self = this;
-    $(this.el).html(this.travel_nodes_template(this.model.toJSON()));
+    // $(this.el).html(this.travel_nodes_template(this.model.toJSON()));
+    $(this.el).html(this.travel_results_template({
+//      current_travel: (new App.Views.TravelView({ 
+//        model: this.model.get('previous_travel_node') 
+//        })).render().el.outerHTML,  
+      current_travel:this.travel_head_with_alias({
+        prefix: "From: ",
+        alias: this.model.get('previous_travel_node')['title'], 
+        address: this.model.get('previous_travel_node')['address']
+      }),
+      event_travel:this.travel_head_with_schedule({
+        title: this.model.get('title'), 
+        address: this.model.get('current_travel_node')['address']
+      }),
+      return_travel:this.travel_head_with_alias({
+        prefix: "Then: ",
+        alias: this.model.get('next_travel_node')['title'], 
+        address: this.model.get('next_travel_node')['address']
+      })
+    }));
+    
+    $(this.el).html();
     var travels = "";
     if (this.model.get('travels').length == 0){
       $(this.el).append("No travel proposals found");
@@ -95,6 +228,7 @@ App.Views.TravelsView = Backbone.View.extend({
         $(self.el).append(view.render().el);
       });
     }
+
     gadgets.window.adjustHeight();
     google.calendar.refreshEvents();
   },
@@ -105,6 +239,18 @@ App.Views.TravelsView = Backbone.View.extend({
     $(e.currentTarget).toggleClass('off');
     $(e.currentTarget).siblings('.travel_node_expand').toggle();
     gadgets.window.adjustHeight();
+  },
+  whiteToggleSteps: function(e) {
+    e.preventDefault();
+    this.$('.green').toggle();
+    this.$('.white_toggle').toggleClass('on');
+    this.$('.white_toggle').toggleClass('off');    
+  },
+  blueToggleSteps: function(e) {
+    e.preventDefault();
+    //this.$('.gray').toggle();
+    this.$('.blue_toggle').toggleClass('on');
+    this.$('.blue_toggle').toggleClass('off');    
   },
   clear: function(){
     $(this.el).empty();
