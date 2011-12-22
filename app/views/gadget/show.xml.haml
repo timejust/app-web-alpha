@@ -9,7 +9,7 @@
   %Content{type: "html", view: "home, canvas"}
     :cdata
       #{configatron.gadget_helper.css.home_canvas.map { |hc| 
-        "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://staging.timejust.com:50001/assets/#{hc}\" />"
+        "<link rel=\"stylesheet\" type=\"text/css\" href=\"#{configatron.web.url}/assets/#{hc}\" />"
         }.join }
       <!--[if IE]>
         <style>
@@ -20,7 +20,7 @@
         </style>
       <![endif]-->
       #{configatron.gadget_helper.js.home_canvas.map { |hc| 
-        "<script type=\"text/javascript\" src=\"http://staging.timejust.com:50001/assets/#{hc}\"></script>"
+        "<script type=\"text/javascript\" src=\"#{configatron.web.url}/assets/#{hc}\"></script>"
       }.join }      
       <script type="text/javascript">
         App.config.web_url = '#{configatron.web.url}';
@@ -40,12 +40,12 @@
       <div id="notifications"></div>
       <div id="selectedEvent"></div>      
       <div id="travels"></div>
-      <img class="loader" src="http://staging.timejust.com:50001/assets/loader.gif" />
+      <img class="loader" src="#{configatron.web.url}/assets/loader.gif" />
       #{configatron.gadget_helper.css.home.map { |hc| 
-        "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://staging.timejust.com:50001/assets/#{hc}\" />"
+        "<link rel=\"stylesheet\" type=\"text/css\" href=\"#{configatron.web.url}/assets/#{hc}\" />"
       }.join }
       #{configatron.gadget_helper.js.home.map { |hc| 
-        "<script type=\"text/javascript\" src=\"http://staging.timejust.com:50001/assets/#{hc}\"></script>"
+        "<script type=\"text/javascript\" src=\"#{configatron.web.url}/assets/#{hc}\"></script>"
       }.join }      
       <script type="application/javascript" src="http://service-staging.timejust.com:8080/service-geo/v1/geo/ip?callback=app.getip"> </script>
       <script type="text/javascript">
@@ -58,13 +58,13 @@
       <div id="travelNodesSelector">
         <a href="#" class="cancel">Cancel</a>
       </div>     
-      <img class="loader" src="http://staging.timejust.com:50001/assets/loader.gif" />      
+      <img class="loader" src="#{configatron.web.url}/assets/loader.gif" />      
       <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
       #{configatron.gadget_helper.css.canvas.map { |hc| 
-        "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://staging.timejust.com:50001/assets/#{hc}\" />"
+        "<link rel=\"stylesheet\" type=\"text/css\" href=\"#{configatron.web.url}/assets/#{hc}\" />"
       }.join }
       #{configatron.gadget_helper.js.canvas.map { |hc| 
-        "<script type=\"text/javascript\" src=\"http://staging.timejust.com:50001/assets/#{hc}\"></script>"
+        "<script type=\"text/javascript\" src=\"#{configatron.web.url}/assets/#{hc}\"></script>"
       }.join }
       <script type="application/javascript" src="http://service-staging.timejust.com:8080/service-geo/v1/geo/ip?callback=app.getip"> </script>
       <script type="text/javascript">
