@@ -8,8 +8,10 @@ App.Views.EventView = Backbone.View.extend({
     _.bindAll(this, 'calendarEventOccured');
     _.bindAll(this, 'generateTripCallback');
     _.bindAll(this, 'error');
+    this.ip = this.options.ip
     // Bind event on calendar event click
     google.calendar.read.subscribeToEvents(this.calendarEventOccured);
+    this.showButton = true;
     this.render();
   },
   template: _.template('\
@@ -23,12 +25,27 @@ App.Views.EventView = Backbone.View.extend({
     </ul>\
     <p class="gt_button"><a href="#" class="generate_trip">GET THERE !</a></p>\
   '),
+  without_template: _.template('\
+    <p class="title"><%= title %></p>\
+    <p class="location"><%= location %></p>\
+    <ul class="schedule">\
+      <li class="event_date"></li>\
+      <li><%= $.format.date(google.calendar.utils.toDate(startTime), App.config.dateOnly) %></li>\
+      <li class="event_time"></li>\
+      <li><%= $.format.date(google.calendar.utils.toDate(startTime), App.config.time) %></li>\
+    </ul>\
+    <p></p>\
+  '),
   // Calendar event was clicked, store and display it
   calendarEventOccured: function(calendarEvent){
     if (calendarEvent && calendarEvent['id']) {
       // don't use event from proposals calendars
       if(!App.config.calendar_names || $.inArray(calendarEvent['calendar']['name'], App.config.calendar_names) == -1) {
         this.selectedEvent = calendarEvent;
+        this.showButton = true;
+        if (this.travels_view) {
+          this.travels_view.clear();
+        }
       }
     }
     this.render();
@@ -48,8 +65,6 @@ App.Views.EventView = Backbone.View.extend({
           {
             before_start_time: 0,
             after_end_time: 0,
-            // before_start_time: this.$('select[name=before_offset]').val(),
-            // after_end_time: this.$('select[name=after_offset]').val(),            
           }
         )),
         current_ip: this.options.ip
@@ -74,16 +89,22 @@ App.Views.EventView = Backbone.View.extend({
     if (this.travels_view) {
       this.travels_view.clear();
       this.travels_view.apiEventId = this.model.get('_id');
+      this.travels_view.selectedEvent = this.selectedEvent;
+      this.travels_view.ip = this.ip;
+      this.travels_view.eventView = this;
       this.travels_view.waitForTravels();
     }
     else{
-      this.travels_view = new App.Views.TravelsView({ el: $('#travels').get(0), apiEventId: this.model.get('_id') });
+      this.travels_view = new App.Views.TravelsView({ el: $('#travels').get(0), apiEventId: this.model.get('_id'), selectedEvent: this.selectedEvent, ip: this.ip, eventView: this});
     }
   },
   // Render the selected Event in gadget sidebar
   render: function(){
     if (this.selectedEvent){
-      $(this.el).html(this.template(this.selectedEvent));
+      if (this.showButton == true)
+        $(this.el).html(this.template(this.selectedEvent));
+      else
+        $(this.el).html(this.without_template(this.selectedEvent));
     }
     else{
       $(this.el).html("<p class=\"title\">Select an event</p>");

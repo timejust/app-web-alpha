@@ -41,7 +41,6 @@ App.Views.TravelStepView = Backbone.View.extend({
       <% if (typeof(distance) != "undefined" && distance != "0"){ %>\
         <li class="distance">Distance: <%= distance %></li>\
       <% } %>\
-      <li class="actions"><a href="#" class="confirm">Save</a> | <a href="#" class="bookmark">Bookmark</a> | <a href="#" class="destroy">Destroy</a></li>\
       <li class="error"></li>\
     </ul>\
   '),

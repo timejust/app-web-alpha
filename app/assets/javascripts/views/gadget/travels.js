@@ -4,12 +4,17 @@ App.Views.TravelsView = Backbone.View.extend({
   events: {
     'click .travel_node_toggle':  'toggleTravelNode',
     'click .white_toggle':  'whiteToggleSteps',
-    'click .blue_toggle':  'blueToggleSteps'
+    'click .blue_toggle':  'blueToggleSteps',
+    'click .show_travel_node'  : 'generateTrip',
   },
   initialize: function(){
     showLoader();
+    _.bindAll(this, 'generateTripCallback');
     gadgets.window.adjustHeight();
     this.apiEventId = this.options.apiEventId;
+    this.selectedEvent = this.options.selectedEvent;
+    this.ip = this.options.ip;
+    this.eventView = this.options.eventView;
     this.waitForTravels();
   },
   waitForTravels: function(){
@@ -45,6 +50,8 @@ App.Views.TravelsView = Backbone.View.extend({
     else if (response.rc == 200) {
       hideLoader();
       this.model = new App.Models.Event(response.data);
+      this.eventView.showButton = false;
+      this.eventView.render();
       this.render();
     }
   },
@@ -63,6 +70,41 @@ App.Views.TravelsView = Backbone.View.extend({
       <%= trips%>\
     </div>\
   '),
+  // Launch request to API to create event in database
+  // If it was created successfully, show travel nodes selector view
+  generateTrip: function(event){
+    event.preventDefault();
+    this.clear();    
+    showLoader();
+    
+    // TODO : use Event model and bind callback on created event
+    GoogleRequest.post({
+      url: App.config.api_url + "/events",
+      params: {
+        event: JSON.stringify($.extend(
+          this.selectedEvent,
+          {
+            before_start_time: 0,
+            after_end_time: 0,
+          }
+        )),
+        current_ip: this.ip
+      },
+      success: this.generateTripCallback,
+      error: this.error
+    });
+  },
+  // Callback when an event is created
+  generateTripCallback: function(response){
+    if (response.data) {
+      this.model = new App.Models.Event(response.data);
+    }
+    hideLoader();
+    google.calendar.refreshEvents();
+    gadgets.views.requestNavigateTo('canvas', { apiEventId: this.model.get('_id') });
+    this.apiEventId = this.model.get('_id');
+    this.waitForTravels();
+  },
   // Template to show head box with alias information
   travel_head_with_alias: _.template('\
     <div class="gray">\
@@ -72,7 +114,7 @@ App.Views.TravelsView = Backbone.View.extend({
         <li><a class="reload" href="#"></a></li>\
       </ul>\
       <ul>\
-        <li class="address"><%= address%></li>\
+        <li class="address"><a href="#" class="show_travel_node"><%= address%></a></li>\
         <li><a class="place" href="#"></a></li>\
       </ul>\
     </div>\
@@ -86,7 +128,7 @@ App.Views.TravelsView = Backbone.View.extend({
         <li><a class="reload" href="#"></a></li>\
       </ul>\
       <ul>\
-        <li class="address"><%= address%></li>\
+        <li class="address"><a href="#" class="show_travel_node"><%= address%></a></li>\
         <li><a class="place" href="#"></a></li>\
       </ul>\
     </div>\
@@ -242,13 +284,13 @@ App.Views.TravelsView = Backbone.View.extend({
   },
   whiteToggleSteps: function(e) {
     e.preventDefault();
-    this.$('.green').toggle();
+    this.$('.gray').toggle();
     this.$('.white_toggle').toggleClass('on');
     this.$('.white_toggle').toggleClass('off');    
   },
   blueToggleSteps: function(e) {
     e.preventDefault();
-    //this.$('.gray').toggle();
+    this.$('.blue').toggle();
     this.$('.blue_toggle').toggleClass('on');
     this.$('.blue_toggle').toggleClass('off');    
   },

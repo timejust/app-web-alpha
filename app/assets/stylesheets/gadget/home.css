@@ -60,6 +60,14 @@ a.generate_trip {
 a.clear { 
   color: #8AB53E; 
 }
+.gray a.show_travel_node { 
+  color: #ffffff;
+  text-decoration: none;
+}
+.blue a.show_travel_node { 
+  color: #1d1d1d;
+  text-decoration: none;
+}
 .gray {
   margin-bottom: 3px;
   border-style: solid;
@@ -165,11 +173,11 @@ ul .address {
   background-position: 8px 12px;
   float: right;
 }
-.previous_travel_toggle.on {
+.white_travel_toggle.on {
   vertical-align: middle;
   background-position: 0px -2px; 
 }
-.previous_travel_toggle {
+.white_travel_toggle {
   overflow: hidden;
   display: inline-block; 
   width: 8px; 

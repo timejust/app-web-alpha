@@ -82,7 +82,7 @@ class Api::EventsController < Api::BaseController
   #
   # @param  [String]  previous_travel_node
   # @param  [String]  current_travel_node
-  # @param  [String]  next_travel_node
+  # @param  [String]  next_travel_node 
   #
   # @return [JSON]    JSON representation of event
   #

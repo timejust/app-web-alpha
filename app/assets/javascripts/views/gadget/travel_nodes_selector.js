@@ -8,6 +8,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     this.model = new App.Models.Event({_id: this.options.apiEventId});
     _.bindAll(this, 'waitForTravelNodes');
     // alert(this.options.ip)
+    // alert(this.options.apiEventId)
     this.waitForTravelNodes();    
   },
   getGeoAutocomplete: function(node) {

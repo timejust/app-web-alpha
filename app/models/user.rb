@@ -166,7 +166,8 @@ class User
   # @return [Event]
   #
   def last_pending_event
-    self.events.select{|e| e.pending? }.sort{|a,b| a[:created_at] <=> b[:created_at]}.last
+    pending_events = self.events.select{|e| e.pending? }.delete_if {|x| x[:created_at] == nil}
+    pending_events.sort{|a,b| a[:created_at] <=> b[:created_at]}.last
   end
 
   # Purge all google event created on user calendars
