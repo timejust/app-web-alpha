@@ -75,10 +75,11 @@ App.Views.EventView = Backbone.View.extend({
           this.selectedEvent,
           {
             before_start_time: 0,
-            after_end_time: 0,
+            after_end_time: 0           
           }
         )),
-        current_ip: this.options.ip
+        current_ip: this.ip,
+        base: this.base
       },
       success: this.generateTripCallback,
       error: this.error

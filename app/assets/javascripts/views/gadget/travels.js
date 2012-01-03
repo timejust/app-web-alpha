@@ -14,6 +14,7 @@ App.Views.TravelsView = Backbone.View.extend({
     this.apiEventId = this.options.apiEventId;
     this.selectedEvent = this.options.selectedEvent;
     this.ip = this.options.ip;
+    this.base = this.options.base;
     this.eventView = this.options.eventView;
     this.waitForTravels();
   },
@@ -87,7 +88,8 @@ App.Views.TravelsView = Backbone.View.extend({
             after_end_time: 0,
           }
         )),
-        current_ip: this.ip
+        current_ip: this.ip,        
+        base: this.base
       },
       success: this.generateTripCallback,
       error: this.error

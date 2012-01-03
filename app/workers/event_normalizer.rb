@@ -20,8 +20,7 @@ class EventNormalizer
     gtimer.end
     
     if event.travel_nodes_confirmed?
-      event.update_attribute(:state, 'travels_waiting')
-            
+      event.update_attribute(:state, 'travels_waiting')            
       Resque.enqueue(EventTravelType, event_id)
     else
       event.update_attribute(:state, 'travel_nodes_done')

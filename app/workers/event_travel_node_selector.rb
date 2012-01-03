@@ -37,49 +37,65 @@ class EventTravelNodeSelector
     event.add_confirmed_travel_node_to_proposals
 
     event.fetch_around_events
-
-    # try to find previous and next locations
-    event.previous_events.each do |previous_event|
-      event.previous_travel_nodes.create(
-        address: previous_event.location,
-        title: self.event_title(previous_event),
-        weight: 100,
-        tag: 'event_location',
-        event_title: previous_event.title,
-        event_start_time: previous_event.start_time,
-        event_end_time: previous_event.end_time,
-        event_location: previous_event.location,
-        event_google_id: previous_event.google_id
-      )
-    end
-
-    event.next_events.each do |next_event|
-      event.next_travel_nodes.create(
-        address: next_event.location,
-        title: self.event_title(next_event),
-        weight: 100,
-        tag: 'event_location',
-        event_title: next_event.title,
-        event_start_time: next_event.start_time,
-        event_end_time: next_event.end_time,
-        event_location: next_event.location,
-        event_google_id: next_event.google_id
-      )
-    end
-
-    # Get location from current event
-    if event.location.present?
-      event.current_travel_nodes.create(
-        address: event.location,
-        title: self.event_title(event),
-        weight: 100,
-        tag: 'event_location',
-        event_title: event.title,
-        event_start_time: event.start_time,
-        event_end_time: event.end_time,
-        event_location: event.location,
-        event_google_id: event.google_id
-      )
+    
+    if event.base == "arrival"
+      # try to find previous and next locations
+      event.previous_events.each do |previous_event|
+        #Rails.logger.info ("#{previous_event.title}")
+        event.previous_travel_nodes.create(
+          address: previous_event.location,
+          title: self.event_title(previous_event),
+          weight: 100,
+          tag: 'event_location',
+          event_title: previous_event.title,
+          event_start_time: previous_event.start_time,
+          event_end_time: previous_event.end_time,
+          event_location: previous_event.location,
+          event_google_id: previous_event.google_id
+        )
+      end      
+      # Get location from current event
+      if event.location.present?
+        event.current_travel_nodes.create(
+          address: event.location,
+          title: self.event_title(event),
+          weight: 100,
+          tag: 'event_location',
+          event_title: event.title,
+          event_start_time: event.start_time,
+          event_end_time: event.end_time,
+          event_location: event.location,
+          event_google_id: event.google_id
+        )
+      end
+    else
+      # Get location from current event
+      if event.location.present?
+        event.previous_travel_nodes.create(
+          address: event.location,
+          title: self.event_title(event),
+          weight: 100,
+          tag: 'event_location',
+          event_title: event.title,
+          event_start_time: event.start_time,
+          event_end_time: event.end_time,
+          event_location: event.location,
+          event_google_id: event.google_id
+        )
+      end
+      event.next_events.each do |next_event|
+        event.current_travel_nodes.create(
+          address: next_event.location,
+          title: self.event_title(next_event),
+          weight: 100,
+          tag: 'event_location',
+          event_title: next_event.title,
+          event_start_time: next_event.start_time,
+          event_end_time: next_event.end_time,
+          event_location: next_event.location,
+          event_google_id: next_event.google_id
+        )
+      end      
     end
 
     event.extract_favorite_locations_from_addresses

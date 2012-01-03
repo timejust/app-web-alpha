@@ -21,6 +21,7 @@ class Api::EventsController < Api::BaseController
       current_user.find_or_create_calendars
       current_user.purge_travels
       @event = Event.parse_from_google_gadget(params[:event])
+      @event.base = params[:base]
       
       Rails.logger.info ("the request came from #{params[:current_ip]}")
       @event.set_current_ip(params[:current_ip])
@@ -90,7 +91,6 @@ class Api::EventsController < Api::BaseController
     @event.set_current_ip(params[:current_ip])
     @event.create_previous_travel_node(params[:previous_travel_node]) if params[:previous_travel_node] && params[:previous_travel_node][:address].present?
     @event.create_current_travel_node(params[:current_travel_node]) if params[:current_travel_node] && params[:current_travel_node][:address].present?
-    @event.base = params[:base]
     # @event.create_next_travel_node(params[:next_travel_node]) if params[:next_travel_node] && params[:next_travel_node][:address].present?
     @event.save
     @event.wait

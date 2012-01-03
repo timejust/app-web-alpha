@@ -27,7 +27,7 @@ class TravelNode
   end
 
   def normalize(ip)
-    Rails.logger.info "******************* TravelNode: normalize #{self.address} from #{ip} - already normalized ? #{self.has_normalized}"
+    Rails.logger.info "** TravelNode: normalize #{self.address} from #{ip} - already normalized ? #{self.has_normalized}"
     # Even it's unconfirmed, if the given address has already normalized, 
     # we don't go through normalization process.
     if self.has_normalized == 0

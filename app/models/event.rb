@@ -241,16 +241,32 @@ class Event
   # Add all normalized travel nodes to proposals
   def add_normalized_to_proposals_travel_nodes
     #[:previous, :current, :next].each do |type|
+    previous_event_num = 0
+    current_event_num = 0
+    previous_selected_num = 0
+    current_selected_num = 0    
+    previous_event = nil
+    current_event = nil
+    
     [:previous, :current].each do |type|
       proposals = "#{type.to_s}_travel_nodes"
       selected = "#{type.to_s}_travel_node"
-
+      
       # For each travel node proposals
       travel_nodes = self.send(proposals).dup
       travel_nodes.each_with_index do |travel_node, index|
         # If this travel node is not confirmed
         if travel_node.unconfirmed?
           travel_node.normalized_addresses.each do |normalized_address|
+            if travel_node.tag == 'event_location'
+              if type.to_s == 'previous'
+                previous_event_num += 1
+                previous_event = travel_node
+              else
+                current_event_num += 1
+                current_event = travel_node
+              end              
+            end
             self.add_travel_node_proposal(type, 
                 normalized_address.formatted_address, 
                 normalized_address.lat,
@@ -260,12 +276,17 @@ class Event
           travel_node.destroy
         end
       end
-
+      
       # For user submitted unconfirmed travel node, add each normalized proposals
       selected_node = self.send(selected)
       selected_node.update_attribute(:weight, 200) if selected_node
       if selected_node && selected_node.unconfirmed?
         selected_node.normalized_addresses.each do |normalized_address|
+          if type == 'previous'
+            previous_selected_num += 1
+          else
+            current_selected_num += 1
+          end          
           self.add_travel_node_proposal(type, 
               normalized_address.formatted_address, 
               normalized_address.lat,
@@ -273,6 +294,14 @@ class Event
               selected_node)
         end
       end
+    end
+    
+    # If there are only one each for next and previous for the given
+    # event and user not input any addresses, make them as comfirmed ones
+    # and process travel search task
+    if previous_event_num == 1 && current_event_num == 1 && previous_selected_num == 0 && current_selected_num == 0
+    #  create_previous_travel_node(previous_event)
+    #  create_current_travel_node(current_event)
     end
   end
 
@@ -381,15 +410,15 @@ class Event
   #
   def previous_events
     self.around_events.select{|event|
-      event.location.present? && event.start_time < self.start_time
-    }.sort{|a,b| b.start_time <=> a.start_time}
+      event.location.present? && event.end_time < self.start_time
+    }.sort{|a,b| a.end_time <=> b.end_time}
   end
 
   # Get the first located event after the current one
   #
   def next_events
     self.around_events.select{|event|
-      event.location.present? && event.start_time > self.start_time
+      event.location.present? && event.start_time > self.end_time
     }.sort{|a,b| a.start_time <=> b.start_time}
   end
 
