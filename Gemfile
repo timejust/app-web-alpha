@@ -1,5 +1,5 @@
 source :rubygems
-source 'http://gems:Nasom4@gems.af83.com/'
+# source 'http://gems:Nasom4@gems.af83.com/'
 
 gem 'rails', '3.1.0'
 
@@ -61,11 +61,11 @@ gem 'sanitize', '~>2.0.3'
 gem 'yajl-ruby', '~>0.8.2', :require => 'yajl/json_gem'
 
 # google direction
-gem 'google_directions',       '~>0.1.3',
-  :git => 'git://github.com/spk/google-directions-ruby.git',
-  :branch => 'ruby1.9_and_otherfix'
+# gem 'google_directions',       '~>0.1.3',
+#  :git => 'git://github.com/spk/google-directions-ruby.git',
+#  :branch => 'ruby1.9_and_otherfix'
 
-gem 'ratp-api-ruby', '~>0.2.0'
+# gem 'ratp-api-ruby', '~>0.2.0'
 
 gem 'icalendar'
 

@@ -9,6 +9,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     _.bindAll(this, 'waitForTravelNodes');
     // alert(this.options.ip)
     // alert(this.options.apiEventId)
+    this.ip = this.options.ip;
+    this.base = this.options.base;
     this.waitForTravelNodes();    
   },
   getGeoAutocomplete: function(node) {
@@ -141,26 +143,32 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     return inputs;
   },
   travel_nodes_type_label: function(travel_nodes_type){
-    if (travel_nodes_type == 'current_travel_node') {
-      return "To (" + $.truncate(this.model.get('title'), 70) + ")";
-    } else if (travel_nodes_type == 'previous_travel_node') {
-      return "From";
-    } else if (travel_nodes_type == 'next_travel_node') {
-      return "Then";
-    }
+    if (this.base == "arrival") {
+      if (travel_nodes_type == 'current_travel_node') {
+        return "To (" + $.truncate(this.model.get('title'), 70) + ")";
+      } else if (travel_nodes_type == 'previous_travel_node') {
+        return "From";
+      }  
+    } else {
+      if (travel_nodes_type == 'current_travel_node') {
+        return "To";
+      } else if (travel_nodes_type == 'previous_travel_node') {
+        return "From (" + $.truncate(this.model.get('title'), 70) + ")";
+      }
+    }    
   },
   // render the form for all travel nodes
   render: function(){
     $(this.el).html(this.form_template({
       title: this.title_template(),
       inputs: this.formInputsFor('previous_travel_node', 'previous_location') + 
-        this.formInputsFor('current_travel_node', 'current_location') + 
-        this.formInputsFor('next_travel_node', 'next_location')
+        this.formInputsFor('current_travel_node', 'current_location')
+        // this.formInputsFor('next_travel_node', 'next_location')
     }));
     hideLoader();    
     this.getGeoAutocomplete('previous_location');
     this.getGeoAutocomplete('current_location');
-    this.getGeoAutocomplete('next_location');    
+    // this.getGeoAutocomplete('next_location');    
     // this.disableAllSearchSubmit();
     this.$('.next').removeAttr('disabled');
     gadgets.window.adjustHeight();
@@ -170,34 +178,42 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   submitTravelNodes: function(event){
     this.$('.next').attr('disabled', 'disabled');
     event.preventDefault();
-    GoogleRequest.post({
-      url: App.config.api_url + "/events/" + this.model.get('_id') + "/travel_nodes_confirmation",
-      params: {
-        'previous_travel_node[address]': this.getTravelNodeAddress('previous_travel_node'),
-        'previous_travel_node[title]': this.getTravelNodeTitle('previous_travel_node'),
-        'previous_travel_node[state]': this.getTravelNodeState('previous_travel_node'),
-        'previous_travel_node[event_google_id]': this.getEventGoogleId('previous_travel_node'),
-        'previous_travel_node[lat]' : this.getLatitude('previous_travel_node'),
-        'previous_travel_node[lng]' : this.getLongitude('previous_travel_node'),
-        'previous_travel_node[has_normalized]' : this.hasNormalized('previous_travel_node'),
-        'current_travel_node[address]': this.getTravelNodeAddress('current_travel_node'),
-        'current_travel_node[title]': this.getTravelNodeTitle('current_travel_node'),
-        'current_travel_node[state]': this.getTravelNodeState('current_travel_node'),
-        'current_travel_node[event_google_id]': this.getEventGoogleId('current_travel_node'),
-        'current_travel_node[lat]' : this.getLatitude('current_travel_node'),
-        'current_travel_node[lng]' : this.getLongitude('current_travel_node'),
-        'current_travel_node[has_normalized]' : this.hasNormalized('current_travel_node'),
-        'next_travel_node[address]': this.getTravelNodeAddress('next_travel_node'),
-        'next_travel_node[title]': this.getTravelNodeTitle('next_travel_node'),
-        'next_travel_node[state]': this.getTravelNodeState('next_travel_node'),
-        'next_travel_node[event_google_id]': this.getEventGoogleId('next_travel_node'),
-        'next_travel_node[lat]' : this.getLatitude('next_travel_node'),
-        'next_travel_node[lng]' : this.getLongitude('next_travel_node'),
-        'next_travel_node[has_normalized]' : this.hasNormalized('next_travel_node'),
-        'current_ip' : this.options.ip
-      },
-      success: this.waitForTravelNodes
-    });
+    
+    if (this.getTravelNodeAddress('previous_travel_node') == 
+      this.getTravelNodeAddress('current_travel_node')) {
+      alert("You can search travel with same departure and destination.\nI need pretty alert popup design.")
+      this.$('.next').removeAttr('disabled');
+    } else {
+      GoogleRequest.post({
+        url: App.config.api_url + "/events/" + this.model.get('_id') + "/travel_nodes_confirmation",
+        params: {
+          'previous_travel_node[address]': this.getTravelNodeAddress('previous_travel_node'),
+          'previous_travel_node[title]': this.getTravelNodeTitle('previous_travel_node'),
+          'previous_travel_node[state]': this.getTravelNodeState('previous_travel_node'),
+          'previous_travel_node[event_google_id]': this.getEventGoogleId('previous_travel_node'),
+          'previous_travel_node[lat]' : this.getLatitude('previous_travel_node'),
+          'previous_travel_node[lng]' : this.getLongitude('previous_travel_node'),
+          'previous_travel_node[has_normalized]' : this.hasNormalized('previous_travel_node'),
+          'current_travel_node[address]': this.getTravelNodeAddress('current_travel_node'),
+          'current_travel_node[title]': this.getTravelNodeTitle('current_travel_node'),
+          'current_travel_node[state]': this.getTravelNodeState('current_travel_node'),
+          'current_travel_node[event_google_id]': this.getEventGoogleId('current_travel_node'),
+          'current_travel_node[lat]' : this.getLatitude('current_travel_node'),
+          'current_travel_node[lng]' : this.getLongitude('current_travel_node'),
+          'current_travel_node[has_normalized]' : this.hasNormalized('current_travel_node'),
+          /*'next_travel_node[address]': this.getTravelNodeAddress('next_travel_node'),
+          'next_travel_node[title]': this.getTravelNodeTitle('next_travel_node'),
+          'next_travel_node[state]': this.getTravelNodeState('next_travel_node'),
+          'next_travel_node[event_google_id]': this.getEventGoogleId('next_travel_node'),
+          'next_travel_node[lat]' : this.getLatitude('next_travel_node'),
+          'next_travel_node[lng]' : this.getLongitude('next_travel_node'),
+          'next_travel_node[has_normalized]' : this.hasNormalized('next_travel_node'),*/
+          'current_ip' : this.ip,
+          'base': this.base
+        },
+        success: this.waitForTravelNodes
+      });
+    }
   },
   // Cancel an event travel proposal (also used to stop polling API for Travels)
   cancel: function(event){

@@ -1,6 +1,7 @@
 App.Views.EventView = Backbone.View.extend({
   events: {
-    'click .generate_trip'  : 'generateTrip',
+    'click .get_there'  : 'getThere',
+    'click .leave_from'  : 'leaveFrom',
     'click .clear'          : 'clear'
   },
   initialize: function(){
@@ -12,6 +13,7 @@ App.Views.EventView = Backbone.View.extend({
     // Bind event on calendar event click
     google.calendar.read.subscribeToEvents(this.calendarEventOccured);
     this.showButton = true;
+    this.base = "departure";
     this.render();
   },
   template: _.template('\
@@ -23,7 +25,8 @@ App.Views.EventView = Backbone.View.extend({
       <li class="event_time"></li>\
       <li><%= $.format.date(google.calendar.utils.toDate(startTime), App.config.time) %></li>\
     </ul>\
-    <p class="gt_button"><a href="#" class="generate_trip">GET THERE !</a></p>\
+    <p class="gt_button"><a href="#" class="get_there">GET THERE !</a></p>\
+    <p class="gt_button"><a href="#" class="leave_from">LEAVE FROM !</a></p>\
   '),
   without_template: _.template('\
     <p class="title"><%= title %></p>\
@@ -50,9 +53,17 @@ App.Views.EventView = Backbone.View.extend({
     }
     this.render();
   },
+  leaveFrom: function(event){
+    this.base = "departure";
+    this.generateTrip(event);
+  },
+  getThere: function(event){
+    this.base = "arrival";
+    this.generateTrip(event);
+  },
   // Launch request to API to create event in database
   // If it was created successfully, show travel nodes selector view
-  generateTrip: function(event){
+  generateTrip: function(event){    
     event.preventDefault();
     showLoader();
     
@@ -85,7 +96,7 @@ App.Views.EventView = Backbone.View.extend({
   // Show travel nodes selector view to confirm each travel nodes addresses
   // Also start polling from API to get travels proposals
   showTravelNodesSelector: function(){
-    gadgets.views.requestNavigateTo('canvas', { apiEventId: this.model.get('_id') });
+    gadgets.views.requestNavigateTo('canvas', { apiEventId: this.model.get('_id'), base: this.base });
     if (this.travels_view) {
       this.travels_view.clear();
       this.travels_view.apiEventId = this.model.get('_id');
@@ -93,9 +104,10 @@ App.Views.EventView = Backbone.View.extend({
       this.travels_view.ip = this.ip;
       this.travels_view.eventView = this;
       this.travels_view.waitForTravels();
+      this.travels_view.base = this.base;
     }
     else{
-      this.travels_view = new App.Views.TravelsView({ el: $('#travels').get(0), apiEventId: this.model.get('_id'), selectedEvent: this.selectedEvent, ip: this.ip, eventView: this});
+      this.travels_view = new App.Views.TravelsView({ el: $('#travels').get(0), apiEventId: this.model.get('_id'), selectedEvent: this.selectedEvent, ip: this.ip, eventView: this, base: this.base });
     }
   },
   // Render the selected Event in gadget sidebar

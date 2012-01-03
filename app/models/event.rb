@@ -20,16 +20,17 @@ class Event
   field :created_at,          type: Time
   field :before_start_time,   type: Integer, default: 10
   field :after_end_time,      type: Integer, default: 15
-
+  field :base,                type: String, default: "arrival"
+  
   # travels propositions
   embeds_many :previous_travel_nodes, as: :previous_travel_nodes,  class_name: "TravelNode", :order => :weight.desc
   embeds_many :current_travel_nodes,  as: :current_travel_nodes,   class_name: "TravelNode", :order => :weight.desc
-  embeds_many :next_travel_nodes,     as: :next_travel_nodes,      class_name: "TravelNode", :order => :weight.desc
+  #embeds_many :next_travel_nodes,     as: :next_travel_nodes,      class_name: "TravelNode", :order => :weight.desc
   
   # travel nodes confirmed by user
   embeds_one :previous_travel_node,   as: :previous_travel_node,   class_name: "TravelNode"
   embeds_one :current_travel_node,    as: :current_travel_node,    class_name: "TravelNode"
-  embeds_one :next_travel_node,       as: :next_travel_node,       class_name: "TravelNode"
+  #embeds_one :next_travel_node,       as: :next_travel_node,       class_name: "TravelNode"
 
   validates_presence_of :user
   validates_presence_of :start_time
@@ -175,9 +176,9 @@ class Event
     if self.current_travel_node && self.current_travel_node.title.present?
       FavoriteLocation.create_from_travel_node(self.user, self.current_travel_node)
     end
-    if self.next_travel_node && self.next_travel_node.title.present?
-      FavoriteLocation.create_from_travel_node(self.user, self.next_travel_node)
-    end
+    #if self.next_travel_node && self.next_travel_node.title.present?
+    #  FavoriteLocation.create_from_travel_node(self.user, self.next_travel_node)
+    #end
   end
 
   # Write travels events to Google Calendar
@@ -212,14 +213,15 @@ class Event
     self.previous_travel_node.present? &&
     self.previous_travel_node.confirmed? &&
     self.current_travel_node.present? &&
-    self.current_travel_node.confirmed? &&
-    self.next_travel_node.present? &&
-    self.next_travel_node.confirmed?
+    self.current_travel_node.confirmed? #&&
+    # self.next_travel_node.present? &&
+    #self.next_travel_node.confirmed?
   end
 
   # Normalize all travel nodes associated with this event
   def normalize_travel_nodes(request_ip)
-    [:previous, :current, :next].each do |type|
+    #[:previous, :current, :next].each do |type|
+    [:previous, :current].each do |type|
       proposals = "#{type.to_s}_travel_nodes"
       selected = "#{type.to_s}_travel_node"
 
@@ -238,7 +240,8 @@ class Event
 
   # Add all normalized travel nodes to proposals
   def add_normalized_to_proposals_travel_nodes
-    [:previous, :current, :next].each do |type|
+    #[:previous, :current, :next].each do |type|
+    [:previous, :current].each do |type|
       proposals = "#{type.to_s}_travel_nodes"
       selected = "#{type.to_s}_travel_node"
 
@@ -276,7 +279,8 @@ class Event
   # Add confirmed travel_node to proposals with a big weight
   #
   def add_confirmed_travel_node_to_proposals
-    [:previous, :current, :next].each do |type|
+    #[:previous, :current, :next].each do |type|
+    [:previous, :current].each do |type|
       selected = "#{type.to_s}_travel_node"
 
       # For user submitted unconfirmed travel node, add each normalized proposals
@@ -392,7 +396,8 @@ class Event
   # Parse all travel nodes to find favorite
   #
   def extract_favorite_locations_from_addresses
-    [:previous, :current, :next].each do |type|
+    #[:previous, :current, :next].each do |type|
+    [:previous, :current].each do |type|
       proposals = "#{type}_travel_nodes"
       selected = "#{type}_travel_node"
 
@@ -421,21 +426,17 @@ class Event
   # @param mode [String] type of transporataion
   # @param direction 
   # @return neccesary parameters for timejust geo direction services
-  def itinerary(key, mode, direction=:forward)
+  def itinerary(key, mode)
     origin_travel = nil
     destination_travel = nil
     time = 0
-    base = "arrival"
+    origin_travel = self.previous_travel_node
+    destination_travel = self.current_travel_node 
     
-    if direction == :forward
-      origin_travel = self.previous_travel_node
-      destination_travel = self.current_travel_node 
+    if self.base == "arrival"
       time = self.forward_arrival
     else
-      origin_travel = self.current_travel_node
-      destination_travel = self.next_travel_node
       time = self.backward_departure
-      base = "departure"     
     end
    
     { :id => key.to_s,
@@ -443,7 +444,7 @@ class Event
       :destination => "#{destination_travel.lat},#{destination_travel.lng}", 
       :time => time.to_i.to_s, 
       :mode => mode,
-      :base => base }
+      :base => self.base }
   end
   
   ##

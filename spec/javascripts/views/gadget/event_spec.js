@@ -80,7 +80,7 @@ describe("EventView", function() {
       expect($(this.view.el).find('p.title')).toHaveText(this.google_event.title);
       expect($(this.view.el).find('p.location')).toHaveText(this.google_event.location);
       expect($(this.view.el).find('p.timefromto')).toHaveText($.format.date(this.google_event.startTime, App.config.time)+' - '+$.format.date(this.google_event.endTime, App.config.time));
-      expect($(this.view.el).find('a.generate_trip')).toHaveText('Generate Trip');
+      expect($(this.view.el).find('a.get_there')).toHaveText('Generate Trip');
 
       expect($(this.view.el)).toContain('.before_offset');
       expect($(this.view.el).find('.before_offset')).toContain('select[name=before_offset]');

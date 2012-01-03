@@ -31,7 +31,7 @@ class EventTravelNodeSelector
     # clear all old proposals
     event.previous_travel_nodes.destroy_all
     event.current_travel_nodes.destroy_all
-    event.next_travel_nodes.destroy_all
+    #event.next_travel_nodes.destroy_all
 
     # add confirmed travel_node in travel nodes proposals
     event.add_confirmed_travel_node_to_proposals
@@ -88,7 +88,7 @@ class EventTravelNodeSelector
     user.favorite_locations.each do |location|
       event.previous_travel_nodes.create(address: location['address'], title: location['title'], weight: 50, tag: 'favorite')
       event.current_travel_nodes.create(address: location['address'], title: location['title'], weight: 50, tag: 'favorite')
-      event.next_travel_nodes.create(address: location['address'], title: location['title'], weight: 50, tag: 'favorite')
+      #event.next_travel_nodes.create(address: location['address'], title: location['title'], weight: 50, tag: 'favorite')
     end
     
     ftimer.end()

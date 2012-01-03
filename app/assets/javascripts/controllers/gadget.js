@@ -47,6 +47,7 @@ App.Controllers.GadgetController = Backbone.Router.extend({
     new App.Views.TravelNodesSelectorView({
       el: $('#travelNodesSelector').get(0),
       apiEventId: gadgets.views.getParams()['apiEventId'],
+      base: gadgets.views.getParams()['base'],
       ip: this.ip
     });
   }

@@ -60,7 +60,6 @@ App.Views.TravelsView = Backbone.View.extend({
     <div class="travel_results">\
       <%= current_travel%>\
       <%= event_travel%>\
-      <%= return_travel%>\
     </div>\
   '),
   // Template to show single travel node
@@ -250,12 +249,12 @@ App.Views.TravelsView = Backbone.View.extend({
       event_travel:this.travel_head_with_schedule({
         title: this.model.get('title'), 
         address: this.model.get('current_travel_node')['address']
-      }),
+      })/*,
       return_travel:this.travel_head_with_alias({
         prefix: "Then: ",
         alias: this.model.get('next_travel_node')['title'], 
         address: this.model.get('next_travel_node')['address']
-      })
+      })*/
     }));
     
     $(this.el).html();
@@ -270,7 +269,6 @@ App.Views.TravelsView = Backbone.View.extend({
         $(self.el).append(view.render().el);
       });
     }
-
     gadgets.window.adjustHeight();
     google.calendar.refreshEvents();
   },
