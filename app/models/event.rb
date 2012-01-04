@@ -215,7 +215,7 @@ class Event
     self.current_travel_node.present? &&
     self.current_travel_node.confirmed? #&&
     # self.next_travel_node.present? &&
-    #self.next_travel_node.confirmed?
+    # self.next_travel_node.confirmed?
   end
 
   # Normalize all travel nodes associated with this event
@@ -247,6 +247,8 @@ class Event
     current_selected_num = 0    
     previous_event = nil
     current_event = nil
+    previous_normalized = nil
+    current_normalized = nil
     
     [:previous, :current].each do |type|
       proposals = "#{type.to_s}_travel_nodes"
@@ -262,9 +264,11 @@ class Event
               if type.to_s == 'previous'
                 previous_event_num += 1
                 previous_event = travel_node
+                previous_normalized = normalized_address
               else
                 current_event_num += 1
                 current_event = travel_node
+                current_normalized = normalized_address
               end              
             end
             self.add_travel_node_proposal(type, 
@@ -299,12 +303,38 @@ class Event
     # If there are only one each for next and previous for the given
     # event and user not input any addresses, make them as comfirmed ones
     # and process travel search task
-    if previous_event_num == 1 && current_event_num == 1 && previous_selected_num == 0 && current_selected_num == 0
-    #  create_previous_travel_node(previous_event)
-    #  create_current_travel_node(current_event)
+    if previous_event_num == 1 && current_event_num == 1 && previous_selected_num == 0 && current_selected_num == 0           
+      self.create_previous_travel_node(
+        address: previous_normalized.formatted_address,
+        title: previous_event.title,
+        weight: previous_event.weight,
+        tag: previous_event.tag,
+        lat: previous_normalized.lat,
+        lng: previous_normalized.lng,
+        has_normalized: 1,
+        state: 'confirmed',
+        event_title: previous_event.event_title,
+        event_start_time: previous_event.event_start_time,
+        event_end_time: previous_event.event_end_time,
+        event_location: previous_event.event_location,
+        event_google_id: previous_event.event_google_id)        
+      self.create_current_travel_node(
+        address: current_normalized.formatted_address,
+        title: current_event.title,
+        weight: current_event.weight,
+        tag: current_event.tag,
+        lat: current_normalized.lat,
+        lng: current_normalized.lng,
+        has_normalized: 1,
+        state: 'confirmed',
+        event_title: current_event.event_title,
+        event_start_time: current_event.event_start_time,
+        event_end_time: current_event.event_end_time,
+        event_location: current_event.event_location,
+        event_google_id: current_event.event_google_id)
     end
   end
-
+  
   # Add confirmed travel_node to proposals with a big weight
   #
   def add_confirmed_travel_node_to_proposals
