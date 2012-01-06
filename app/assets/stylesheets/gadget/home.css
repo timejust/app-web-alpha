@@ -1,4 +1,58 @@
-.title { 
+div.transportations {
+  display: inline-block; 
+  width: 150px; 
+  height: 30px;
+  background-image:url(/icons/transportations.png);
+  background-repeat: no-repeat;
+}
+div.powered_by_google {
+  margin-top: 10px;
+  background-position: center; 
+  display: inline-block; 
+  width: 104px; 
+  height: 16px;
+  background-image:url(/icons/powered-by-google.png);
+  background-repeat: no-repeat;
+}
+div.green_btn {
+  background-position: center; 
+  display: inline-block;   
+  background-image: url(/icons/green-btn.png);
+  background-repeat: repeat;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  font-size: 12px;
+  color: #ffffff;
+  text-decoration: none;
+  background-size: 100px;
+  width: 152px;
+  height: 30px;
+  text-align: center;
+  margin-bottom: 3px;
+}
+div.green_btn .button_name {
+  margin-top: 9px;
+}
+.event li.title {
+  font: bold 11px Arial; 
+  margin-bottom: 5px;
+}
+.alias div.value {
+  margin-top: 5px;
+}
+li.alias {
+  display: block;
+  font: normal 10px Arial; 
+  margin: 5px 0px 3px 16px;
+  border-top: 1px solid;
+}
+ul .address { 
+  width: 120px;
+  display: inline-block; 
+  font: normal 10px Arial; 
+  margin: 3px 0px 5px 16px;
+}
+#selectedEvent .title { 
   font: bold 1.1em/1.1em Arial; 
   color: #8AB53E; 
   font-size: 13px; 
@@ -89,6 +143,13 @@ a.clear {
   color: #ffffff;  
   border-width: 1px;
 }
+.white {
+  margin-bottom: 3px;
+  border-style: solid;
+  border-color: #1d1d1d;
+  color: #1d1d1d;  
+  border-width: 1px;
+}
 .blue {
   margin-bottom: 3px;
   border-style: solid;
@@ -115,15 +176,6 @@ ul {
 }
 ul li {
   display: inline; 
-}
-ul .event_title {
-  font: bold 11px Arial; 
-}        
-ul .address { 
-  width: 120px;
-  display: inline-block; 
-  font: normal 10px Arial; 
-  margin: -3px 0px 5px 16px;
 }
 .pink {
   margin-bottom: 3px;
@@ -256,19 +308,20 @@ ul .address {
   background-position: -7px 0px;
   background-repeat: no-repeat;
 }
-.steps_toggle.on { 
-  background-position: 0px -2px; 
-}
 .travel_node_toggle.on { 
   background-position: 7px 0px; 
 }
-.steps_toggle {
+.blue_toggle.on { 
+  background-position: 1px 0px; 
+  height: 11px; 
+}
+.blue_toggle {
   overflow: hidden;
   display: inline-block; 
   width: 8px; 
-  height: 8px; 
+  height: 11px; 
   vertical-align: sub;
-  margin-top: -5px;
+  margin-right: 3px;
   background-image: url(/icons/bt_expand-blue.png);
   background-position: -7px 0px;
   background-repeat: no-repeat;

@@ -40,8 +40,9 @@ class EventTravelNodeSelector
     
     if event.base == "arrival"
       # try to find previous and next locations
-      event.previous_events.each do |previous_event|
-        #Rails.logger.info ("#{previous_event.title}")
+      previous_event = event.previous_events.pop
+      #event.previous_events.each do |previous_event|
+      unless previous_event == nil
         event.previous_travel_nodes.create(
           address: previous_event.location,
           title: self.event_title(previous_event),
@@ -95,6 +96,7 @@ class EventTravelNodeSelector
           event_location: next_event.location,
           event_google_id: next_event.google_id
         )
+        Rails.logger.info next_event.to_json
       end      
     end
 

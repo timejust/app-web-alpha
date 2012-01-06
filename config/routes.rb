@@ -90,6 +90,7 @@ TimejustApi::Application.routes.draw do
         collection do
           get :status
           put :purge_travels
+          get :alias
         end
       end
     end

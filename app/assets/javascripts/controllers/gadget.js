@@ -38,7 +38,7 @@ App.Controllers.GadgetController = Backbone.Router.extend({
           google.calendar.refreshEvents();
         }
       });
-      new App.Views.EventView({ el: $('#selectedEvent').get(0), ip: this.ip });
+      new App.Views.EventView({ el: $('#selectedEvent').get(0), ip: this.ip, user: this.user });
     }
   },
 

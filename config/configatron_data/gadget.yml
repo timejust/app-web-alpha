@@ -29,6 +29,8 @@
         - views/gadget/travel.js
         - views/gadget/trips.js
         - views/gadget/travel_step.js
+        - views/gadget/travel_summary.js
+        - models/travel_summary.js
       :canvas:
         - jquery.autocomplete_geomod.js
         - geo_autocomplete.js

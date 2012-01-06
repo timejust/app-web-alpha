@@ -41,4 +41,17 @@ class Api::UsersController < Api::BaseController
     render :json => current_user.to_json, :status => :accepted
   end
 
+  # GET /v1/users/alias
+  #
+  def alias
+    if User.exists?(conditions: {email: params[:email]})
+      user = User.where(email: params[:email]).first
+      return unauthorized! if current_user != user
+                
+      locations = FavoriteLocation.find(:all, :conditions => { :user_id => user[:_id] })
+      render :json => locations.to_json, :status => :ok
+    else
+      render :nothing => true, :status => :not_found
+    end    
+  end
 end

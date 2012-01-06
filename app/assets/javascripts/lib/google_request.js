@@ -29,7 +29,14 @@ var GoogleRequest = {
     }
     this.request(g_params, options);
   },
-
+  postWithoutEncoding: function(options){
+    var g_params = {};
+    g_params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.POST;
+    if (options.params) {
+      g_params[gadgets.io.RequestParameters.POST_DATA] = options.params;
+    }
+    this.request(g_params, options);
+  },
   /**
    * Perform a put request
    * @param {String}    url

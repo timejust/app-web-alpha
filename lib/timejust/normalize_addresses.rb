@@ -13,7 +13,6 @@ module Timejust
       nodes.flatten!
       nodes.reject!{|node| node.nil? || node.address.blank?}
       
-      Rails.logger.info "******************* normalize step00 nodes - #{nodes}**************"                           
       i = 1
       geos = Array.new      
       nodes.each do |n|
