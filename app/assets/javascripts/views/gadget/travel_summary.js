@@ -2,19 +2,26 @@ App.Views.TravelSummaryView = Backbone.View.extend({
   initialize: function() {
     this.summary = this.options.summary;
     this.prefix = this.options.prefix;
+    this.el = this.options.el;
+    this.selected = -1;
+    this.summarized = true;
   },
   render: function() {
     var self = this;
     var title = "";
     var address = "";
     var alias_index = 0;
-    var html = '<ul class="event">';
+    var class_name = "white";
     if (this.summary.title == null) {
       // If title is null, there is no proper event to show. In this case,
       // let's display just alias and history list instead of events.
       // And display title of first alias for the title of summary instead of
       // event title.      
-      this.el.className = 'white';
+      class_name = 'white';
+      if (this.selected > 0) {
+        // We assume this event does not have proper address book.        
+        alias_index = this.selected;
+      }      
       if (this.summary.alias.length > 0) {
         if (this.prefix != undefined) {
           title = this.prefix + " " + this.summary.alias[alias_index].title;      
@@ -22,41 +29,54 @@ App.Views.TravelSummaryView = Backbone.View.extend({
           title = this.summary.alias[alias_index].title;      
         }        
         address = this.summary.alias[alias_index].address;
-        alias_index += 1;
-      }   
+      }         
     } else {
-      this.el.className = 'blue';   
+      class_name = 'blue';   
       title = this.summary.title;
-      if (this.summary.addressBook.length > 0) {
-        address = this.summary.addressBook[0].address;
+      if (this.selected == -1) {
+        if (this.summary.addressBook.length > 0) {
+          address = this.summary.addressBook[0].address;
+        }  
+      } else {
+        // We look up from address book first and alias book later.
+        if (this.summary.addressBook.length > this.selected) {
+          address = this.summary.addressBook[this.selected].address;
+        } else {
+          address = this.summary.alias[this.selected - this.summary.addressBook.length].title;
+        }
       }      
-    }             
-    // html += '<li><a class="' + this.el.className + '_toggle off" href="#"></a></li>';        
-    html += '<li><a class="blue_toggle off" href="#"></a></li>';        
+    }      
+    var html = '<div class="' + class_name + '"><ul class="event">';       
+    html += '<li><a class="gray_toggle off" href="#"></a></li>';            
     html += '<li class="title" shorten="true" original="' + title + '">' + title.substring(0, 23);
     if (title.length > 23) 
       html += "...";
     html += '</li>';
     html += '<li class="address" shorten="true" original="' + address + '">' + address.substring(0, 21);
     if (address.length > 21)
-      html += "...";
-    html += '</li>';    
-    html += '<div class="aliases">';
-    if (this.summary.addressBook.length > 1) {
-      for (var i = 1; i < this.summary.addressBook.length; ++i) {
-        html += '<li class="alias"><div class="value">' + this.summary.addressBook[i].address + '</div></li>';
+      html += "...";      
+    var id = 0;
+    html += '</li><div class="aliases">';    
+    if (this.summary.addressBook.length > 0) {
+      for (var i = 0; i < this.summary.addressBook.length; ++i) {
+        html += '<li class="alias" style="';
+        if (this.selected == id)
+          html += 'font-weight: bold';
+        html += '"><a href="#" id="' + id + '" class="value">' + this.summary.addressBook[i].address + '</a></li>';
+        id += 1;
       }
     }    
     if (this.summary.alias.length > 0) {
-      for (var i = alias_index; i < this.summary.alias.length; ++i) {
-        html += '<li class="alias"><div class="value">' + this.summary.alias[i].title + '</div></li>';
+      for (var i = 0; i < this.summary.alias.length; ++i) {
+        html += '<li class="alias" style="';
+        if (this.selected == id)
+          html += 'font-weight: bold';
+        html += '"><a href="#" id="' + id + '" class="value">' + this.summary.alias[i].title + '</a></li>';
+        id += 1;        
       }
     }
-    html += '<li class="alias"><div class="value">else where</div></li>';
-    html += '</div>';
-    html += '</ul>';
+    html += '<li class="alias"><a href="#" selector="true" class="value">else where</a></li></div></ul></div>';
     $(this.el).html(html); 
-    $(this.el).find('.aliases').hide();
-    return this.el.outerHTML;
+    $(this.el).find('.aliases').hide();    
   }
 });

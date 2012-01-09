@@ -37,8 +37,10 @@ div.green_btn .button_name {
   font: bold 11px Arial; 
   margin-bottom: 5px;
 }
-.alias div.value {
+.alias a.value {
   margin-top: 5px;
+  text-decoration: none;
+  color: blue;
 }
 li.alias {
   display: block;
@@ -310,6 +312,21 @@ ul li {
 }
 .travel_node_toggle.on { 
   background-position: 7px 0px; 
+}
+.gray_toggle.on { 
+  background-position: 1px 0px; 
+  height: 11px; 
+}
+.gray_toggle {
+  overflow: hidden;
+  display: inline-block; 
+  width: 8px; 
+  height: 11px; 
+  vertical-align: sub;
+  margin-right: 3px;
+  background-image: url(/icons/bt_expand-grey.png);
+  background-position: -7px 0px;
+  background-repeat: no-repeat;
 }
 .blue_toggle.on { 
   background-position: 1px 0px; 

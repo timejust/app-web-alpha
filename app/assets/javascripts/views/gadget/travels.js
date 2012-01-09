@@ -4,8 +4,10 @@ App.Views.TravelsView = Backbone.View.extend({
   events: {
     'click .travel_node_toggle':  'toggleTravelNode',
     'click .white_toggle'      :  'whiteToggleSteps',
-    'click .blue_toggle'       :  'blueToggleSteps',
-    'click .show_travel_node'  : 'generateTrip',
+    // 'click .blue_toggle'       :  'blueToggleSteps',
+    'click .gray_toggle'       :  'grayToggleSteps',
+    'click .show_travel_node'  :  'generateTrip',
+    'click .value':               'changeTitle'
   },
   initialize: function(){
     showLoader();
@@ -16,7 +18,10 @@ App.Views.TravelsView = Backbone.View.extend({
     this.ip = this.options.ip;
     this.base = this.options.base;
     this.eventView = this.options.eventView;
-    this.summaries = new Array();
+    this.summaries = new Array();    
+    this.previousTravel = new App.Views.TravelSummaryView({prefix: "from"});
+    this.currentTravel = new App.Views.TravelSummaryView();
+    this.nextTravel = new App.Views.TravelSummaryView({prefix: "to"});                                      
     // this.waitForTravels();
   },
   appendTravelSummary: function(i, summary) {
@@ -244,32 +249,26 @@ App.Views.TravelsView = Backbone.View.extend({
     var self = this;
     $(this.el).html("\
     <div class='transportations'></div>\
-    <div class='previous_event'>"+(new App.Views.TravelSummaryView({prefix: "from", summary: this.summaries[0]})).render()+"</div>\
+    <div id='previous_event'></div>\
     <a class='load_previous_travel' href='#'><div class='green_btn'><div class='button_name'>PLAN THIS TRIP</div></div></a>\
-    <div class='current_event'>"+(new App.Views.TravelSummaryView({summary: this.summaries[1]})).render()+"</div>\
+    <div id='current_event'></div>\
     <a class='load_next_travel' href='#'><div class='green_btn'><div class='button_name'>PLAN THIS TRIP</div></div></a>\
-    <div class='next_event'>"+(new App.Views.TravelSummaryView({prefix: "to", summary: this.summaries[2]})).render()+"</div>\
+    <div id='next_event'></div>\
     ");
-    // $(this.el).html();
-    /*
-    $(this.el).html(this.travel_results_template({
-      current_travel:this.travel_head_with_alias({
-        prefix: "From: ",
-        alias: this.model.get('previous_travel_node')['title'], 
-        address: this.model.get('previous_travel_node')['address']
-      }),
-      event_travel:this.travel_head_with_schedule({
-        title: this.model.get('title'), 
-        address: this.model.get('current_travel_node')['address']
-      }),
-      return_travel:this.travel_head_with_alias({
-        prefix: "Then: ",
-        alias: this.model.get('next_travel_node')['title'], 
-        address: this.model.get('next_travel_node')['address']
-      })
-    }));
-
+    this.previousTravel.el = $('#previous_event').get(0);
+    this.previousTravel.summary = this.summaries[0];
+    this.currentTravel.el = $('#current_event').get(0);
+    this.currentTravel.summary = this.summaries[1];
+    this.nextTravel.el = $('#next_event').get(0);
+    this.nextTravel.summary = this.summaries[2];
     
+    this.previousTravel.render();
+    this.currentTravel.render();
+    this.nextTravel.render();    
+    
+    $(this.el).html();
+    
+    /*
     $(this.el).html();
     var travels = "";
     if (this.model.get('travels').length == 0){
@@ -313,17 +312,55 @@ App.Views.TravelsView = Backbone.View.extend({
       el.attr('shorten', 'true');
     }
   },
-  blueToggleSteps: function(e) {
+  toggleHideText: function(el, limit) {
+    if (el.attr('shorten') == 'true') {
+      el.html('');
+      el.attr('shorten', 'false');
+    } else {
+      var text = el.attr('original');
+      text = text.substring(0, limit);
+      if (el.attr('original').length > limit) 
+        text += "...";
+      el.html(text);          
+      el.attr('shorten', 'true');
+    }
+  },
+  currentEvent: function(root) {
+    if (root[0].id == 'previous_event') {
+      event = this.previousTravel;
+    } else if (root[0].id == 'current_event') {
+      event = this.currentTravel;
+    } else if (root[0].id == 'next_event') {
+      event = this.nextTravel;
+    }
+    return event;
+  },
+  grayToggleSteps: function(e) {
     e.preventDefault();    
+    var root = $(e.currentTarget).parent('li').parent('ul').parent('div').parent('div');
+    var container = $(e.currentTarget).parent('li').parent('ul').find('.aliases');
     $(e.currentTarget).toggleClass('on');
     $(e.currentTarget).toggleClass('off');    
     var title = $(e.currentTarget).parent('li').parent('ul').find('.title');
     var address = $(e.currentTarget).parent('li').parent('ul').find('.address');    
     this.toggleText(title, 23);
-    this.toggleText(address, 21);
-    $(e.currentTarget).parent('li').parent('ul').find('.aliases').toggle();
+    this.toggleHideText(address, 21);
+    container.toggle();
     gadgets.window.adjustHeight();
   },
+  changeTitle: function(e) {
+    e.preventDefault();    
+    var el = $(e.currentTarget);
+    var container = el.parent('li').parent('.aliases');    
+    if (el.attr('selector') == 'true') {
+      // Go to address selector page.
+    } else {
+      var root = container.parent('ul').parent('div').parent('div');    
+      var event = this.currentEvent(root);
+      event.selected = el.attr('id');
+      event.render();
+    }    
+  },  
   clear: function(){
     $(this.el).empty();
   }
