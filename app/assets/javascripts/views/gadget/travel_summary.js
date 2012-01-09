@@ -5,6 +5,7 @@ App.Views.TravelSummaryView = Backbone.View.extend({
     this.el = this.options.el;
     this.selected = -1;
     this.summarized = true;
+    this.color = null;
   },
   render: function() {
     var self = this;
@@ -46,7 +47,11 @@ App.Views.TravelSummaryView = Backbone.View.extend({
         }
       }      
     }      
-    var html = '<div class="' + class_name + '"><ul class="event">';       
+    var html = '<div class="' + class_name + '" style="';
+    if (this.summary.color != null) {
+      html += 'background-color:' + this.summary.color;
+    }     
+    html += '"><ul class="event">';        
     html += '<li><a class="gray_toggle off" href="#"></a></li>';            
     html += '<li class="title" shorten="true" original="' + title + '">' + title.substring(0, 23);
     if (title.length > 23) 

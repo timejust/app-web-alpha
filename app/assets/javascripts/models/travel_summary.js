@@ -2,6 +2,7 @@ App.Models.TravelSummary = Backbone.Model.extend({
   initialize: function() {
     this.alias = this.get("alias");
     this.title = this.get("title");
+    this.color = null;
     this.addressBook = new Array();
   },
   append: function(address, lat, lng, normalized) {

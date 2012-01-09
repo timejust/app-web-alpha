@@ -177,6 +177,7 @@ App.Views.EventView = Backbone.View.extend({
       title = (ev == null ? null : ev.title)
       var summary = new App.Models.TravelSummary({alias: this.alias, title: title});
       if (ev != null) {
+        summary.color = ev.color;
         // Append all addresses either from normalization process or google calendar.
         if (this.events[i].addresses == undefined) {
           if (ev.location != "")
