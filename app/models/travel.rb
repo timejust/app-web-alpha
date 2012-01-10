@@ -105,7 +105,9 @@ class Travel
       trip["steps"].each do |step|
         step["directions"].each do |dir|
           distance += dir["distance"]
-          steps.push(to_formatted_text(dir))
+          steps.push(dir)
+          # steps.push(to_formatted_text(dir))
+          # Rails.logger.info(to_step(dir))
         end
       end
       

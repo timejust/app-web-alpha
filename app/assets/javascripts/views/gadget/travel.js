@@ -1,33 +1,54 @@
 App.Views.TravelView = Backbone.View.extend({
   className: 'travel',
+  initialize: function() {
+    this.model = null;
+  },
   // render each travel_steps of this travel
-  render: function(){
-    var self = this;
-    if (!this.allTravelStepsInError()) {
-      $(this.el).append(this.travel(this.model.toJSON()));
-      $.each(this.model.get('travel_steps'), function(index, travel_step_json){
-        var view = new App.Views.TravelStepView( { model: new App.Models.TravelStep(travel_step_json) });
-        // TODO spec
-        $(self.el).append(view.render().el);
-      });
+  render: function() {   
+    var travels = this.model.travels;    
+    if (travels == null) {
+      // display error
     }
-    else {
-      $(this.el).append(this.travel_not_found({model: this.model}));
-    }
-    return this;
-  },
-  allTravelStepsInError: function(){
-    var all_in_error = true;
-    $.each(this.model.get('travel_steps'), function(index, travel_step_json){
-      if (travel_step_json['state'] != 'error'){
-        all_in_error = false;
+    var html = '<div class="travels">';
+    $.each(travels, function(i, travel) {
+      var color = 'yellow';
+      if (travel.calendar == 'YellowProposal') 
+        color = 'yellow';
+      else if (travel.calendar == 'GreenProposal') 
+        color = 'green';
+      else if (travel.calendar == 'PinkProposal') 
+        color = 'pink';      
+      var step = travel.travel_steps[0];
+      html += '<div class="' + color + '"><ul class="travel"><li><a class="';
+      html += color + '_toggle off" href="#"></a></li>';
+      html += '<li class="title">' + travel.travel_mode + '</li></ul>';
+      html += '<ul><li class="' + color +'_estimate">' + step.estimated_time + '\'</li>';
+      html += '<div class="transportation_symbol">';
+      if (travel.travel_mode == 'car') {
+        html += '<li class=car></li><li>' + step.distance + '</li>'
+      } else {
+        var current_mode = "";
+        $.each(step.steps, function(i, s) {
+          var mode = "";
+          if (s.line == 'connections' || s.line == 'base' || s.line == '') {
+            mode = "walk";
+          } else if (s.line.indexOf('metro')) {
+            mode = "metro";
+          } else if (s.line.indexOf('bus')) {
+            mode = "bus";
+          }
+          if (current_mode != mode) {
+            html += '<li class="' + mode + '"></li>';  
+          }
+          current_mode = mode;          
+        })
       }
+      html += '</div></ul></div>';
     });
-    return all_in_error;
-  },
-  travel_not_found: _.template('\
-    <p>Address not yet supported for <%= model.locomotion() %></p>\
-  '),
+    html += "</div>";
+    $(this.el).html(html);     
+  }
+  /*  
   travel: _.template('\
     <p class="icon_and_price">\
       <% $.each(transports, function(i, transport){ %>\
@@ -35,4 +56,5 @@ App.Views.TravelView = Backbone.View.extend({
       <% }); %>\
     </p>\
   ')
+  */
 });

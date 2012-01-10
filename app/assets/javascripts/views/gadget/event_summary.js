@@ -1,4 +1,4 @@
-App.Views.TravelSummaryView = Backbone.View.extend({
+App.Views.EventSummaryView = Backbone.View.extend({
   initialize: function() {
     this.summary = this.options.summary;
     this.prefix = this.options.prefix;
@@ -6,11 +6,13 @@ App.Views.TravelSummaryView = Backbone.View.extend({
     this.selected = -1;
     this.summarized = true;
     this.color = null;
+    this.title = '';
+    this.address = '';
+    this.lat = 0.0;
+    this.lng = 0.0;
   },
   render: function() {
     var self = this;
-    var title = "";
-    var address = "";
     var alias_index = 0;
     var class_name = "white";
     if (this.summary.title == null) {
@@ -25,29 +27,39 @@ App.Views.TravelSummaryView = Backbone.View.extend({
       }      
       if (this.summary.alias.length > 0) {
         if (this.prefix != undefined) {
-          title = this.prefix + " " + this.summary.alias[alias_index].title;      
+          this.title = this.prefix + " " + this.summary.alias[alias_index].title;    
         } else {
-          title = this.summary.alias[alias_index].title;      
+          this.title = this.summary.alias[alias_index].title;      
         }        
-        address = this.summary.alias[alias_index].address;
+        this.lat = this.summary.alias[alias_index].lat;
+        this.lng = this.summary.alias[alias_index].lng;
+        this.address = this.summary.alias[alias_index].address;
       }         
     } else {
       class_name = 'blue';   
-      title = this.summary.title;
+      this.title = this.summary.title;
       if (this.selected == -1) {
         if (this.summary.addressBook.length > 0) {
-          address = this.summary.addressBook[0].address;
+          this.address = this.summary.addressBook[0].address;
+          this.lat = this.summary.addressBook[0].lat;
+          this.lng = this.summary.addressBook[0].lng;          
         }  
       } else {
         // We look up from address book first and alias book later.
         if (this.summary.addressBook.length > this.selected) {
-          address = this.summary.addressBook[this.selected].address;
+          this.address = this.summary.addressBook[this.selected].address;
+          this.lat = this.summary.addressBook[this.selected].lat;
+          this.lng = this.summary.addressBook[this.selected].lng;                    
         } else {
-          address = this.summary.alias[this.selected - this.summary.addressBook.length].title;
+          this.address = this.summary.alias[this.selected - this.summary.addressBook.length].title;
+          this.lat = this.summary.alias[this.selected - this.summary.addressBook.length].lat;
+          this.lng = this.summary.alias[this.selected - this.summary.addressBook.length].lng;                    
         }
       }      
     }      
     var html = '<div class="' + class_name + '" style="';
+    var title = this.title;
+    var address = this.address;
     if (this.summary.color != null) {
       html += 'background-color:' + this.summary.color;
     }     
@@ -62,24 +74,20 @@ App.Views.TravelSummaryView = Backbone.View.extend({
       html += "...";      
     var id = 0;
     html += '</li><div class="aliases">';    
-    if (this.summary.addressBook.length > 0) {
-      for (var i = 0; i < this.summary.addressBook.length; ++i) {
-        html += '<li class="alias" style="';
-        if (this.selected == id)
-          html += 'font-weight: bold';
-        html += '"><a href="#" id="' + id + '" class="value">' + this.summary.addressBook[i].address + '</a></li>';
-        id += 1;
-      }
-    }    
-    if (this.summary.alias.length > 0) {
-      for (var i = 0; i < this.summary.alias.length; ++i) {
-        html += '<li class="alias" style="';
-        if (this.selected == id)
-          html += 'font-weight: bold';
-        html += '"><a href="#" id="' + id + '" class="value">' + this.summary.alias[i].title + '</a></li>';
-        id += 1;        
-      }
-    }
+    $.each(this.summary.addressBook, function(i, ab) {
+      html += '<li class="alias" style="';
+      if (this.selected == id)
+        html += 'font-weight: bold';
+      html += '"><a href="#" id="' + id + '" class="value">' + ab.address + '</a></li>';
+      id += 1;
+    });
+    $.each(this.summary.alias, function(i, al) {
+      html += '<li class="alias" style="';
+      if (this.selected == id)
+        html += 'font-weight: bold';
+      html += '"><a href="#" id="' + id + '" class="value">' + al.title + '</a></li>';
+      id += 1;
+    });
     html += '<li class="alias"><a href="#" selector="true" class="value">else where</a></li></div></ul></div>';
     $(this.el).html(html); 
     $(this.el).find('.aliases').hide();    

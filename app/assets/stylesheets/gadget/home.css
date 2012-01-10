@@ -37,6 +37,10 @@ div.green_btn .button_name {
   font: bold 11px Arial; 
   margin-bottom: 5px;
 }
+.travel li.title {
+  font: bold 11px Arial; 
+  margin-bottom: 5px;
+}
 .alias a.value {
   margin-top: 5px;
   text-decoration: none;
@@ -168,17 +172,6 @@ a.clear {
   color: #1d1d1d;  
   border-width: 1px;
 }
-.green ul { 
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-  border-bottom-color: #52a884;
-}    
-ul { 
-  margin-top: 5px;
-}
-ul li {
-  display: inline; 
-}
 .pink {
   margin-bottom: 3px;
   border-style: solid;
@@ -187,11 +180,6 @@ ul li {
   color: #1d1d1d; 
   border-width: 1px; 
 }
-.pink ul { 
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-  border-bottom-color: #bd6f89;
-}  
 .yellow {
   margin-bottom: 3px;
   border-style: solid;
@@ -200,11 +188,12 @@ ul li {
   color: #1d1d1d; 
   border-width: 1px; 
 }
-.yellow ul { 
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-  border-bottom-color: #e0c240;
-}  
+ul { 
+  margin-top: 5px;
+}
+ul li {
+  display: inline; 
+}
 .gt_button { 
   margin-top: 20px; 
   margin-bottom: 5px 
@@ -240,20 +229,6 @@ ul li {
   background-position: 8px 12px;
   float: right;
 }
-.white_travel_toggle.on {
-  vertical-align: middle;
-  background-position: 0px -2px; 
-}
-.white_travel_toggle {
-  overflow: hidden;
-  display: inline-block; 
-  width: 8px; 
-  height: 8px; 
-  margin-left: 5px;
-  background-image: url(/icons/bt_expand-white.png);
-  background-position: -7px 0px;
-  background-repeat: no-repeat;
-}
 .current_travel_toggle.on {
   vertical-align: middle;
   background-position: 0px -2px; 
@@ -268,50 +243,88 @@ ul li {
   background-position: -7px 0px;
   background-repeat: no-repeat;
 }
+.transportation_symbol {
+  margin-left: 8px;
+  display: inline-block;
+}
+.green_estimate {
+  font: bold 20px Arial; 
+  color: #549378;
+  margin: 3px 0px 3px 5px;
+}
+.yellow_estimate {
+  font: bold 20px Arial; 
+  color: #c3a439;
+  margin: 3px 0px 3px 5px;
+}
+.pink_estimate {
+  font: bold 20px Arial; 
+  color: #bd607e;
+  margin: 3px 0px 3px 5px;
+}
+.white_toggle.on {
+  background-position: 1px 0px; 
+  height: 11px; 
+}
+.white_toggle {
+  overflow: hidden;
+  display: inline-block; 
+  width: 8px; 
+  height: 11px; 
+  vertical-align: sub;
+  margin-left: 3px;
+  margin-right: 3px;
+  background-image: url(/icons/bt_expand-white.png);
+  background-position: -7px 0px;
+  background-repeat: no-repeat;
+}
 .green_toggle.on {
-  vertical-align: middle;
-  background-position: 0px -2px; 
+  background-position: 1px 0px; 
+  height: 11px; 
 }
 .green_toggle {
   overflow: hidden;
   display: inline-block; 
   width: 8px; 
-  height: 8px; 
-  margin-left: 5px;
+  height: 11px; 
+  vertical-align: sub;
+  margin-left: 3px;
+  margin-right: 3px;
   background-image: url(/icons/bt_expand-green.png);
   background-position: -7px 0px;
   background-repeat: no-repeat;
 }
 .pink_toggle.on {
-  vertical-align: middle;
-  background-position: 0px -2px; 
+  background-position: 1px 0px; 
+  height: 11px; 
 }
 .pink_toggle {
   overflow: hidden;
   display: inline-block; 
   width: 8px; 
-  height: 8px; 
-  margin-left: 5px;
+  height: 11px; 
+  vertical-align: sub;
+  margin-left: 3px;
+  margin-right: 3px;
   background-image: url(/icons/bt_expand-pink.png);
   background-position: -7px 0px;
   background-repeat: no-repeat;
 }
 .yellow_toggle.on {
-  vertical-align: middle;
-  background-position: 0px -2px; 
+  background-position: 1px 0px; 
+  height: 11px; 
 }
 .yellow_toggle {
   overflow: hidden;
   display: inline-block; 
   width: 8px; 
-  height: 8px; 
-  margin-left: 5px;
+  height: 11px; 
+  vertical-align: sub;
+  margin-left: 3px;
+  margin-right: 3px;
   background-image: url(/icons/bt_expand-yellow.png);
   background-position: -7px 0px;
   background-repeat: no-repeat;
-}
-.travel_node_toggle.on { 
-  background-position: 7px 0px; 
 }
 .gray_toggle.on { 
   background-position: 1px 0px; 
@@ -323,6 +336,7 @@ ul li {
   width: 8px; 
   height: 11px; 
   vertical-align: sub;
+  margin-left: 3px;
   margin-right: 3px;
   background-image: url(/icons/bt_expand-grey.png);
   background-position: -7px 0px;
@@ -338,10 +352,14 @@ ul li {
   width: 8px; 
   height: 11px; 
   vertical-align: sub;
+  margin-left: 3px;
   margin-right: 3px;
   background-image: url(/icons/bt_expand-blue.png);
   background-position: -7px 0px;
   background-repeat: no-repeat;
+}
+.travel_node_toggle.on { 
+  background-position: 7px 0px; 
 }
 .travel_node_toggle {
   display: inline-block; 
@@ -366,13 +384,6 @@ ul li {
   vertical-align: sub;
   background-image:url(/icons/car.png);
 }
-.icon.walk {
-  display: inline-block; 
-  width: 22px; 
-  height: 22px; 
-  vertical-align: sub;
-  background-image:url(/icons/walk.png);
-}
 .icon.train {
   display: inline-block; 
   width: 22px; 
@@ -380,4 +391,49 @@ ul li {
   margin: 0; 
   vertical-align: sub;
   background-image:url(/icons/metro.png);
+}
+.walk {
+  display: inline-block; 
+  width: 20px; 
+  height: 20px; 
+  vertical-align: sub;
+  background-image:url(/icons/icn-strip_transports.png);
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
+}
+.metro {
+  display: inline-block; 
+  width: 20px; 
+  height: 20px; 
+  vertical-align: sub;
+  background-image:url(/icons/icn-strip_transports.png);
+  background-position: -44px 0px;
+  background-repeat: no-repeat;
+}
+.car {
+  display: inline-block; 
+  width: 20px; 
+  height: 20px; 
+  vertical-align: sub;
+  background-image:url(/icons/icn-strip_transports.png);
+  background-position: -110px 0px;
+  background-repeat: no-repeat;
+}
+.train {
+  display: inline-block; 
+  width: 20px; 
+  height: 20px; 
+  vertical-align: sub;
+  background-image:url(/icons/icn-strip_transports.png);
+  background-position: -132px 0px;
+  background-repeat: no-repeat;
+}
+.bus {
+  display: inline-block; 
+  width: 20px; 
+  height: 20px; 
+  vertical-align: sub;
+  background-image:url(/icons/icn-strip_transports.png);
+  background-position: -66px 0px;
+  background-repeat: no-repeat;
 }

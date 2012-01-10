@@ -21,8 +21,6 @@ App.Views.EventView = Backbone.View.extend({
     // Bind event on calendar event click
     google.calendar.read.subscribeToEvents(this.calendarEventOccured);
     this.getAlias(this.user.email, this.onAlias);
-    // this.showButton = true;
-    // this.base = "departure";
     this.previousEvent = null;
     this.nextEvent = null;
     this.alias = null;
@@ -175,7 +173,7 @@ App.Views.EventView = Backbone.View.extend({
     for (var i = 0; i < this.events.length; ++i) {
       var ev = this.events[i];
       title = (ev == null ? null : ev.title)
-      var summary = new App.Models.TravelSummary({alias: this.alias, title: title});
+      var summary = new App.Models.EventSummary({alias: this.alias, title: title});
       if (ev != null) {
         summary.color = ev.color;
         // Append all addresses either from normalization process or google calendar.
@@ -189,10 +187,12 @@ App.Views.EventView = Backbone.View.extend({
                 addresses.location.lat, addresses.location.lng, true);  
           }        
         }  
+        summary.googleEventId = ev.id;
       }      
+      this.travels_view.selectedEvent = this.selectedEvent;
       // Append summaries for previous, current, and next travel
-      // to travel views and render them in the view.
-      this.travels_view.appendTravelSummary(i, summary);
+      // to travel views and render them in the view.      
+      this.travels_view.appendEventSummary(i, summary);
     }  
     hideLoader();  
     this.travels_view.render();

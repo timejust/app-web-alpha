@@ -24,19 +24,11 @@ class EventAbstractApiProvider
                              provider: 'timejust',
                              state: 'waiting')
                              
-      direction.push_itinerary(event.itinerary(i, mode))
-      #direction.push_itinerary(event.itinerary(i + 1, mode, :backward))
-      
+      direction.push_itinerary(event.itinerary(i, mode))      
       itinerary.travel = travel
       itinerary.direction = :forward
-      itinerary.mode = mode
-      #itinerary_backward.travel = travel
-      #itinerary_backward.direction = :backward
-      #itinerary_backward.mode = mode
-      
+      itinerary.mode = mode      
       direction_map[i.to_s] = itinerary
-      #direction_map[(i + 1).to_s] = itinerary_backward
-      #i += 2
       i += 1
     end
     

@@ -40,11 +40,6 @@ ul li {
 .before_offset select, .after_offset select { 
   font: normal 10px Arial; 
 }
-.travel { 
-  margin: 10px 0 0 0; 
-  padding: 10px 0 0 0; 
-  border-top: 1px solid #ccc; 
-}
 .travel_step { 
   margin: 0 0 15px 0; 
 }

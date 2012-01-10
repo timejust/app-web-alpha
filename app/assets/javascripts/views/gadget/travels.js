@@ -2,33 +2,38 @@
 App.Views.TravelsView = Backbone.View.extend({
   className: 'travels',
   events: {
-    'click .travel_node_toggle':  'toggleTravelNode',
-    'click .white_toggle'      :  'whiteToggleSteps',
-    // 'click .blue_toggle'       :  'blueToggleSteps',
-    'click .gray_toggle'       :  'grayToggleSteps',
-    'click .show_travel_node'  :  'generateTrip',
-    'click .value':               'changeTitle'
+    'click .load_previous_travel' : 'generatePreviousTravel',
+    'click .load_next_travel'     : 'generateNextTravel',    
+    'click .travel_node_toggle'   : 'toggleTravelNode',
+    'click .white_toggle'         : 'whiteToggleSteps',
+    // 'click .blue_toggle'       : 'blueToggleSteps',
+    'click .gray_toggle'          : 'grayToggleSteps',
+    'click .show_travel_node'     : 'generateTrip',
+    'click .value'                : 'changeTitle'
   },
   initialize: function(){
     showLoader();
-    _.bindAll(this, 'generateTripCallback');
+    _.bindAll(this, 'waitForTravels');
     gadgets.window.adjustHeight();
-    // this.apiEventId = this.options.apiEventId;
     // this.selectedEvent = this.options.selectedEvent;
-    this.ip = this.options.ip;
-    this.base = this.options.base;
+    // this.base = this.options.base;
+    this.ip = this.options.ip;    
     this.eventView = this.options.eventView;
     this.summaries = new Array();    
-    this.previousTravel = new App.Views.TravelSummaryView({prefix: "from"});
-    this.currentTravel = new App.Views.TravelSummaryView();
-    this.nextTravel = new App.Views.TravelSummaryView({prefix: "to"});                                      
-    // this.waitForTravels();
+    this.previousEventView = new App.Views.EventSummaryView({prefix: "from"});
+    this.currentEventView = new App.Views.EventSummaryView();
+    this.nextEventView = new App.Views.EventSummaryView({prefix: "to"});  
+    this.previousTravelView = new App.Views.TravelView();
+    this.nextTravelView = new App.Views.TravelView();
+    this.travelType = 'previous';      
   },
-  appendTravelSummary: function(i, summary) {
+  appendEventSummary: function(i, summary) {
     this.summaries[i] = summary;
   },
-  waitForTravels: function(){
-    var self = this;
+  waitForTravels: function(response){
+    google.calendar.refreshEvents();
+    this.apiEventId = response.data._id;
+    var self = this;    
     // Start polling for Travel proposals
     $.poll(function(retry){
       GoogleRequest.get({
@@ -59,33 +64,43 @@ App.Views.TravelsView = Backbone.View.extend({
     }
     else if (response.rc == 200) {
       hideLoader();
-      this.model = new App.Models.Event(response.data);
-      // this.eventView.showButton = false;
-      this.eventView.render();
-      this.render();
+      var travelView = null;      
+      // this.model = new App.Models.Event(response.data);
+      if (this.travelType == 'previous') {
+        travelView = this.previousTravelView;
+      } else {
+        travelView = this.nextTravelView;
+      }      
+      this.previousTravelView.model = response.data;
+      this.previousTravelView.render();  
+      gadgets.window.adjustHeight();    
     }
   },
-  // Template to show confirmed travel node results
-  travel_results_template: _.template('\
-    <div class="travel_results">\
-      <%= current_travel%>\
-      <%= event_travel%>\
-    </div>\
-  '),
-  // Template to show single travel node
-  travel_node_template: _.template('\
-    <div class="travel_node">\
-      <%= head%>\
-      <%= trips%>\
-    </div>\
-  '),
+  generatePreviousTravel: function(event) {
+    this.travelType = 'previous';
+    this.base = 'arrival';
+    this.generateTrip(event);
+  },
+  generateNextTravel: function(event) {
+    this.travelType = 'next';
+    this.base = 'departure';
+    this.generateTrip(event);
+  },
   // Launch request to API to create event in database
   // If it was created successfully, show travel nodes selector view
   generateTrip: function(event){
     event.preventDefault();
-    this.clear();    
-    showLoader();
-    
+    showLoader();    
+    gadgets.window.adjustHeight();        
+    var from = null;
+    var to = null;
+    if (this.travelType == 'previous') {
+      from = this.previousEventView;
+      to = this.currentEventView;
+    } else {
+      from = this.currentEventView;
+      to = this.nextEventView;
+    }    
     // TODO : use Event model and bind callback on created event
     GoogleRequest.post({
       url: App.config.api_url + "/events",
@@ -94,13 +109,27 @@ App.Views.TravelsView = Backbone.View.extend({
           this.selectedEvent,
           {
             before_start_time: 0,
-            after_end_time: 0,
-          }
+            after_end_time: 0,            
+          }          
         )),
         current_ip: this.ip,        
-        base: this.base
+        base: this.base,
+        'previous_travel_node[address]': from.address,
+        'previous_travel_node[title]': from.title,
+        'previous_travel_node[state]': 'confirmed',
+        'previous_travel_node[event_google_id]': from.summary.googleEventId,
+        'previous_travel_node[lat]' : from.lat,
+        'previous_travel_node[lng]' : from.lng,
+        'previous_travel_node[has_normalized]' : '1',
+        'current_travel_node[address]': to.address,
+        'current_travel_node[title]': to.title,
+        'current_travel_node[state]': 'confirmed',
+        'current_travel_node[event_google_id]': to.summary.googleEventId,
+        'current_travel_node[lat]' : to.lat,
+        'current_travel_node[lng]' : to.lng,
+        'current_travel_node[has_normalized]' : '1',
       },
-      success: this.generateTripCallback,
+      success: this.waitForTravels,
       error: this.error
     });
   },
@@ -111,9 +140,41 @@ App.Views.TravelsView = Backbone.View.extend({
     }
     hideLoader();
     google.calendar.refreshEvents();
-    gadgets.views.requestNavigateTo('canvas', { apiEventId: this.model.get('_id') });
+    // gadgets.views.requestNavigateTo('canvas', { apiEventId: this.model.get('_id') });
     this.apiEventId = this.model.get('_id');
-    this.waitForTravels();
+    var from = null;
+    var to = null;
+    if (this.travelType == 'previous') {
+      from = this.previousEventView;
+      to = this.currentEventView;
+    } else {
+      from = this.currentEventView;
+      to = this.nextEventView;
+    }    
+    // this.submitTravelNodes(this.apiEventId, from, to);    
+  },
+  submitTravelNodes: function(id, from, to) {
+    GoogleRequest.post({
+      url: App.config.api_url + "/events/" + id + "/travel_nodes_confirmation",
+      params: {
+        'previous_travel_node[address]': from.address,
+        'previous_travel_node[title]': from.title,
+        'previous_travel_node[state]': 'confirmed',
+        'previous_travel_node[event_google_id]': from.summary.googleEventId,
+        'previous_travel_node[lat]' : from.lat,
+        'previous_travel_node[lng]' : from.lng,
+        'previous_travel_node[has_normalized]' : '1',
+        'current_travel_node[address]': to.address,
+        'current_travel_node[title]': to.title,
+        'current_travel_node[state]': 'confirmed',
+        'current_travel_node[event_google_id]': to.summary.googleEventId,
+        'current_travel_node[lat]' : to.lat,
+        'current_travel_node[lng]' : to.lng,
+        'current_travel_node[has_normalized]' : '1',       
+        'current_ip' : this.ip
+      },
+      success: this.waitForTravels
+    });
   },
   // Template to show head box with alias information
   travel_head_with_alias: _.template('\
@@ -155,116 +216,30 @@ App.Views.TravelsView = Backbone.View.extend({
       </ul>\
     </div>\
   '),
-  // Template to show confirmed travel nodes
-  travel_nodes_template: _.template('\
-    <div class="gray">\
-      <ul>\
-        <li><img src="http://staging.timejust.com:50001/icons/white-arrow-down.png"></img></li>\
-        <li class="alias">from</li>\
-        <li class="accessory"><img src="http://staging.timejust.com:50001/icons/refresh-white.png"></img></li>\
-      </ul>\
-      <ul>\
-        <li class="address"><%= previous_travel_node["address"] %></img></li>\
-        <li><div class="accessory"><img src="http://staging.timejust.com:50001/icons/place-white.png"></img></li>\
-      </ul>\
-    </div>\
-    <div class="green">\
-      <ul>\
-        <li><img src="http://staging.timejust.com:50001/icons/white-arrow-down.png"></img></li>\
-        <li class="alias">from</li>\
-        <li class="accessory"><img src="http://staging.timejust.com:50001/icons/refresh-white.png"></img></li>\
-      </ul>\
-      <ul>\
-        <li class="address"><%= previous_travel_node["address"] %></img></li>\
-        <li><div class="accessory"><img src="http://staging.timejust.com:50001/icons/place-white.png"></img></li>\
-      </ul>\
-    </div>\
-    <div class="pink">\
-      <ul>\
-        <li><img src="http://staging.timejust.com:50001/icons/white-arrow-down.png"></img></li>\
-        <li class="alias">from</li>\
-        <li class="accessory"><img src="http://staging.timejust.com:50001/icons/refresh-white.png"></img></li>\
-      </ul>\
-      <ul>\
-        <li class="address"><%= previous_travel_node["address"] %></img></li>\
-        <li><div class="accessory"><img src="http://staging.timejust.com:50001/icons/place-white.png"></img></li>\
-      </ul>\
-    </div>\
-    <div class="yellow">\
-      <ul>\
-        <li><img src="http://staging.timejust.com:50001/icons/white-arrow-down.png"></img></li>\
-        <li class="alias">from</li>\
-        <li class="accessory"><img src="http://staging.timejust.com:50001/icons/refresh-white.png"></img></li>\
-      </ul>\
-      <ul>\
-        <li class="address"><%= previous_travel_node["address"] %></img></li>\
-        <li><div class="accessory"><img src="http://staging.timejust.com:50001/icons/place-white.png"></img></li>\
-      </ul>\
-    </div>\
-    <div class="blue">\
-      <ul>\
-        <li><img src="http://staging.timejust.com:50001/icons/white-arrow-down.png"></img></li>\
-        <li class="alias">from</li>\
-        <li class="accessory"><img src="http://staging.timejust.com:50001/icons/refresh-white.png"></img></li>\
-      </ul>\
-      <ul>\
-        <li class="address"><%= previous_travel_node["address"] %></img></li>\
-        <li><div class="accessory"><img src="http://staging.timejust.com:50001/icons/place-white.png"></img></li>\
-      </ul>\
-    </div>\
-    <ul>\
-      <li class="previous_travel_node title">\
-        <a class="travel_node_toggle off" href="#"></a><span>From</span>\
-        <ul class="travel_node_expand">\
-          <li class="address"><%= previous_travel_node["address"] %></li>\
-          <% if (previous_travel_node["event_google_id"] != ""){ %>\
-            <li><%= previous_travel_node["event_title"] %></li>\
-            <li><%= $.format.date(previous_travel_node["event_start_time"], App.config.time) %> - <%= $.format.date(previous_travel_node["event_end_time"], App.config.time) %></li>\
-          <% } %>\
-        </ul>\
-      </li>\
-      <li class="current_travel_node title">\
-        <a class="travel_node_toggle off" href="#"></a><span>To</span>\
-        <ul class="travel_node_expand">\
-          <li class="address"><%= current_travel_node["address"] %></li>\
-          <% if (current_travel_node["event_google_id"] != ""){ %>\
-            <li><%= current_travel_node["event_title"] %></li>\
-            <li><%= $.format.date(current_travel_node["event_start_time"], App.config.time) %> - <%= $.format.date(current_travel_node["event_end_time"], App.config.time) %></li>\
-          <% } %>\
-        </ul>\
-      </li>\
-      <li class="next_travel_node title">\
-        <a class="travel_node_toggle off" href="#"></a><span>Then</span>\
-        <ul class="travel_node_expand">\
-          <li class="address"><%= next_travel_node["address"] %></li>\
-          <% if (next_travel_node["event_google_id"] != ""){ %>\
-            <li><%= next_travel_node["event_title"] %></li>\
-            <li><%= $.format.date(next_travel_node["event_start_time"], App.config.time) %> - <%= $.format.date(next_travel_node["event_end_time"], App.config.time) %></li>\
-          <% } %>\
-        </ul>\
-      </li>\
-    </ul>\
-  '),
   render: function() {
     var self = this;
     $(this.el).html("\
     <div class='transportations'></div>\
     <div id='previous_event'></div>\
+    <div id='previous_travel'></div>\
     <a class='load_previous_travel' href='#'><div class='green_btn'><div class='button_name'>PLAN THIS TRIP</div></div></a>\
     <div id='current_event'></div>\
+    <div id='next_travel'></div>\
     <a class='load_next_travel' href='#'><div class='green_btn'><div class='button_name'>PLAN THIS TRIP</div></div></a>\
     <div id='next_event'></div>\
     ");
-    this.previousTravel.el = $('#previous_event').get(0);
-    this.previousTravel.summary = this.summaries[0];
-    this.currentTravel.el = $('#current_event').get(0);
-    this.currentTravel.summary = this.summaries[1];
-    this.nextTravel.el = $('#next_event').get(0);
-    this.nextTravel.summary = this.summaries[2];
+    this.previousEventView.el = $('#previous_event').get(0);
+    this.previousEventView.summary = this.summaries[0];
+    this.currentEventView.el = $('#current_event').get(0);
+    this.currentEventView.summary = this.summaries[1];
+    this.nextEventView.el = $('#next_event').get(0);
+    this.nextEventView.summary = this.summaries[2];
+    this.previousTravelView.el = $('#previous_travel').get(0);
+    this.nextTravelView.el = $('#next_travel').get(0);
     
-    this.previousTravel.render();
-    this.currentTravel.render();
-    this.nextTravel.render();    
+    this.previousEventView.render();
+    this.currentEventView.render();
+    this.nextEventView.render();    
     
     $(this.el).html();
     
