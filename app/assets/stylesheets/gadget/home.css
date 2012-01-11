@@ -33,6 +33,17 @@ div.green_btn {
 div.green_btn .button_name {
   margin-top: 9px;
 }
+div.direction_block {
+  display: block;
+}
+li.distance {
+  font: bold 11px Arial; 
+  margin-left: 10px;
+  vertical-align: 4px;
+}
+li.direction {
+  font: normal 10px Arial; 
+}
 .event li.title {
   font: bold 11px Arial; 
   margin-bottom: 5px;
@@ -172,6 +183,12 @@ a.clear {
   color: #1d1d1d;  
   border-width: 1px;
 }
+.green ul.step {
+  border-top: 1px solid;
+  border-color: #52a884;
+  margin-left: 5px;
+  margin-right: 5px;
+}
 .pink {
   margin-bottom: 3px;
   border-style: solid;
@@ -180,6 +197,12 @@ a.clear {
   color: #1d1d1d; 
   border-width: 1px; 
 }
+.pink ul.step {
+  border-top: 1px solid;
+  border-color: #bd6f89;
+  margin-left: 5px;
+  margin-right: 5px;
+}
 .yellow {
   margin-bottom: 3px;
   border-style: solid;
@@ -187,6 +210,12 @@ a.clear {
   background-color: #fbe983;
   color: #1d1d1d; 
   border-width: 1px; 
+}
+.yellow ul.step {
+  border-top: 1px solid;
+  border-color: #e0c240;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 ul { 
   margin-top: 5px;
@@ -245,6 +274,7 @@ ul li {
 }
 .transportation_symbol {
   margin-left: 8px;
+  margin-bottom: 5px;
   display: inline-block;
 }
 .green_estimate {

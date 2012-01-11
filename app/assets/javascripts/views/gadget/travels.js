@@ -6,8 +6,10 @@ App.Views.TravelsView = Backbone.View.extend({
     'click .load_next_travel'     : 'generateNextTravel',    
     'click .travel_node_toggle'   : 'toggleTravelNode',
     'click .white_toggle'         : 'whiteToggleSteps',
-    // 'click .blue_toggle'       : 'blueToggleSteps',
     'click .gray_toggle'          : 'grayToggleSteps',
+    'click .yellow_toggle'        : 'yellowToggleSteps',
+    'click .green_toggle'         : 'greenToggleSteps',
+    'click .pink_toggle'          : 'pinkToggleSteps',
     'click .show_travel_node'     : 'generateTrip',
     'click .value'                : 'changeTitle'
   },
@@ -65,15 +67,15 @@ App.Views.TravelsView = Backbone.View.extend({
     else if (response.rc == 200) {
       hideLoader();
       var travelView = null;      
-      // this.model = new App.Models.Event(response.data);
       if (this.travelType == 'previous') {
         travelView = this.previousTravelView;
       } else {
         travelView = this.nextTravelView;
       }      
-      this.previousTravelView.model = response.data;
-      this.previousTravelView.render();  
-      gadgets.window.adjustHeight();    
+      travelView.model = response.data;
+      travelView.render();  
+      gadgets.window.adjustHeight();  
+      google.calendar.refreshEvents();  
     }
   },
   generatePreviousTravel: function(event) {
@@ -176,46 +178,6 @@ App.Views.TravelsView = Backbone.View.extend({
       success: this.waitForTravels
     });
   },
-  // Template to show head box with alias information
-  travel_head_with_alias: _.template('\
-    <div class="gray">\
-      <ul>\
-        <li><a class="white_toggle off" href="#"></a></li>\
-        <li class="event_title"><%= prefix%> <%= alias%></li>\
-        <li><a class="reload" href="#"></a></li>\
-      </ul>\
-      <ul>\
-        <li class="address"><a href="#" class="show_travel_node"><%= address%></a></li>\
-        <li><a class="place" href="#"></a></li>\
-      </ul>\
-    </div>\
-  '),
-  // Template to show head box with schedule information
-  travel_head_with_schedule: _.template('\
-    <div class="blue">\
-      <ul>\
-        <li><a class="blue_toggle off" href="#"></a></li>\
-        <li class="event_title"><%= title%></li>\
-        <li><a class="reload" href="#"></a></li>\
-      </ul>\
-      <ul>\
-        <li class="address"><a href="#" class="show_travel_node"><%= address%></a></li>\
-        <li><a class="place" href="#"></a></li>\
-      </ul>\
-    </div>\
-  '),
-  // Template to show head box with schedule information
-  travel_green: _.template('\
-    <div class="green">\
-      <ul>\
-        <li><a class="green_toggle off" href="#"></a></li>\
-        <li class="event_title">test</li>\
-      </ul>\
-      <ul>\
-        <li class="address">test</li>\
-      </ul>\
-    </div>\
-  '),
   render: function() {
     var self = this;
     $(this.el).html("\
@@ -241,24 +203,9 @@ App.Views.TravelsView = Backbone.View.extend({
     this.currentEventView.render();
     this.nextEventView.render();    
     
-    $(this.el).html();
-    
-    /*
-    $(this.el).html();
-    var travels = "";
-    if (this.model.get('travels').length == 0){
-      $(this.el).append("No travel proposals found");
-    }
-    else{
-      $.each(this.model.get('travels'), function(i, travel){
-        var view = new App.Views.TravelView({ model: new App.Models.Travel(travel) });
-        // TODO spec
-        $(self.el).append(view.render().el);
-      });
-    }
-    */
+    $(this.el).html();    
     gadgets.window.adjustHeight();
-    // google.calendar.refreshEvents();
+    google.calendar.refreshEvents();
   },
   // TODO spec
   toggleTravelNode: function(e){
@@ -302,11 +249,11 @@ App.Views.TravelsView = Backbone.View.extend({
   },
   currentEvent: function(root) {
     if (root[0].id == 'previous_event') {
-      event = this.previousTravel;
+      event = this.previousEventView;
     } else if (root[0].id == 'current_event') {
-      event = this.currentTravel;
+      event = this.currentEventView;
     } else if (root[0].id == 'next_event') {
-      event = this.nextTravel;
+      event = this.nextEventView;
     }
     return event;
   },
@@ -336,6 +283,30 @@ App.Views.TravelsView = Backbone.View.extend({
       event.render();
     }    
   },  
+  yellowToggleSteps: function(e) {
+    e.preventDefault();    
+    var container = $(e.currentTarget).parent('li').parent('ul').parent('div').find('.steps');
+    $(e.currentTarget).toggleClass('on');
+    $(e.currentTarget).toggleClass('off');
+    container.toggle();
+    gadgets.window.adjustHeight();
+  },
+  greenToggleSteps: function(e) {
+    e.preventDefault();    
+    var container = $(e.currentTarget).parent('li').parent('ul').parent('div').find('.steps');
+    $(e.currentTarget).toggleClass('on');
+    $(e.currentTarget).toggleClass('off');
+    container.toggle();
+    gadgets.window.adjustHeight();
+  },
+  pinkToggleSteps: function(e) {
+    e.preventDefault();    
+    var container = $(e.currentTarget).parent('li').parent('ul').parent('div').find('.steps');
+    $(e.currentTarget).toggleClass('on');
+    $(e.currentTarget).toggleClass('off');
+    container.toggle();
+    gadgets.window.adjustHeight();
+  },
   clear: function(){
     $(this.el).empty();
   }
