@@ -43,6 +43,8 @@ App.Views.TravelView = Backbone.View.extend({
             mode = "metro";
           } else if (s.line.indexOf('bus') != -1) {
             mode = "bus";
+          } else if (s.line.indexOf('rer') != -1) {
+            mode = "train";                      
           } else if (s.line == 'connections' && i == step.steps.length - 1) {
             mode = "walk";
           }          
