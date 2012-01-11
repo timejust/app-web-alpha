@@ -5,7 +5,9 @@ App.Views.TravelView = Backbone.View.extend({
   },
   // render each travel_steps of this travel
   render: function() {   
-    var travels = this.model.travels;    
+    var travels = this.model.travels;   
+    var arrival_address = this.model.current_travel_node.address;
+    var self = this; 
     if (travels == null) {
       // display error
     }
@@ -72,26 +74,63 @@ App.Views.TravelView = Backbone.View.extend({
         });
       }
       html += '</div></ul><div class="steps">';
+      var distance = 0;
       if (travel.travel_mode == 'car') {
         $.each(step.steps, function(i, s) {
           html += '<ul class="step"';
           if (i == 0) {
             html += ' style="border-top: 0px"';
+          }          
+          html += '><li class="where"';
+          if (i == 0 || i == step.steps.length - 1) {
+            html += ' style="color: #ffffff"';
           }
-          html += '><li class="where"></li><li class="direction"';
+          html += '>' + parseFloat(s.distance) / 1000 + ' km</li><li class="direction"';
           if (i == 0) {
             html += ' style="font: bold 10px Arial"';
           }
           html += '>' + s.text_direction + '</li></ul>';
         });
       } else {
+        var departure_time = "";
+        var departure_name = "";
+        var arrival_name = "";
         $.each(step.steps, function(i, s) {
-          html += '<ul class="step"';
-          if (i == 0) {
-            html += ' style="border-top: 0px"';
-          }
-          html += '><div class="direction_block"><li class="where"></li><li class="direction">' + s.dep_name + '</li></div>';
-          html += '<div class="direction_block"><li class="where"></li><li class="direction">' + s.arr_name + '</li></div></ul>';
+          if (s.line == "base") {
+            departure_time = s.dep_time;            
+          } else {
+            if (s.line == "connections") {
+              departure_name = "Walk to";  
+              if (departure_time == "")
+                departure_time = s.dep_time;
+            } else {
+              departure_name = s.line + " " + s.headsign;
+              departure_time = s.dep_time; 
+            }
+            html += '<ul class="step"';
+            if (i == 1) {
+              html += ' style="border-top: 0px"';
+            }
+            html += '><ul class="direction_block"><li class="where"';
+            if (i == 1) {
+              html += ' style="color: #ffffff"';
+            }
+            html += '>' + self.convertTimeformat(departure_time);
+            html += '</li><li class="direction">' + departure_name + '</li></ul>';
+            html += '<ul class="direction_block"><li class="where"';
+            if (i == step.steps.length - 1) {
+              html += ' style="color: #ffffff"';
+            }
+            html += '>' + self.convertTimeformat(s.arr_time);
+            if (s.arr_name == "") {
+              arrival_name = arrival_address;
+            } else {
+              arrival_name = s.arr_name
+            }
+            html += '</li><li class="direction">' + arrival_name + '</li></ul></ul>'; 
+            departure_time = "";
+            departure_name = "";
+          }          
         });
       }
       html += '</div></div>';
@@ -99,6 +138,12 @@ App.Views.TravelView = Backbone.View.extend({
     html += "</div>";
     $(this.el).html(html);   
     $(this.el).find('.steps').hide();      
+  },
+  convertTimeformat: function(d) {
+    var tok = d.split(' ');
+    var hms = tok[1];
+    tok = hms.split(':');
+    return tok[0] + ":" + tok[1];
   }
   /*  
   travel: _.template('\

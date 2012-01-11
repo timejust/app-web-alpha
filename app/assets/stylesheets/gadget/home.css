@@ -33,8 +33,11 @@ div.green_btn {
 div.green_btn .button_name {
   margin-top: 9px;
 }
-div.direction_block {
-  display: block;
+ul.direction_block {
+  margin-top: 1px;
+}
+li.toggle {
+  float: left;
 }
 li.distance {
   font: bold 11px Arial; 
@@ -43,10 +46,29 @@ li.distance {
 }
 li.direction {
   font: normal 10px Arial; 
+  text-align: left;  
+}
+.pink li.where {
+  margin-right: 5px;
+  color: #bd607e;
+  float: left;
+}
+.yellow li.where {
+  margin-right: 5px;
+  color: #c3a439;
+  float: left;
+}
+.green li.where {
+  margin-right: 5px;
+  color: #549378;
+  float: left;
 }
 .event li.title {
   font: bold 11px Arial; 
-  margin-bottom: 5px;
+  margin: -2px 0px;
+  text-align: left;
+  float: left;
+  width: 90%;
 }
 .travel li.title {
   font: bold 11px Arial; 
@@ -60,14 +82,14 @@ li.direction {
 li.alias {
   display: block;
   font: normal 10px Arial; 
-  margin: 5px 0px 3px 16px;
+  margin: 5px 5px 3px 10px;
   border-top: 1px solid;
 }
 ul .address { 
   width: 120px;
   display: inline-block; 
   font: normal 10px Arial; 
-  margin: 3px 0px 5px 16px;
+  margin: 3px 0px 5px 0px;
 }
 #selectedEvent .title { 
   font: bold 1.1em/1.1em Arial; 

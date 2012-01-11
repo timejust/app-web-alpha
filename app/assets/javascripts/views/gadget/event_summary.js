@@ -64,7 +64,7 @@ App.Views.EventSummaryView = Backbone.View.extend({
       html += 'background-color:' + this.summary.color;
     }     
     html += '"><ul class="event">';        
-    html += '<li><a class="gray_toggle off" href="#"></a></li>';            
+    html += '<li class="toggle"><a class="gray_toggle off" href="#"></a></li>';            
     html += '<li class="title" shorten="true" original="' + title + '">' + title.substring(0, 23);
     if (title.length > 23) 
       html += "...";
