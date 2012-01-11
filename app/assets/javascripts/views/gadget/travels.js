@@ -16,8 +16,8 @@ App.Views.TravelsView = Backbone.View.extend({
   initialize: function(){
     showLoader();
     _.bindAll(this, 'waitForTravels');
+    // _.bindAll(this, 'generateTripCallback');    
     gadgets.window.adjustHeight();
-    // this.selectedEvent = this.options.selectedEvent;
     // this.base = this.options.base;
     this.ip = this.options.ip;    
     this.eventView = this.options.eventView;
@@ -135,6 +135,30 @@ App.Views.TravelsView = Backbone.View.extend({
       error: this.error
     });
   },
+  /*
+  // Launch request to API to create event in database
+  // If it was created successfully, show travel nodes selector view
+  generateTripWithoutAddress: function() {    
+    showLoader();
+    
+    // TODO : use Event model and bind callback on created event
+    GoogleRequest.post({
+      url: App.config.api_url + "/events",
+      params: {
+        event: JSON.stringify($.extend(
+          this.selectedEvent,
+          {
+            before_start_time: 0,
+            after_end_time: 0,            
+          }          
+        )),
+        current_ip: this.ip,        
+        base: this.base
+      },
+      success: this.generateTripCallback,
+      error: this.error
+    });
+  },
   // Callback when an event is created
   generateTripCallback: function(response){
     if (response.data) {
@@ -142,42 +166,14 @@ App.Views.TravelsView = Backbone.View.extend({
     }
     hideLoader();
     google.calendar.refreshEvents();
-    // gadgets.views.requestNavigateTo('canvas', { apiEventId: this.model.get('_id') });
-    this.apiEventId = this.model.get('_id');
-    var from = null;
-    var to = null;
-    if (this.travelType == 'previous') {
-      from = this.previousEventView;
-      to = this.currentEventView;
-    } else {
-      from = this.currentEventView;
-      to = this.nextEventView;
-    }    
-    // this.submitTravelNodes(this.apiEventId, from, to);    
+    this.showTravelNodesSelector();
   },
-  submitTravelNodes: function(id, from, to) {
-    GoogleRequest.post({
-      url: App.config.api_url + "/events/" + id + "/travel_nodes_confirmation",
-      params: {
-        'previous_travel_node[address]': from.address,
-        'previous_travel_node[title]': from.title,
-        'previous_travel_node[state]': 'confirmed',
-        'previous_travel_node[event_google_id]': from.summary.googleEventId,
-        'previous_travel_node[lat]' : from.lat,
-        'previous_travel_node[lng]' : from.lng,
-        'previous_travel_node[has_normalized]' : '1',
-        'current_travel_node[address]': to.address,
-        'current_travel_node[title]': to.title,
-        'current_travel_node[state]': 'confirmed',
-        'current_travel_node[event_google_id]': to.summary.googleEventId,
-        'current_travel_node[lat]' : to.lat,
-        'current_travel_node[lng]' : to.lng,
-        'current_travel_node[has_normalized]' : '1',       
-        'current_ip' : this.ip
-      },
-      success: this.waitForTravels
-    });
+  // Show travel nodes selector view to confirm each travel nodes addresses
+  // Also start polling from API to get travels proposals
+  showTravelNodesSelector: function(){
+    gadgets.views.requestNavigateTo('canvas', { apiEventId: this.model.get('_id'), base: this.base });
   },
+  */
   render: function() {
     var self = this;
     $(this.el).html("\
@@ -276,6 +272,7 @@ App.Views.TravelsView = Backbone.View.extend({
     var container = el.parent('li').parent('.aliases');    
     if (el.attr('selector') == 'true') {
       // Go to address selector page.
+      // this.generateTripWithoutAddress();
     } else {
       var root = container.parent('ul').parent('div').parent('div');    
       var event = this.currentEvent(root);

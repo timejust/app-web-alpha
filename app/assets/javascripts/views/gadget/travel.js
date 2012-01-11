@@ -62,7 +62,9 @@ App.Views.TravelView = Backbone.View.extend({
             mode = "bus";
           } else if (s.line == 'connections' && i == step.steps.length - 1) {
             mode = "walk";
-          }          
+          } else if (s.line.indexOf('rer') != 1) {
+            mode = "train";
+          }       
           if (current_mode != mode) {
             html += '<li class="' + mode;
             if (i != 0) {
@@ -99,37 +101,40 @@ App.Views.TravelView = Backbone.View.extend({
           if (s.line == "base") {
             departure_time = s.dep_time;            
           } else {
-            if (s.line == "connections") {
+            if (s.line == "connections") {              
               departure_name = "Walk to";  
               if (departure_time == "")
-                departure_time = s.dep_time;
+                departure_time = s.dep_time;              
             } else {
               departure_name = s.line + " " + s.headsign;
               departure_time = s.dep_time; 
             }
-            html += '<ul class="step"';
-            if (i == 1) {
-              html += ' style="border-top: 0px"';
-            }
-            html += '><ul class="direction_block"><li class="where"';
-            if (i == 1) {
-              html += ' style="color: #ffffff"';
-            }
-            html += '>' + self.convertTimeformat(departure_time);
-            html += '</li><li class="direction">' + departure_name + '</li></ul>';
-            html += '<ul class="direction_block"><li class="where"';
-            if (i == step.steps.length - 1) {
-              html += ' style="color: #ffffff"';
-            }
-            html += '>' + self.convertTimeformat(s.arr_time);
-            if (s.arr_name == "") {
-              arrival_name = arrival_address;
-            } else {
-              arrival_name = s.arr_name
-            }
-            html += '</li><li class="direction">' + arrival_name + '</li></ul></ul>'; 
-            departure_time = "";
-            departure_name = "";
+            if (s.line != "connections" || s.arr_name != "" || i == step.steps.length - 1) {            
+              html += '<ul class="step"';
+              if (i == 1) {
+                html += ' style="border-top: 0px"';
+              }
+              html += '><ul class="direction_block"><li class="where"';
+              if (i == 1) {
+                html += ' style="color: #ffffff"';
+              }
+              html += '>' + self.convertTimeformat(departure_time);
+              html += '</li><li class="direction">' + departure_name + '</li></ul>';
+              html += '<ul class="direction_block"><li class="where"';
+              if (i == step.steps.length - 1) {
+                html += ' style="color: #ffffff"';
+              }
+              html += '>' + self.convertTimeformat(s.arr_time);
+              if (s.arr_name == "") {
+                arrival_name = arrival_address;
+              } else {
+                arrival_name = s.arr_name
+              }
+              html += '</li><li class="direction">' + arrival_name + '</li></ul></ul>'; 
+              departure_time = "";
+              departure_name = "";
+              arrival_name = "";
+            }            
           }          
         });
       }

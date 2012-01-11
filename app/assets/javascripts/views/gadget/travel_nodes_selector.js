@@ -201,13 +201,6 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
           'current_travel_node[lat]' : this.getLatitude('current_travel_node'),
           'current_travel_node[lng]' : this.getLongitude('current_travel_node'),
           'current_travel_node[has_normalized]' : this.hasNormalized('current_travel_node'),
-          /*'next_travel_node[address]': this.getTravelNodeAddress('next_travel_node'),
-          'next_travel_node[title]': this.getTravelNodeTitle('next_travel_node'),
-          'next_travel_node[state]': this.getTravelNodeState('next_travel_node'),
-          'next_travel_node[event_google_id]': this.getEventGoogleId('next_travel_node'),
-          'next_travel_node[lat]' : this.getLatitude('next_travel_node'),
-          'next_travel_node[lng]' : this.getLongitude('next_travel_node'),
-          'next_travel_node[has_normalized]' : this.hasNormalized('next_travel_node'),*/
           'current_ip' : this.ip
         },
         success: this.waitForTravelNodes
