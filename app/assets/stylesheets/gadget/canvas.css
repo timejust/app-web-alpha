@@ -1,0 +1,80 @@
+ul.top {
+  height: 72px;
+  background-color: #F5F5F5;
+  border-bottom: 2px solid #CCCCCC;
+}
+div.logo {
+  display: inline-block; 
+  width: 143px; 
+  height: 59px;
+  background-image:url(/icons/tj-logo.png);
+  background-repeat: no-repeat;
+  margin: 10px 0px 10px 2%;
+}
+div {
+  display: inline;
+}
+div.search_box {
+  vertical-align: 36px;
+  margin-left: 1%;
+}
+div.search_button_content {
+  display: inline-block;
+  background: url(/icons/hpimgs28.png) -51px 0px no-repeat;
+  color: transparent;
+  height: 15px;
+  line-height: 15px;
+  margin-top: 6px;
+  overflow: hidden;
+  text-indent: 15px;
+  width: 15px;
+}
+div.button-outer_block {
+  position: relative;
+  display: -moz-inline-box;
+  display: inline-block;
+  height: 16px;
+  overflow: visible;
+  width: 16px;
+}
+div.search_button {
+  vertical-align: middle;
+  display: inline-block; 
+  border: 1px solid #3079ED;
+  color: white;
+  background: #4D90FE;
+  background-image: -webkit-gradient(linear,left top,left bottom,from(#4d90fe),to(#4787ed));
+  background-image: -webkit-linear-gradient(top,#4d90fe,#4787ed);
+  background-image: -moz-linear-gradient(top,#4d90fe,#4787ed);
+  background-image: -ms-linear-gradient(top,#4d90fe,#4787ed);
+  background-image: -o-linear-gradient(top,#4d90fe,#4787ed);
+  background-image: linear-gradient(top,#4d90fe,#4787ed);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#4d90fe',EndColorStr='#4787ed');
+  margin-right: 6px;
+  margin-left: 6px;
+  border-image: initial;  
+  border-radius: 2px;  
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: bold;
+  height: 27px;
+  line-height: 27px;
+  min-width: 54px;
+  outline: none;
+  padding: 0 8px;
+  text-align: center;
+}
+#maininput {
+  background: white;
+  border: 1px solid #D9D9D9;
+  border-radius: 1px;
+  border-top: 1px solid silver;
+  height: 27px;
+  padding: 0 0 0 8px;
+  -moz-border-radius: 1px;
+  -webkit-border-radius: 1px;
+  border-image: initial;
+  min-width: 384px;
+  max-width: 50%;
+  vertical-align: middle;
+}
