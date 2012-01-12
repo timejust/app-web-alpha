@@ -8,19 +8,18 @@ App.Models.EventSummary = Backbone.Model.extend({
   },
   append: function(address, lat, lng, normalized) {
     this.addressBook[this.addressBook.length] = {
-      address: address, lat: lat, lng: lng, normalized: normalized};            
+      title: this.title, address: address, lat: lat, lng: lng, normalized: normalized};            
   },
   dump: function() {
     var output = "title: " + this.title;    
     if (this.alias != undefined) {
-      for (var i = 0; i < this.alias.length; ++i) {
-        output += "\nalias: title=>" + this.alias[i].title + ", address=>" + this.alias[i].address;
-        for (var k = 0; k < this.addressBook.length; ++k) {
-          var ab = this.addressBook[k];
+      $.each(this.alias, function(i, a) {
+        output += "\nalias: title=>" + a.title + ", address=>" + a.address;
+        $.each(this.addressBook, function(k, ab) {          
           output += "\naddress=> " + ab.address + ", lat=>" + ab.lat + ", lng=>" + 
               ab.lng + ", normalized=>" + ab.normalized;
-        }
-      }         
+        });
+      });
     }
     alert(output);   
   }

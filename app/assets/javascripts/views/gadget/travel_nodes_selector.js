@@ -1,21 +1,20 @@
 App.Views.TravelNodesSelectorView = Backbone.View.extend({
   events: {
-    'submit form'                   : 'submitTravelNodes',
-    'click .cancel'                 : 'cancel',
+    'submit form'                   : 'saveNewAddress',
     'click .google_maps'            : 'openGoogleMaps',
   },
   initialize: function(){
-    this.model = new App.Models.Event({_id: this.options.apiEventId});
-    _.bindAll(this, 'waitForTravelNodes');
-    // alert(this.options.ip)
-    // alert(this.options.apiEventId)
+    // _.bindAll(this, 'waitForTravelNodes');
     this.ip = this.options.ip;
-    this.base = this.options.base;
-    this.waitForTravelNodes();    
+    this.ab = eval('(' + $.cookie('ab') + ')');
+    this.alias = eval('(' + $.cookie('alias') + ')');
+    this.render();
+    // this.base = this.options.base;
+    // this.waitForTravelNodes();       
   },
   getGeoAutocomplete: function(node) {
     $('#' + node).geo_autocomplete(new google.maps.Geocoder, {
-  		mapkey: 'ABQIAAAAbnvDoAoYOSW2iqoXiGTpYBTIx7cuHpcaq3fYV4NM0BaZl8OxDxS9pQpgJkMv0RxjVl6cDGhDNERjaQ', 
+      mapkey: 'ABQIAAAAbnvDoAoYOSW2iqoXiGTpYBTIx7cuHpcaq3fYV4NM0BaZl8OxDxS9pQpgJkMv0RxjVl6cDGhDNERjaQ', 
   		selectFirst: false,
   		minChars: 3,
   		cacheLength: 50,
@@ -42,9 +41,9 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
           var label_type = $(this).parent('.other_address').parent('.travel_node').find('h2').value
           $(this).parent('.other_address').parent('.travel_node').find('.history').html("\
             <p>\
-              <select name=\"" + node_type + "[address]\" class=\"selected_address\"></select>\
+              <select name=\"address\" class=\"selected_address\"></select>\
               <input type=\"button\" value=\"Maps\" class=\"google_maps\"/>\
-              <span class=\"favorite\">Add it to favorite: <input type=\"text\" name=\"" + node_type + "[title]\" placeholder=\"alias\"/></span>\
+              <span class=\"favorite\">Add it to favorite: <input type=\"text\" name=\"alias\" placeholder=\"alias\"/></span>\
             </p>\
           ")
           select = $(this).parent('.other_address').parent('.travel_node').find('.selected_address');
@@ -60,125 +59,105 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   	      select[0].selectedIndex = selected
 	    }
 	  });
-  },
-  // Start polling API for travel nodes proposals
-  // when API ready, display the confirmation form
-  waitForTravelNodes: function(){
-    showLoader();
-    var self = this;
-    $.poll(function(retry){
-      GoogleRequest.get({
-        url: App.config.api_url + "/events/" + self.model.get('_id') + "/travel_nodes?nocache=" + new Date().getTime(),
-        // TODO specs
-        success: function(response){
-          // travels_nodes are processed and require confirmation
-          self.model = new App.Models.Event(response.data);
-          self.render();
-        },
-        // TODO specs
-        error: function(response){
-          // travels_nodes are in process
-          if (response.rc == 404) {
-            retry();
-          }
-          // travels_nodes are processed and not require confirmation, go to travels proposals views
-          else if (response.rc == 410) {
-            self.close();
-          }
-        }
-      });
-    });
-  },
+  }, 
   // global template for form
   form_template: _.template("\
     <%= title %>\
-    <form width=500px action=\"#\">\
+    <form width=400px action=\"#\">\
       <%= inputs %>\
-      <p style=\"text-align:right\"><a href=\"#\" class=\"cancel\">Cancel</a><input type=\"submit\" value=\"Next\" class=\"next\"/></p>\
+      <div style=\"text-align:left\"><input type=\"submit\" value=\"Next\" class=\"next\"/></div>\
     </form>\
   "),
   // Template for each travel node confirmation
-  // <p class=\"other_address\">Or enter: <input type=\"text\" width=\"300px\" id=\"location\" name=\"<%= type %>[address]\" placeholder=\"address\"/><input type=\"submit\" value=\"Replace\" class=\"search\" data-target=\"<%= type %>\"/></p>\
   input_template: _.template("\
     <div class=\"travel_node\">\
     <h2><%= label_type %>:</h2>\
     <div class=\"history\">\
     <% if (options != '') { %>\
       <p>\
-        <select name=\"<%= type %>[address]\" class=\"selected_address\"><%= options %></select>\
+        <select name=\"address\" class=\"selected_address\"><%= options %></select>\
         <input type=\"button\" value=\"Maps\" class=\"google_maps\"/>\
-        <span class=\"favorite\">Add it to favorite: <input type=\"text\" name=\"<%= type %>[title]\" placeholder=\"alias\"/></span>\
+        <span class=\"favorite\">Add it to favorite: <input type=\"text\" name=\"alias\" placeholder=\"alias\"/></span>\
       </p>\
     <% } %>\
     </div>\
-    <p class=\"other_address\">Or enter: <input type=\"text\" size=\"30\" id=\"<%= name %>\" name=\"<%= type %>[address]\" placeholder=\"address\"/></p>\
+    <p class=\"other_address\">Or enter: <input type=\"text\" size=\"30\" id=\"<%= name %>\" name=\"address\" placeholder=\"address\"/></p>\
     </div>\
   "),
   title_template: _.template("\
-    <ul class=\"travel_title\"><li class=\"prefix\">New trip</li><li class=\"title_address\">Confirm address</li></ul>\
+    <ul class=\"travel_title\"><li class=\"prefix\">New address</li><li class=\"title_address\">selection page</li></ul>\
   "),
   // Template for option elements
-  option_template: _.template("<option value=\"<%= value %>\" <%= selected %> data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\" data-has-normalized=\"<%=has_normalized%>\" data-event-google-id=\"<%= event_id %>\"><%= label %></option>"),
+  option_template: _.template("<option value=\"<%= value %>\" <%= selected %> data-cached=\"1\" data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\" data-has-normalized=\"<%=has_normalized%>\" data-event-google-id=\"<%= event_id %>\"><%= label %></option>"),
   // Return the form inputs for a given travel node
   formInputsFor: function(travel_nodes_type, name){
     var self = this;
     var options = "";
     var inputs = "";
-    if(this.model.get(travel_nodes_type + 's')) {
-      var selected_address = this.model.get(travel_nodes_type);
-      $.each(this.model.get(travel_nodes_type + 's'), function(i,e){
-        options += self.option_template( {
-          value: e.address,
-          label: (e.title ? e.title + ' - ' + e.address : e.address),
-          selected: (selected_address && selected_address.address == e.address ? 'selected' : ''),
-          event_id: e.event_google_id,
-          has_normalized: e.has_normalized,
-          lat: e.lat,
-          lng: e.lng
-        });
+    // var selected_address = this.model.get(travel_nodes_type);
+    $.each(this.ab, function(i, ab) {
+      options += self.option_template( {
+        value: ab.address,
+        label: (ab.title ? ab.title + ' - ' + ab.address : ab.address),
+        // selected: (selected_address && selected_address.address == e.address ? 'selected' : ''),
+        selected: '',
+        event_id: '',
+        has_normalized: '1',
+        lat: ab.lat,
+        lng: ab.lng
       });
-    }
+    });    
+    $.each(this.alias, function(i, a) {
+      options += self.option_template( {
+        value: a.address,
+        label: (a.title ? a.title + ' - ' + a.address : a.address),
+        // selected: (selected_address && selected_address.address == e.address ? 'selected' : ''),
+        selected: '',
+        event_id: '',
+        has_normalized: '1',
+        lat: a.lat,
+        lng: a.lng
+      });
+    });    
     inputs += this.input_template( { 
-      label_type: this.travel_nodes_type_label(travel_nodes_type), type: travel_nodes_type, options: options, name: name } );
+      label_type: this.travel_nodes_type_label(), options: options, name: name } );      
     return inputs;
   },
-  travel_nodes_type_label: function(travel_nodes_type){
-    if (this.base == "arrival") {
-      if (travel_nodes_type == 'current_travel_node') {
-        return "To (" + $.truncate(this.model.get('title'), 70) + ")";
-      } else if (travel_nodes_type == 'previous_travel_node') {
-        return "From";
-      }  
-    } else {
-      if (travel_nodes_type == 'current_travel_node') {
-        return "To";
-      } else if (travel_nodes_type == 'previous_travel_node') {
-        return "From (" + $.truncate(this.model.get('title'), 70) + ")";
-      }
-    }    
+  travel_nodes_type_label: function(){
+    if (this.ab.length > 0) {
+      return this.ab[0].title;
+    }
+    return "Address";   
   },
   // render the form for all travel nodes
   render: function(){
     $(this.el).html(this.form_template({
       title: this.title_template(),
-      inputs: this.formInputsFor('previous_travel_node', 'previous_location') + 
+      inputs: // this.formInputsFor('previous_travel_node', 'previous_location') + 
         this.formInputsFor('current_travel_node', 'current_location')
         // this.formInputsFor('next_travel_node', 'next_location')
     }));
-    hideLoader();    
-    this.getGeoAutocomplete('previous_location');
     this.getGeoAutocomplete('current_location');
-    // this.getGeoAutocomplete('next_location');    
     // this.disableAllSearchSubmit();
     this.$('.next').removeAttr('disabled');
     gadgets.window.adjustHeight();
   },
   // Wrap form submission to request API and confirm travel node selection
   // When done, return to the main calendar view
-  submitTravelNodes: function(event){
-    this.$('.next').attr('disabled', 'disabled');
+  saveNewAddress: function(event){
+    // this.$('.next').attr('disabled', 'disabled');
     event.preventDefault();
+    gadgets.views.requestNavigateTo('home');
+    /*
+    text_value = this.$('form').find('input[name="address"]').val();
+    select_value = this.$('form').find('select[name="address"]').val();
     
+    alert(this.getTravelNodeAddress('current_travel_node'));
+    alert(this.getTravelNodeTitle('current_travel_node'));
+    alert(this.getLatitude('current_travel_node'));
+    alert(this.getLongitude('current_travel_node'));
+    */
+    /*
     if (this.getTravelNodeAddress('previous_travel_node') == 
       this.getTravelNodeAddress('current_travel_node')) {
       alert("You can search travel with same departure and destination.\nI need pretty alert popup design.")
@@ -206,15 +185,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         success: this.waitForTravelNodes
       });
     }
-  },
-  // Cancel an event travel proposal (also used to stop polling API for Travels)
-  cancel: function(event){
-    event.preventDefault();
-    GoogleRequest.put({
-      url: App.config.api_url + "/events/" + this.model.get('_id') + "/cancel",
-      success: this.close
-    });
-  },
+    */
+  },  
   // Return the confirmed address for a given travel node
   getTravelNodeAddress: function(travel_node_type) {
     text_value = this.$('form').find('input[name="' + travel_node_type + '\[address\]"]').val();
@@ -294,30 +266,5 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   openGoogleMaps: function(event){
     event.preventDefault();
     window.open("http://google.com/maps?q=" + $(event.currentTarget).closest('.travel_node').find('.selected_address').val(), 'google_maps');
-  }
-  /*
-  // Since today Nov 16, 2011, we don't allow users search location from this page. 
-  // We implemented google map autocompletion instead
-  ,
-  // TODO spec
-  searchForAddress: function(e){
-    var text_value = this.$('form').find('input[name="' + $(e.currentTarget).data('target') + '\[address\]"]').val();
-    if(text_value == "") {
-      e.preventDefault();
-    }
-  },
-  // TODO spec
-  changeSearchState: function(e){
-    if($(e.currentTarget).val() == ""){
-      $(e.currentTarget).parent('.other_address').find('.search').attr('disabled', 'disabled');
-    }
-    else {
-      $(e.currentTarget).parent('.other_address').find('.search').removeAttr('disabled');
-    }
-  },
-  // TODO spec
-  disableAllSearchSubmit: function(){
-    this.$('.search').attr('disabled', 'disabled');
-  }
-  */
+  } 
 });

@@ -11,6 +11,7 @@
     :js:
       :home_canvas:
         - jquery.js
+        - jquery.cookie.js        
         - underscore.js
         - backbone.min.js
         - jquery.dateFormat.js
@@ -23,7 +24,7 @@
         - models/travel.js
         - models/travel_step.js
         - controllers/gadget.js
-      :home:
+      :home:        
         - views/gadget/event.js
         - views/gadget/event_summary.js
         - views/gadget/travels.js
@@ -41,6 +42,7 @@
         - vendor/assets/stylesheets/jquery.autocomplete.css
     :js:
       :home_canvas:
+        - vendor/assets/javascripts/jquery.cookie.js
         - vendor/assets/javascripts/jquery.js
         - vendor/assets/javascripts/underscore.js
         - vendor/assets/javascripts/backbone.min.js
@@ -56,9 +58,11 @@
         - app/assets/javascripts/controllers/gadget.js
       :home:
         - app/assets/javascripts/views/gadget/event.js
+        - app/assets/javascripts/views/gadget/event_summary.js
         - app/assets/javascripts/views/gadget/travels.js
         - app/assets/javascripts/views/gadget/travel.js
-        - app/assets/javascripts/views/gadget/travel_step.js
+        - app/assets/javascripts/views/gadget/travel_step.js 
+        - app/assets/javascripts/models/event_summary.js       
       :canvas:
         - vendor/assets/javascripts/jquery.autocomplete_geomod.js
         - vendor/assets/javascripts/geo_autocomplete.js

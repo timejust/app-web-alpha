@@ -134,46 +134,7 @@ App.Views.TravelsView = Backbone.View.extend({
       success: this.waitForTravels,
       error: this.error
     });
-  },
-  /*
-  // Launch request to API to create event in database
-  // If it was created successfully, show travel nodes selector view
-  generateTripWithoutAddress: function() {    
-    showLoader();
-    
-    // TODO : use Event model and bind callback on created event
-    GoogleRequest.post({
-      url: App.config.api_url + "/events",
-      params: {
-        event: JSON.stringify($.extend(
-          this.selectedEvent,
-          {
-            before_start_time: 0,
-            after_end_time: 0,            
-          }          
-        )),
-        current_ip: this.ip,        
-        base: this.base
-      },
-      success: this.generateTripCallback,
-      error: this.error
-    });
-  },
-  // Callback when an event is created
-  generateTripCallback: function(response){
-    if (response.data) {
-      this.model = new App.Models.Event(response.data);
-    }
-    hideLoader();
-    google.calendar.refreshEvents();
-    this.showTravelNodesSelector();
-  },
-  // Show travel nodes selector view to confirm each travel nodes addresses
-  // Also start polling from API to get travels proposals
-  showTravelNodesSelector: function(){
-    gadgets.views.requestNavigateTo('canvas', { apiEventId: this.model.get('_id'), base: this.base });
-  },
-  */
+  },    
   render: function() {
     var self = this;
     $(this.el).html("\
@@ -269,17 +230,34 @@ App.Views.TravelsView = Backbone.View.extend({
   changeTitle: function(e) {
     e.preventDefault();    
     var el = $(e.currentTarget);
-    var container = el.parent('li').parent('.aliases');    
+    var container = el.parent('li').parent('.aliases');
+    var root = container.parent('ul').parent('div').parent('div');       
+    var event = this.currentEvent(root);
     if (el.attr('selector') == 'true') {
       // Go to address selector page.
-      // this.generateTripWithoutAddress();
-    } else {
-      var root = container.parent('ul').parent('div').parent('div');    
-      var event = this.currentEvent(root);
+      this.showAddressSelector(event.summary);
+    } else {             
       event.selected = el.attr('id');
       event.render();
     }    
   },  
+  // Show travel nodes selector view to confirm each travel nodes addresses
+  // Also start polling from API to get travels proposals
+  showAddressSelector: function(summary) {
+    // Set current address proposals and aliases to cookie
+    // $.cookie('ab', summary.addressBook, { expires: 1 });
+    var ab = JSON.stringify(summary.addressBook, this.replacer);
+    var alias = JSON.stringify(summary.alias, this.replacer);
+    $.cookie('ab', ab);    
+    $.cookie('alias', alias);    
+    gadgets.views.requestNavigateTo('canvas', { ip: this.ip });
+  },
+  replacer: function(key, value) {
+    if (typeof value === 'number' && !isFinite(value)) {
+        return String(value);
+    }
+    return value;
+  },
   yellowToggleSteps: function(e) {
     e.preventDefault();    
     var container = $(e.currentTarget).parent('li').parent('ul').parent('div').find('.steps');

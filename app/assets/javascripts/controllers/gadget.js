@@ -18,8 +18,7 @@ App.Controllers.GadgetController = Backbone.Router.extend({
     if (this.user.state == "unauthorized") {
       $('#notifications').html("<p>You must authorize Timejust to access your calendar by clicking : <a href='" + App.config.web_url + "/oauth2/authorize?return_to=http://google.com/calendar' target='blank'>here</a></p>");
       gadgets.window.adjustHeight();
-    }
-    else {
+    } else {
       /* Desactivated see #94, #51
       if (this.user.pendingEvent) {
         var event = this.user.pendingEvent;
@@ -43,12 +42,10 @@ App.Controllers.GadgetController = Backbone.Router.extend({
   },
 
   // Gadget travel node selector view (canvas)
-  travel_node_selector: function(){
+  travel_node_selector: function() {
     new App.Views.TravelNodesSelectorView({
       el: $('#travelNodesSelector').get(0),
-      apiEventId: gadgets.views.getParams()['apiEventId'],
-      base: gadgets.views.getParams()['base'],
-      ip: this.ip
+      ip: gadgets.views.getParams()['ip'],
     });
   }
 });
