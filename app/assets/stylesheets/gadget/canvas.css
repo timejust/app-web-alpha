@@ -1,7 +1,85 @@
-ul.top {
+div {
+  display: inline-block;
+}
+div.main {
+  width: 100%;
+}
+div.top {
   height: 72px;
+  width: 100%;
   background-color: #F5F5F5;
   border-bottom: 2px solid #CCCCCC;
+  display: inline-block;
+}
+div.left {
+  float: left;
+  width: 28%;
+  display: inline;
+  border-right: 1px solid #CCCCCC;
+}
+div.right {
+  display: inline;
+  float: right;
+  width: 72%;
+}
+div.map_view {
+  width: 100%;
+  height: 660px;
+}
+div.left-top {
+  width: 100%;
+  display: inline-block;
+  border-bottom: 1px solid #CCCCCC;
+}
+div.left-bottom {
+  text-align: center;
+  display: block;
+}
+div.star_symbol.on {
+  display: inline-block;
+  background: url(/icons/hpimgs28.png) -18px 0px no-repeat;
+  color: transparent;
+  height: 18px;
+  line-height: 15px;
+  overflow: hidden;
+  width: 20px;
+}
+div.title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #15C;
+  vertical-align: top;
+  margin-left: 10px;
+}
+div.star_symbol.off {
+  
+}
+div.marker_0 {
+  display: inline-block;
+  background: url(/icons/red_markers.png) 0px 0px no-repeat;
+  color: transparent;
+  height: 32px;
+  line-height: 15px;
+  overflow: hidden;
+  width: 20px;
+}
+div.marker_1 {
+  display: inline-block;
+  background: url(/icons/red_markers.png) 0px -34px no-repeat;
+  color: transparent;
+  height: 32px;
+  line-height: 15px;
+  overflow: hidden;
+  width: 20px;
+}
+div.marker_2 {
+  display: inline-block;
+  background: url(/icons/red_markers.png) 0px -68px no-repeat;
+  color: transparent;
+  height: 32px;
+  line-height: 15px;
+  overflow: hidden;
+  width: 20px;
 }
 div.logo {
   display: inline-block; 
@@ -11,12 +89,41 @@ div.logo {
   background-repeat: no-repeat;
   margin: 10px 0px 10px 2%;
 }
-div {
-  display: inline;
+#alias.address {
+  margin-top: 5px;
+  font-size: 13px;
+  font-weight: bold;
+  vertical-align: top;
+  margin-left: 10px;
+}
+div.city {
+  display: block;
+  margin-left: 33px;
+  margin-top: -15px;
+}
+div.address_block {
+  display: block;
+}
+div.control_block {
+  display: block;
+}
+div.save_as_alias {
+  font-size: 13px;
+  font-style: italic;
+  color: #666;
+}
+div.results_block {
+  margin: 20px 20px 20px 20px;
+  display: block;
+}
+div.result_block {
+  display: block;
+  margin-bottom: 20px;
 }
 div.search_box {
   vertical-align: 36px;
   margin-left: 1%;
+  display: inline-block;
 }
 div.search_button_content {
   display: inline-block;
@@ -37,7 +144,7 @@ div.button-outer_block {
   overflow: visible;
   width: 16px;
 }
-div.search_button {
+div.google_result, div.freq_address, div.search_button {
   vertical-align: middle;
   display: inline-block; 
   border: 1px solid #3079ED;
@@ -63,6 +170,16 @@ div.search_button {
   outline: none;
   padding: 0 8px;
   text-align: center;
+}
+div.freq_address, div.google_result {
+  color: #333;
+  background: #F5F5F5;
+  border: 1px solid #CCCCCC;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+div.google_result {
+  margin-left: 40px;
 }
 #maininput {
   background: white;
