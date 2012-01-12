@@ -13,6 +13,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     this.showGoogleMap();
   },
   getGeoAutocomplete: function(node) {
+    var self = this;
     $('#' + node).geo_autocomplete(new google.maps.Geocoder, {
       mapkey: 'ABQIAAAAbnvDoAoYOSW2iqoXiGTpYBTIx7cuHpcaq3fYV4NM0BaZl8OxDxS9pQpgJkMv0RxjVl6cDGhDNERjaQ', 
   		selectFirst: false,
@@ -25,8 +26,9 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   	}).result(function(_event, _data) {
   	  if (_data) {
   	    this.value = _data.formatted_address;
-        var lng = _data.geometry.location.Ra
-        var lat = _data.geometry.location.Qa                
+  	    self.map.fitBounds(_data.geometry.viewport);
+        // var lng = _data.geometry.location.Ra
+        // var lat = _data.geometry.location.Qa                
 	    }
 	  });
   }, 
@@ -97,7 +99,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     var container = $(this.el).find('.main').find('.right').find('.map_view');
-    var map = new google.maps.Map(container[0], myOptions);
+    this.map = new google.maps.Map(container[0], myOptions);
   },
   showFreqAddress: function(e) {
     e.preventDefault();
