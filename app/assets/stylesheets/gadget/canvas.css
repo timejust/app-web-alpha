@@ -1,6 +1,9 @@
 #travelNodesSelector {
   width: 100%;
 }
+#gadgetContent-canvas {
+  height: 100%;
+}
 div {
   display: inline-block;
 }
@@ -18,7 +21,6 @@ div.left {
   float: left;
   width: 28%;
   display: inline;
-  border-right: 1px solid #CCCCCC;
 }
 div.right {
   display: inline;
@@ -27,7 +29,7 @@ div.right {
 }
 div.map_view {
   width: 100%;
-  height: 660px;
+  height: 100%;
 }
 div.left-top {
   width: 100%;
@@ -47,15 +49,22 @@ div.star_symbol.on {
   overflow: hidden;
   width: 20px;
 }
+div.star_symbol.off {
+  display: inline-block;
+  background: url(/icons/hpimgs28.png) -0px 0px no-repeat;
+  color: transparent;
+  height: 18px;
+  line-height: 15px;
+  overflow: hidden;
+  width: 20px;
+}
 div.title {
+  cursor: pointer;
   font-size: 16px;
   font-weight: bold;
   color: #15C;
   vertical-align: top;
   margin-left: 10px;
-}
-div.star_symbol.off {
-  
 }
 div.marker_0 {
   display: inline-block;
@@ -84,6 +93,15 @@ div.marker_2 {
   overflow: hidden;
   width: 20px;
 }
+div.marker_3 {
+  display: inline-block;
+  background: url(/icons/red_markers.png) 0px -102px no-repeat;
+  color: transparent;
+  height: 32px;
+  line-height: 15px;
+  overflow: hidden;
+  width: 20px;
+}
 div.logo {
   display: inline-block; 
   width: 143px; 
@@ -99,6 +117,19 @@ div.logo {
   vertical-align: top;
   margin-left: 10px;
 }
+#result.address {
+  font-size: 16px;
+  color: #15C;
+  font-weight: bold;
+  vertical-align: top;
+  margin-left: 10px;
+  cursor: pointer;
+}
+#alias_marker.marker_container {
+  margin-top: 5px;
+}
+#alias_input {
+}
 div.city {
   display: block;
   margin-left: 33px;
@@ -109,11 +140,18 @@ div.address_block {
 }
 div.control_block {
   display: block;
+  margin-left: 1px;
+}
+#google_result.control_block {
+  margin-top: 5px;
+  cursor: pointer;
 }
 div.save_as_alias {
   font-size: 13px;
   font-style: italic;
   color: #666;
+  vertical-align: 3px;
+  margin-left: 9px;
 }
 div.results_block {
   margin: 20px 20px 20px 20px;
@@ -182,7 +220,7 @@ div.freq_address, div.google_result {
   margin-bottom: 15px;
 }
 div.google_result {
-  margin-left: 40px;
+  margin-left: 20%;
 }
 #maininput {
   background: white;

@@ -137,32 +137,6 @@ ul .address {
   background-position: -12px -1px;
   background-repeat: no-repeat;
 }
-a.get_there { 
-  border-top: 7px solid #8AB53E;
-  border-left: 38px solid #8AB53E;
-  border-right: 38px solid #8AB53E;
-  border-bottom: 7px solid #8AB53E;
-  padding: 0 0 0em 0;
-  font-family: Arial, sans-serif;
-  font-weight: bold;
-  font-size: 12px;
-  background-color: #8AB53E;
-  color: #ffffff;
-  text-decoration: none;
-}
-a.leave_from { 
-  border-top: 7px solid #8AB53E;
-  border-left: 33px solid #8AB53E;
-  border-right: 33px solid #8AB53E;
-  border-bottom: 7px solid #8AB53E;
-  padding: 0 0 0em 0;
-  font-family: Arial, sans-serif;
-  font-weight: bold;
-  font-size: 12px;
-  background-color: #8AB53E;
-  color: #ffffff;
-  text-decoration: none;
-}
 a.clear { 
   color: #8AB53E; 
 }

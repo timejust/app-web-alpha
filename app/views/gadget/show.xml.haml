@@ -13,7 +13,7 @@
         }.join }
       <!--[if IE]>
         <style>
-          #travels { height: 310px; overflow: auto; }
+          #travels { height: 100%; overflow: auto; }
           .travel_node_toggle { vertical-align: middle; }
           .previous_travel_node span { line-height: 15px; vertical-alig middle; }
           .steps_toggle { vertical-align: middle; }
@@ -56,10 +56,9 @@
       </script>
   %Content{type: "html", view: "canvas"}
     :cdata
-      <div id="travelNodesSelector" style="width: 100%">
-        <a href="#" class="cancel">Cancel</a>
+      <div id="travelNodesSelector" style="width: 100%; height: 100%">
       </div>     
-      <img class="loader" src="#{configatron.web.url}/assets/loader.gif" />      
+      #<img class="loader" src="#{configatron.web.url}/assets/loader.gif" />      
       <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
       #{configatron.gadget_helper.css.canvas.map { |hc| 
         "<link rel=\"stylesheet\" type=\"text/css\" href=\"#{configatron.web.url}/assets/#{hc}\" />"

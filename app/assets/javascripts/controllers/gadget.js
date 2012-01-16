@@ -1,5 +1,4 @@
 App.Controllers.GadgetController = Backbone.Router.extend({
-
   // Gadget home view
   sidebar: function(){
     this.user = new User();
@@ -40,7 +39,6 @@ App.Controllers.GadgetController = Backbone.Router.extend({
       new App.Views.EventView({ el: $('#selectedEvent').get(0), ip: this.ip, user: this.user });
     }
   },
-
   // Gadget travel node selector view (canvas)
   travel_node_selector: function() {
     new App.Views.TravelNodesSelectorView({

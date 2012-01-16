@@ -109,22 +109,6 @@ p {
 .travel_node_expand { 
   display: none; 
 }
-form h2 { 
-  margin: 10px 0 0 10px; 
-  font: bold 1.5em Arial; 
-  color: #8f8f8f; 
-}
-form p { 
-  margin: 0 0 0 10px; 
-}
-form p span.favorite { 
-  margin: 0 0 0 50px; 
-  font: bold 1em Arial; 
-}
-form p.other_address { 
-  margin: 5px 0 20px 10px; 
-  font: italic 0.9em Arial; 
-}
 .hasPlaceholder { 
   color: #777; 
 }

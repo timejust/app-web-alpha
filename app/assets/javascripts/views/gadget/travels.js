@@ -10,8 +10,8 @@ App.Views.TravelsView = Backbone.View.extend({
     'click .yellow_toggle'        : 'yellowToggleSteps',
     'click .green_toggle'         : 'greenToggleSteps',
     'click .pink_toggle'          : 'pinkToggleSteps',
-    'click .show_travel_node'     : 'generateTrip',
-    'click .value'                : 'changeTitle'
+    'click .value'                : 'changeTitle',
+    'poll #event_polling'         : 'handleEvent'
   },
   initialize: function(){
     showLoader();
@@ -32,6 +32,22 @@ App.Views.TravelsView = Backbone.View.extend({
   appendEventSummary: function(i, summary) {
     this.summaries[i] = summary;
   },
+  handleEvent: function(e) {
+    $.poll(function(retry){
+      var ev = $.cookie('event');    
+      if (ev == null || ev == "") {
+        retry();
+      } else {  
+        ev = eval('(' + ev + ')');      
+        if (ev.type == 'EVENT_ADDRESS_SELECTED') {
+          alert(ev.params.address);
+          alert(ev.params.lat);
+          alert(ev.params.lng);
+        }
+        $.cookie('event', '');    
+      }  
+    });                 
+  },  
   waitForTravels: function(response){
     google.calendar.refreshEvents();
     this.apiEventId = response.data._id;
@@ -138,6 +154,7 @@ App.Views.TravelsView = Backbone.View.extend({
   render: function() {
     var self = this;
     $(this.el).html("\
+    <div id='event_polling' style='display:none'></div>\
     <div class='transportations'></div>\
     <div id='previous_event'></div>\
     <div id='previous_travel'></div>\
@@ -250,13 +267,20 @@ App.Views.TravelsView = Backbone.View.extend({
     var alias = JSON.stringify(summary.alias, this.replacer);
     $.cookie('ab', ab);    
     $.cookie('alias', alias);    
+    $.cookie('original_address', summary.original_address);
+    $.cookie('ip', this.ip);    
     gadgets.views.requestNavigateTo('canvas', { ip: this.ip });
+    this.runEventPoller();    
   },
   replacer: function(key, value) {
     if (typeof value === 'number' && !isFinite(value)) {
         return String(value);
     }
     return value;
+  },
+  runEventPoller: function() {
+    var e = $(this.el).find('#event_polling');
+    e.trigger('poll');   
   },
   yellowToggleSteps: function(e) {
     e.preventDefault();    

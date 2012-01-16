@@ -1,14 +1,24 @@
 App.Views.TravelNodesSelectorView = Backbone.View.extend({
   events: {
-    'click .search_button' : 'search',
-    // : 'saveNewAddress',
-    'click .google_maps'   : 'openGoogleMaps',
-    'click .freq_address'  : 'showFreqAddress'
+    'click .search_button'  : 'search',
+    'click .google_maps'    : 'openGoogleMaps',
+    'click .freq_address'   : 'showFreqAddress',
+    'click .google_result'  : 'showGoogleResult',
+    'click #google_result.control_block' : 'bookmarkAddress',
+    'click #result.address' : 'selectAddress',
+    // 'click .title'          : 'selectAlias'
   },
   initialize: function(){
     // _.bindAll(this, 'waitForTravelNodes');
+    _.bindAll(this, 'onNormalizedAddress');
     this.ab = eval('(' + $.cookie('ab') + ')');
     this.alias = eval('(' + $.cookie('alias') + ')');
+    this.original_address = $.cookie('original_address');
+    this.ip = $.cookie('ip');
+    if (this.original_address != '') {
+      this.normalizeAddress(this.original_address);
+    }
+    this.results = new Array();
     this.render();
     this.showGoogleMap();
   },
@@ -67,9 +77,26 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         <div class="title"><%=title%></div>\
       </div>\
       <div class="address_block" data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\">\
-        <div class="marker_<%=index%>"></div>\
+        <div id="alias_marker" class="marker_container">\
+          <div class="marker_<%=index%>"></div>\
+        </div>\
         <div id="alias" class="address"><%=address%></div>\
         <div class="city"><%=city%></div>\
+      </div>\
+    </div>\
+  '),
+  google_result: _.template('\
+    <div class="result_block">\
+      <div class="address_block" data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\">\
+        <div class="marker_container">\
+          <div class="marker_<%=index%>"></div>\
+        </div>\
+        <div id="result" class="address"><%=address%></div>\
+        <div class="city"><%=city%></div>\
+      </div>\
+      <div id="google_result" class="control_block">\
+        <div class="star_symbol off"></div>\
+        <div class="save_as_alias">Save as alias</div>\
       </div>\
     </div>\
   '),
@@ -79,20 +106,67 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var top = $(this.el).find('.top');
     top.html(this.top_template);
     this.getGeoAutocomplete('maininput');    
-    
+    if (this.original_address != "") {
+      $(this.el).find('#maininput')[0].value = this.original_address;      
+    }        
     var left = $(this.el).find('.main').find('.left');
-    left.html(this.left_template);
-    
+    left.html(this.left_template);    
     gadgets.window.adjustHeight();
   },
   search: function(e) {
-    var keyword = $('#maininput')[0].value;
-    if (keyword != "") {
-      
+    e.preventDefault();    
+    var location = $('#maininput')[0].value;
+    if (location != "") {
+      this.results = [];
+      this.normalizeAddress(location);
+    }    
+  },
+  toRecognizer: function(location, id, ip) {
+    return {"geo":encodeURIComponent(location), "id":id, "src":ip}
+  },
+  normalizeAddress: function(location) {
+    var body = new Array();
+    var id = 0;   
+    if (location != "") {
+      body.push(this.toRecognizer(location, id.toString(), this.ip))  
+    }
+    if (body.length == 0) {
+      return;
+    }
+    GoogleRequest.postWithoutEncoding({
+      url: "http://service-staging.timejust.com:8080/service-geo/v1/geo/recognition",
+      params: JSON.stringify(body),
+      success: this.onNormalizedAddress,
+      error: function() {        
+      }
+    }); 
+  },
+  onNormalizedAddress: function(response) {    
+    if (response.data.status == 'ok') {
+      var res = response.data.results;      
+      for (var i = 0; i < res.length; i++) {
+        var t = res[i][i];
+        if (t.status == 'ok') {
+          for (var k = 0; k < t.results.length; ++k) {
+            this.results.push(t.results[k]);          
+          }
+        }                 
+      }      
+      this.showGoogleResult(null);
+    }    
+  },
+  bookmarkAddress: function(e) {
+    var star = $(e.currentTarget).find('.star_symbol');
+    var tok = star[0].className.split(' ');
+    if (tok[1] == 'off') {
+      star.toggleClass('on');
+      star.toggleClass('off'); 
+      var alias = $(e.currentTarget).find('.save_as_alias');
+      alias.html('<input id="alias_input" placeholder="Alias name..." />');
     }    
   },
   showGoogleMap: function() {
-    var latlng = new google.maps.LatLng(-34.397, 150.644);
+    var latlng = new google.maps.LatLng(48.843, 2.275);
     var myOptions = {
       zoom: 4,
       center: latlng,
@@ -100,6 +174,36 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     };
     var container = $(this.el).find('.main').find('.right').find('.map_view');
     this.map = new google.maps.Map(container[0], myOptions);
+  },
+  showGoogleResult: function(e) {
+    if (e != null)
+      e.preventDefault();
+    var self = this;
+    var left = $(this.el).find('.left');
+    var container = left.find('.left-middle');
+    var results = '<div class="results_block">';
+    $.each(this.results, function(i, a) {
+      var tok = a.address.split(',');
+      var city = "";
+      $.each(tok, function(i, c) {
+        if (i > 0) {
+          city += c;
+          if (i < tok.length)
+            city += ",";
+        }          
+      });
+      // First token is address, and rest of them are city + country normally.
+      results += self.google_result({
+        index: i,
+        title: a.title,
+        address: tok[0],
+        city: city,
+        lat: a.location.lat,
+        lng: a.location.lng
+      });
+    });    
+    results += '</div>';
+    container.html(results);
   },
   showFreqAddress: function(e) {
     e.preventDefault();
@@ -130,45 +234,37 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     results += '</div>';
     container.html(results);
   },
-  // Wrap form submission to request API and confirm travel node selection
-  // When done, return to the main calendar view
-  saveNewAddress: function(event) {
-    event.preventDefault();
+  selectAddress: function(e) {
+    e.preventDefault();
+    var el = $(e.currentTarget);
+    var address_block = el.parent('div').parent('div').find('.address_block');
+
+    // If alias exist, create new one to call server side api
     gadgets.views.requestNavigateTo('home');
+        
+    var ev = {};
+    ev.type = 'EVENT_ADDRESS_SELECTED';
+    ev.params = {};
+    ev.params.address = el[0].textContent;
+    ev.params.lat = address_block.attr('data-lat');
+    ev.params.lng = address_block.attr('data-lng');
+    var json = JSON.stringify(ev, this.replacer);
+    $.cookie('event', json);    
+    
     /*
-    text_value = this.$('form').find('input[name="address"]').val();
-    select_value = this.$('form').find('select[name="address"]').val();   
+    GoogleRequest.post({
+      url: App.config.api_url + "/events/" + this.model.get('_id') + "/travel_nodes_confirmation",
+      params: { 'current_ip' : this.ip },
+      success: this.waitForTravelNodes
+    });    
     */
-    /*
-    if (this.getTravelNodeAddress('previous_travel_node') == 
-      this.getTravelNodeAddress('current_travel_node')) {
-      alert("You can search travel with same departure and destination.\nI need pretty alert popup design.")
-      this.$('.next').removeAttr('disabled');
-    } else {
-      GoogleRequest.post({
-        url: App.config.api_url + "/events/" + this.model.get('_id') + "/travel_nodes_confirmation",
-        params: {
-          'previous_travel_node[address]': this.getTravelNodeAddress('previous_travel_node'),
-          'previous_travel_node[title]': this.getTravelNodeTitle('previous_travel_node'),
-          'previous_travel_node[state]': this.getTravelNodeState('previous_travel_node'),
-          'previous_travel_node[event_google_id]': this.getEventGoogleId('previous_travel_node'),
-          'previous_travel_node[lat]' : this.getLatitude('previous_travel_node'),
-          'previous_travel_node[lng]' : this.getLongitude('previous_travel_node'),
-          'previous_travel_node[has_normalized]' : this.hasNormalized('previous_travel_node'),
-          'current_travel_node[address]': this.getTravelNodeAddress('current_travel_node'),
-          'current_travel_node[title]': this.getTravelNodeTitle('current_travel_node'),
-          'current_travel_node[state]': this.getTravelNodeState('current_travel_node'),
-          'current_travel_node[event_google_id]': this.getEventGoogleId('current_travel_node'),
-          'current_travel_node[lat]' : this.getLatitude('current_travel_node'),
-          'current_travel_node[lng]' : this.getLongitude('current_travel_node'),
-          'current_travel_node[has_normalized]' : this.hasNormalized('current_travel_node'),
-          'current_ip' : this.ip
-        },
-        success: this.waitForTravelNodes
-      });
+  },    
+  replacer: function(key, value) {
+    if (typeof value === 'number' && !isFinite(value)) {
+        return String(value);
     }
-    */
-  },  
+    return value;
+  },
   // Return the confirmed address for a given travel node
   getTravelNodeAddress: function(travel_node_type) {
     text_value = this.$('form').find('input[name="' + travel_node_type + '\[address\]"]').val();

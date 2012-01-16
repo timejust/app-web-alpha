@@ -185,6 +185,9 @@ App.Views.EventView = Backbone.View.extend({
           }        
         }  
         summary.googleEventId = ev.id;
+        summary.original_address = ev.location;
+      } else {
+        summary.original_address = "";
       }      
       this.travels_view.selectedEvent = this.selectedEvent;
       // Append summaries for previous, current, and next travel
