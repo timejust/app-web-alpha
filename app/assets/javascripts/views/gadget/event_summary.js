@@ -2,6 +2,7 @@ App.Views.EventSummaryView = Backbone.View.extend({
   initialize: function() {
     this.summary = this.options.summary;
     this.prefix = this.options.prefix;
+    this.stage = this.options.stage;
     this.el = this.options.el;
     this.selected = -1;
     this.summarized = true;
@@ -10,6 +11,18 @@ App.Views.EventSummaryView = Backbone.View.extend({
     this.address = '';
     this.lat = 0.0;
     this.lng = 0.0;
+  },
+  appendAddressBook: function(address, lat, lng, normalized) {
+    if (this.summary != undefined) {
+      return this.summary.appendAddressBook(address, lat, lng, normalized);
+    }
+    return -1;
+  },
+  appendAlias: function(title, address, lat, lng) {
+    if (this.summary != undefined) {
+      return this.summary.appendAlias(title, address, lat, lng);
+    }
+    return -1;
   },
   render: function() {
     var self = this;
@@ -38,24 +51,24 @@ App.Views.EventSummaryView = Backbone.View.extend({
     } else {
       class_name = 'blue';   
       this.title = this.summary.title;
+      var ab = null;
       if (this.selected == -1) {
         if (this.summary.addressBook.length > 0) {
-          this.address = this.summary.addressBook[0].address;
-          this.lat = this.summary.addressBook[0].lat;
-          this.lng = this.summary.addressBook[0].lng;          
+          ab = this.summary.addressBook[0];
         }  
       } else {
         // We look up from address book first and alias book later.
         if (this.summary.addressBook.length > this.selected) {
-          this.address = this.summary.addressBook[this.selected].address;
-          this.lat = this.summary.addressBook[this.selected].lat;
-          this.lng = this.summary.addressBook[this.selected].lng;                    
+          ab = this.summary.addressBook[this.selected];
         } else {
-          this.address = this.summary.alias[this.selected - this.summary.addressBook.length].title;
-          this.lat = this.summary.alias[this.selected - this.summary.addressBook.length].lat;
-          this.lng = this.summary.alias[this.selected - this.summary.addressBook.length].lng;                    
+          ab = this.summary.alias[this.selected - this.summary.addressBook.length];          
         }
-      }      
+      }    
+      if (ab != null) {
+        this.address = ab.address;
+        this.lat = ab.lat;
+        this.lng = ab.lng;
+      }                
     }      
     var html = '<div class="' + class_name + '" style="';
     var title = this.title;

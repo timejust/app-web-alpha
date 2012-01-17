@@ -23,8 +23,8 @@ App.Views.EventView = Backbone.View.extend({
     this.alias = null;
     this.nextEventRequest = false;
     this.normalizedReq = new Array();
+    // List of google events
     this.events = new Array();
-    // this.render();
   },
   template: _.template('\
     <p class="title"><%= title %></p>\
@@ -40,8 +40,9 @@ App.Views.EventView = Backbone.View.extend({
   calendarEventOccured: function(calendarEvent){
     if (calendarEvent && calendarEvent['id']) {
       // don't use event from proposals calendars
-      if(!App.config.calendar_names || $.inArray(calendarEvent['calendar']['name'], 
-                                                 App.config.calendar_names) == -1) {
+      if (!App.config.calendar_names || 
+        $.inArray(calendarEvent['calendar']['name'], 
+                  App.config.calendar_names) == -1) {
         this.selectedEvent = calendarEvent;
         // this.showButton = true;
         if (this.travels_view) {
@@ -176,11 +177,11 @@ App.Views.EventView = Backbone.View.extend({
         // Append all addresses either from normalization process or google calendar.
         if (this.events[i].addresses == undefined) {
           if (ev.location != "")
-            summary.append(ev.location, 0.0, 0.0, false);
+            summary.appendAddressBook(ev.location, 0.0, 0.0, false);
         } else {
           for (var k = 0; k < ev.addresses.length; ++k) {
             var addresses = ev.addresses[k];
-            summary.append(addresses.address, 
+            summary.appendAddressBook(addresses.address, 
                 addresses.location.lat, addresses.location.lng, true);  
           }        
         }  
@@ -212,9 +213,6 @@ App.Views.EventView = Backbone.View.extend({
   // Render the selected Event in gadget sidebar
   render: function(){
     if (this.selectedEvent){
-      // if (this.showButton == true)
-      //  $(this.el).html(this.template(this.selectedEvent));
-      // else
       $(this.el).html(this.template(this.selectedEvent));
     }
     else{

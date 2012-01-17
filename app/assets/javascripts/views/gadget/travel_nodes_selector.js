@@ -1,12 +1,11 @@
 App.Views.TravelNodesSelectorView = Backbone.View.extend({
   events: {
     'click .search_button'  : 'search',
-    'click .google_maps'    : 'openGoogleMaps',
     'click .freq_address'   : 'showFreqAddress',
     'click .google_result'  : 'showGoogleResult',
     'click #google_result.control_block' : 'bookmarkAddress',
     'click #result.address' : 'selectAddress',
-    // 'click .title'          : 'selectAlias'
+    'click .title'          : 'selectAlias'
   },
   initialize: function(){
     // _.bindAll(this, 'waitForTravelNodes');
@@ -15,11 +14,14 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     this.alias = eval('(' + $.cookie('alias') + ')');
     this.original_address = $.cookie('original_address');
     this.ip = $.cookie('ip');
+    this.stage = $.cookie('stage');    
     if (this.original_address != '') {
       this.normalizeAddress(this.original_address);
     }
     this.results = new Array();
+    this.markerList = new Array();
     this.render();
+    this.bounds = null;
     this.showGoogleMap();
   },
   getGeoAutocomplete: function(node) {
@@ -76,7 +78,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         <div class="star_symbol on"></div>\
         <div class="title"><%=title%></div>\
       </div>\
-      <div class="address_block" data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\">\
+      <div class="address_block" data-address=\"<%=original_address%>\" data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\">\
         <div id="alias_marker" class="marker_container">\
           <div class="marker_<%=index%>"></div>\
         </div>\
@@ -87,7 +89,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   '),
   google_result: _.template('\
     <div class="result_block">\
-      <div class="address_block" data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\">\
+      <div class="address_block" data-address=\"<%=original_address%>\" data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\">\
         <div class="marker_container">\
           <div class="marker_<%=index%>"></div>\
         </div>\
@@ -168,16 +170,38 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   showGoogleMap: function() {
     var latlng = new google.maps.LatLng(48.843, 2.275);
     var myOptions = {
-      zoom: 4,
+      zoom: 8,
       center: latlng,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     var container = $(this.el).find('.main').find('.right').find('.map_view');
-    this.map = new google.maps.Map(container[0], myOptions);
+    this.map = new google.maps.Map(container[0], myOptions);    
+  },
+  adjustGoogleMap: function(lat, lng) {
+    var kRange = 0.1;
+    var bounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(lat - kRange, lng - kRange), 
+      new google.maps.LatLng(lat + kRange, lng + kRange));
+    if (this.bounds == null) {
+      this.bounds = bounds;
+    } else {
+      this.bounds.union(bounds); 
+    }
+    var marker = new google.maps.Marker({    
+      position: new google.maps.LatLng(lat, lng),    
+      map: this.map    
+    });
+    this.markerList.push(marker);
+    this.map.fitBounds(this.bounds);
   },
   showGoogleResult: function(e) {
     if (e != null)
       e.preventDefault();
+    $.each(this.markerList, function(i, marker) {
+      marker.setVisible(false);
+    });
+    this.markerList = [];
+        
     var self = this;
     var left = $(this.el).find('.left');
     var container = left.find('.left-middle');
@@ -197,16 +221,23 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         index: i,
         title: a.title,
         address: tok[0],
+        original_address: a.address,
         city: city,
         lat: a.location.lat,
         lng: a.location.lng
-      });
+      });     
+      self.adjustGoogleMap(a.location.lat, a.location.lng); 
     });    
     results += '</div>';
-    container.html(results);
+    container.html(results);    
   },
   showFreqAddress: function(e) {
     e.preventDefault();
+    $.each(this.markerList, function(i, marker) {
+      marker.setVisible(false);
+    });
+    this.markerList = [];
+    
     var self = this;
     var left = $(this.el).find('.left');
     var container = left.find('.left-middle');
@@ -226,13 +257,33 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         index: i,
         title: a.title,
         address: tok[0],
+        original_address: a.address,
         city: city,
         lat: a.lat,
         lng: a.lng
       });
+      self.adjustGoogleMap(a.lat, a.lng); 
     });
     results += '</div>';
     container.html(results);
+  },
+  selectAlias: function(e) {
+    e.preventDefault();
+    var el = $(e.currentTarget);
+    var address_block = el.parent('div').parent('div').find('.address_block');
+    
+    gadgets.views.requestNavigateTo('home');
+        
+    var ev = {};
+    ev.type = 'EVENT_ALIAS_SELECTED';
+    ev.params = {};
+    ev.params.title = el[0].textContent;
+    ev.params.address = address_block.attr('data-address');
+    ev.params.lat = address_block.attr('data-lat');
+    ev.params.lng = address_block.attr('data-lng');
+    ev.params.stage = this.stage;
+    var json = JSON.stringify(ev, this.replacer);
+    $.cookie('event', json);
   },
   selectAddress: function(e) {
     e.preventDefault();
@@ -245,9 +296,10 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var ev = {};
     ev.type = 'EVENT_ADDRESS_SELECTED';
     ev.params = {};
-    ev.params.address = el[0].textContent;
+    ev.params.address = address_block.attr('data-address');
     ev.params.lat = address_block.attr('data-lat');
     ev.params.lng = address_block.attr('data-lng');
+    ev.params.stage = this.stage;
     var json = JSON.stringify(ev, this.replacer);
     $.cookie('event', json);    
     
@@ -285,10 +337,5 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   close: function(){
     // Cannot pass parameters to home views !?!
     gadgets.views.requestNavigateTo('home');
-  },
-  // Open google maps window for current selected address
-  openGoogleMaps: function(event){
-    event.preventDefault();
-    window.open("http://google.com/maps?q=" + $(event.currentTarget).closest('.travel_node').find('.selected_address').val(), 'google_maps');
-  } 
+  }
 });

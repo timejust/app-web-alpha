@@ -6,9 +6,29 @@ App.Models.EventSummary = Backbone.Model.extend({
     this.googleEventId = '';
     this.addressBook = new Array();
   },
-  append: function(address, lat, lng, normalized) {
-    this.addressBook[this.addressBook.length] = {
-      title: this.title, address: address, lat: lat, lng: lng, normalized: normalized};            
+  appendAddressBook: function(address, lat, lng, normalized) {
+    var id = this.addressBook.length;
+    $.each(this.addressBook, function(i, ab) {
+      if (normalized == true && ab.address == address) {
+        id = i;
+      }
+    });
+    if (id == this.addressBook.length) {
+      this.addressBook[this.addressBook.length] = {
+        title: this.title, address: address, lat: lat, lng: lng, normalized: normalized};        
+    }   
+    return id;
+  },
+  appendAlias: function(title, address, lat, lng) {
+    var id = this.alias.length;
+    $.each(this.alias, function(i, a) {
+      if (a.title == title) {
+        id = i;
+      }
+    });
+    this.alias[id] = {
+      title: title, address: address, lat: lat, lng: lng};
+    return id + this.addressBook.length;
   },
   dump: function() {
     var output = "title: " + this.title;    

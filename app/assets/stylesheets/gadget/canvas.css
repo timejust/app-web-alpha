@@ -37,6 +37,7 @@ div.left-top {
   border-bottom: 1px solid #CCCCCC;
 }
 div.left-bottom {
+  margin-top: 20px;
   text-align: center;
   display: block;
 }

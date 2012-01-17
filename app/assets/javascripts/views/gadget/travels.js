@@ -4,27 +4,25 @@ App.Views.TravelsView = Backbone.View.extend({
   events: {
     'click .load_previous_travel' : 'generatePreviousTravel',
     'click .load_next_travel'     : 'generateNextTravel',    
-    'click .travel_node_toggle'   : 'toggleTravelNode',
     'click .white_toggle'         : 'whiteToggleSteps',
     'click .gray_toggle'          : 'grayToggleSteps',
-    'click .yellow_toggle'        : 'yellowToggleSteps',
-    'click .green_toggle'         : 'greenToggleSteps',
-    'click .pink_toggle'          : 'pinkToggleSteps',
+    'click .yellow_toggle'        : 'toggleSteps',
+    'click .green_toggle'         : 'toggleSteps',
+    'click .pink_toggle'          : 'toggleSteps',
     'click .value'                : 'changeTitle',
     'poll #event_polling'         : 'handleEvent'
   },
   initialize: function(){
     showLoader();
     _.bindAll(this, 'waitForTravels');
-    // _.bindAll(this, 'generateTripCallback');    
+    _.bindAll(this, 'handleEvent'); 
     gadgets.window.adjustHeight();
-    // this.base = this.options.base;
     this.ip = this.options.ip;    
     this.eventView = this.options.eventView;
     this.summaries = new Array();    
-    this.previousEventView = new App.Views.EventSummaryView({prefix: "from"});
-    this.currentEventView = new App.Views.EventSummaryView();
-    this.nextEventView = new App.Views.EventSummaryView({prefix: "to"});  
+    this.previousEventView = new App.Views.EventSummaryView({prefix: "from", stage: 'previous'});
+    this.currentEventView = new App.Views.EventSummaryView({stage: 'current'});
+    this.nextEventView = new App.Views.EventSummaryView({prefix: "to", stage: 'next'});  
     this.previousTravelView = new App.Views.TravelView();
     this.nextTravelView = new App.Views.TravelView();
     this.travelType = 'previous';      
@@ -33,6 +31,7 @@ App.Views.TravelsView = Backbone.View.extend({
     this.summaries[i] = summary;
   },
   handleEvent: function(e) {
+    var self = this;
     $.poll(function(retry){
       var ev = $.cookie('event');    
       if (ev == null || ev == "") {
@@ -40,14 +39,45 @@ App.Views.TravelsView = Backbone.View.extend({
       } else {  
         ev = eval('(' + ev + ')');      
         if (ev.type == 'EVENT_ADDRESS_SELECTED') {
-          alert(ev.params.address);
-          alert(ev.params.lat);
-          alert(ev.params.lng);
+          self.onAddressSelected(ev.params);
+        } else if (ev.type == 'EVENT_ALIAS_SELECTED') {
+          self.onAliasSelected(ev.params);
         }
+        // Clear event cookie
         $.cookie('event', '');    
       }  
     });                 
   },  
+  onAddressSelected: function(params) {
+    var eventView = null;
+    if (params.stage == 'previous') {
+      eventView = this.previousEventView;
+    } else if (params.stage == 'current') {
+      eventView = this.currentEventView;
+    } else if (params.stage == 'next') {
+      eventView = this.nextEventView;
+    }
+    if (eventView != null) {
+      var id = eventView.appendAddressBook(params.address, params.lat, params.lng, true);
+      eventView.selected = id;
+      eventView.render();
+    }
+  },
+  onAliasSelected: function(params) {
+    var eventView = null;
+    if (params.stage == 'previous') {
+      eventView = this.previousEventView;
+    } else if (params.stage == 'current') {
+      eventView = this.currentEventView;
+    } else if (params.stage == 'next') {
+      eventView = this.nextEventView;
+    }
+    if (eventView != null) {
+      var id = eventView.appendAlias(params.title, params.address, params.lat, params.lng);
+      eventView.selected = id;
+      eventView.render();
+    }
+  },
   waitForTravels: function(response){
     google.calendar.refreshEvents();
     this.apiEventId = response.data._id;
@@ -90,6 +120,7 @@ App.Views.TravelsView = Backbone.View.extend({
       }      
       travelView.model = response.data;
       travelView.render();  
+      this.renderButton();
       gadgets.window.adjustHeight();  
       google.calendar.refreshEvents();  
     }
@@ -151,6 +182,18 @@ App.Views.TravelsView = Backbone.View.extend({
       error: this.error
     });
   },    
+  renderButton: function() {
+    if (this.previousTravelView.rendered == true) {
+      $('#previous_travel_btn').html('RELOAD THIS TRIP');  
+    } else {
+      $('#previous_travel_btn').html('PLAN THIS TRIP');  
+    }    
+    if (this.nextTravelView.rendered == true) {
+      $('#next_travel_btn').html('RELOAD THIS TRIP');      
+    } else {
+      $('#next_travel_btn').html('PLAN THIS TRIP');      
+    }    
+  },
   render: function() {
     var self = this;
     $(this.el).html("\
@@ -158,10 +201,10 @@ App.Views.TravelsView = Backbone.View.extend({
     <div class='transportations'></div>\
     <div id='previous_event'></div>\
     <div id='previous_travel'></div>\
-    <a class='load_previous_travel' href='#'><div class='green_btn'><div class='button_name'>PLAN THIS TRIP</div></div></a>\
+    <a class='load_previous_travel' href='#'><div class='green_btn'><div id='previous_travel_btn' class='button_name'></div></div></a>\
     <div id='current_event'></div>\
     <div id='next_travel'></div>\
-    <a class='load_next_travel' href='#'><div class='green_btn'><div class='button_name'>PLAN THIS TRIP</div></div></a>\
+    <a class='load_next_travel' href='#'><div class='green_btn'><div id='next_travel_btn' class='button_name'></div></div></a>\
     <div id='next_event'></div>\
     ");
     this.previousEventView.el = $('#previous_event').get(0);
@@ -173,6 +216,8 @@ App.Views.TravelsView = Backbone.View.extend({
     this.previousTravelView.el = $('#previous_travel').get(0);
     this.nextTravelView.el = $('#next_travel').get(0);
     
+    this.renderButton();
+    
     this.previousEventView.render();
     this.currentEventView.render();
     this.nextEventView.render();    
@@ -180,14 +225,6 @@ App.Views.TravelsView = Backbone.View.extend({
     $(this.el).html();    
     gadgets.window.adjustHeight();
     google.calendar.refreshEvents();
-  },
-  // TODO spec
-  toggleTravelNode: function(e){
-    e.preventDefault();
-    $(e.currentTarget).toggleClass('on');
-    $(e.currentTarget).toggleClass('off');
-    $(e.currentTarget).siblings('.travel_node_expand').toggle();
-    gadgets.window.adjustHeight();
   },
   whiteToggleSteps: function(e) {
     e.preventDefault();
@@ -221,6 +258,14 @@ App.Views.TravelsView = Backbone.View.extend({
       el.attr('shorten', 'true');
     }
   },
+  toggleSteps: function(e) {
+    e.preventDefault();    
+    var container = $(e.currentTarget).parent('li').parent('ul').parent('div').find('.steps');
+    $(e.currentTarget).toggleClass('on');
+    $(e.currentTarget).toggleClass('off');
+    container.toggle();
+    gadgets.window.adjustHeight();
+  },
   currentEvent: function(root) {
     if (root[0].id == 'previous_event') {
       event = this.previousEventView;
@@ -252,7 +297,7 @@ App.Views.TravelsView = Backbone.View.extend({
     var event = this.currentEvent(root);
     if (el.attr('selector') == 'true') {
       // Go to address selector page.
-      this.showAddressSelector(event.summary);
+      this.showAddressSelector(event.summary, event.stage);
     } else {             
       event.selected = el.attr('id');
       event.render();
@@ -260,15 +305,16 @@ App.Views.TravelsView = Backbone.View.extend({
   },  
   // Show travel nodes selector view to confirm each travel nodes addresses
   // Also start polling from API to get travels proposals
-  showAddressSelector: function(summary) {
+  showAddressSelector: function(summary, stage) {
     // Set current address proposals and aliases to cookie
     // $.cookie('ab', summary.addressBook, { expires: 1 });
     var ab = JSON.stringify(summary.addressBook, this.replacer);
     var alias = JSON.stringify(summary.alias, this.replacer);
-    $.cookie('ab', ab);    
-    $.cookie('alias', alias);    
-    $.cookie('original_address', summary.original_address);
-    $.cookie('ip', this.ip);    
+    $.cookie('ab', ab, { expires: 1 });    
+    $.cookie('alias', alias, { expires: 1 });    
+    $.cookie('original_address', summary.original_address, { expires: 1 });
+    $.cookie('ip', this.ip, { expires: 1 });      
+    $.cookie('stage', stage, { expires: 1 });
     gadgets.views.requestNavigateTo('canvas', { ip: this.ip });
     this.runEventPoller();    
   },
@@ -281,31 +327,7 @@ App.Views.TravelsView = Backbone.View.extend({
   runEventPoller: function() {
     var e = $(this.el).find('#event_polling');
     e.trigger('poll');   
-  },
-  yellowToggleSteps: function(e) {
-    e.preventDefault();    
-    var container = $(e.currentTarget).parent('li').parent('ul').parent('div').find('.steps');
-    $(e.currentTarget).toggleClass('on');
-    $(e.currentTarget).toggleClass('off');
-    container.toggle();
-    gadgets.window.adjustHeight();
-  },
-  greenToggleSteps: function(e) {
-    e.preventDefault();    
-    var container = $(e.currentTarget).parent('li').parent('ul').parent('div').find('.steps');
-    $(e.currentTarget).toggleClass('on');
-    $(e.currentTarget).toggleClass('off');
-    container.toggle();
-    gadgets.window.adjustHeight();
-  },
-  pinkToggleSteps: function(e) {
-    e.preventDefault();    
-    var container = $(e.currentTarget).parent('li').parent('ul').parent('div').find('.steps');
-    $(e.currentTarget).toggleClass('on');
-    $(e.currentTarget).toggleClass('off');
-    container.toggle();
-    gadgets.window.adjustHeight();
-  },
+  },  
   clear: function(){
     $(this.el).empty();
   }

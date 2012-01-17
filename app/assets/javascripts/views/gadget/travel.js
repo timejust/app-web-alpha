@@ -2,6 +2,7 @@ App.Views.TravelView = Backbone.View.extend({
   className: 'travel',
   initialize: function() {
     this.model = null;
+    this.rendered = false;
   },
   // render each travel_steps of this travel
   render: function() {   
@@ -143,6 +144,7 @@ App.Views.TravelView = Backbone.View.extend({
       html += '</div></div>';
     });
     html += "</div>";
+    this.rendered = true;
     $(this.el).html(html);   
     $(this.el).find('.steps').hide();      
   },
