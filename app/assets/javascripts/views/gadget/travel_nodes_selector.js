@@ -177,21 +177,26 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var container = $(this.el).find('.main').find('.right').find('.map_view');
     this.map = new google.maps.Map(container[0], myOptions);    
   },
-  adjustGoogleMap: function(lat, lng) {
-    var kRange = 0.1;
-    var bounds = new google.maps.LatLngBounds(
-      new google.maps.LatLng(lat - kRange, lng - kRange), 
-      new google.maps.LatLng(lat + kRange, lng + kRange));
-    if (this.bounds == null) {
-      this.bounds = bounds;
-    } else {
-      this.bounds.union(bounds); 
-    }
+  createPin: function(lat, lng) {
     var marker = new google.maps.Marker({    
       position: new google.maps.LatLng(lat, lng),    
       map: this.map    
     });
     this.markerList.push(marker);
+  },
+  adjustGoogleMap: function() {
+    var kRange = 0.05;
+    $.each(this.markerList, function(i, marker) {
+      var latlng = marker.getPosition();
+      var bounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(latlng.lat() - kRange, latlng.lng() - kRange), 
+        new google.maps.LatLng(latlng.lat() + kRange, latlng.lng() + kRange));
+      if (this.bounds == null) {
+        this.bounds = bounds;
+      } else {
+        this.bounds.union(bounds); 
+      }  
+    });    
     this.map.fitBounds(this.bounds);
   },
   showGoogleResult: function(e) {
@@ -226,10 +231,11 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         lat: a.location.lat,
         lng: a.location.lng
       });     
-      self.adjustGoogleMap(a.location.lat, a.location.lng); 
+      self.createPin(a.location.lat, a.location.lng);      
     });    
     results += '</div>';
     container.html(results);    
+    self.adjustGoogleMap(); 
   },
   showFreqAddress: function(e) {
     e.preventDefault();
@@ -262,10 +268,11 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         lat: a.lat,
         lng: a.lng
       });
-      self.adjustGoogleMap(a.lat, a.lng); 
+      self.createPin(a.lat, a.lng);      
     });
     results += '</div>';
     container.html(results);
+    self.adjustGoogleMap(); 
   },
   selectAlias: function(e) {
     e.preventDefault();
@@ -289,6 +296,23 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     e.preventDefault();
     var el = $(e.currentTarget);
     var address_block = el.parent('div').parent('div').find('.address_block');
+    var control_block = el.parent('div').parent('div').find('.control_block');
+    var alias = control_block.find('.save_as_alias').find('#alias_input');
+    
+    if (alias.length > 0) {
+      // If there is an alias with the address, we save it
+      GoogleRequest.post({
+        url: App.config.api_url + "/users/add_alias",
+        params: { 
+          'email' : $.cookie('email'),
+          'address': address_block.attr('data-address'),
+          'title': '@' + alias[0].value,
+          'lat': address_block.attr('data-lat'),
+          'lng': address_block.attr('data-lng')
+        },
+        success: {}
+      });
+    }    
 
     // If alias exist, create new one to call server side api
     gadgets.views.requestNavigateTo('home');
@@ -296,20 +320,15 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var ev = {};
     ev.type = 'EVENT_ADDRESS_SELECTED';
     ev.params = {};
+    if (alias.length > 0) {
+      ev.params.title = '@' + alias[0].value;
+    }    
     ev.params.address = address_block.attr('data-address');
     ev.params.lat = address_block.attr('data-lat');
     ev.params.lng = address_block.attr('data-lng');
     ev.params.stage = this.stage;
     var json = JSON.stringify(ev, this.replacer);
-    $.cookie('event', json);    
-    
-    /*
-    GoogleRequest.post({
-      url: App.config.api_url + "/events/" + this.model.get('_id') + "/travel_nodes_confirmation",
-      params: { 'current_ip' : this.ip },
-      success: this.waitForTravelNodes
-    });    
-    */
+    $.cookie('event', json);     
   },    
   replacer: function(key, value) {
     if (typeof value === 'number' && !isFinite(value)) {

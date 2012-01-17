@@ -26,7 +26,7 @@ module Timejust
       
       json = JSON.generate(geos)
       req = Typhoeus::Request.new(@@url, :request => :post, :body => json)      
-      Rails.logger.info "******************* normalize step01 #{@@url}, #{json}**************"                           
+      # Rails.logger.info "******************* normalize step01 #{@@url}, #{json}**************"                           
       req.on_complete do |response|
         if response.success? && (data = JSON.parse(response.body))
           if data['status'] == 'ok'          

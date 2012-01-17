@@ -54,4 +54,18 @@ class Api::UsersController < Api::BaseController
       render :nothing => true, :status => :not_found
     end    
   end
+  
+  # POST /v1/users/alias
+  #
+  def add_alias
+    if User.exists?(conditions: {email: params[:email]})
+      user = User.where(email: params[:email]).first
+      return unauthorized! if current_user != user
+      
+      FavoriteLocation.create(:user => user, 
+        :title => params[:title], :address => params[:address], 
+        :lat => params[:lat], :lng => params[:lng]);
+    else
+    end
+  end
 end

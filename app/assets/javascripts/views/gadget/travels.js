@@ -60,6 +60,12 @@ App.Views.TravelsView = Backbone.View.extend({
     if (eventView != null) {
       var id = eventView.appendAddressBook(params.address, params.lat, params.lng, true);
       eventView.selected = id;
+      
+      // If there is param for title, it means this address became to alias as well.
+      // Add this item into alias list as well.
+      if (params.title != null) {
+        eventView.appendAlias(params.title, params.address, params.lat, params.lng);
+      }
       eventView.render();
     }
   },
