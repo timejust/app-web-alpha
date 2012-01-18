@@ -77,7 +77,10 @@ li.direction {
 .alias a.value {
   margin-top: 5px;
   text-decoration: none;
-  color: blue;
+  color: #1D1D1D;
+}
+.alias a.value:hover { 
+  text-decoration: underline;
 }
 li.alias {
   display: block;
