@@ -127,7 +127,7 @@ App.Views.TravelsView = Backbone.View.extend({
       this.renderButton();
       gadgets.window.adjustHeight();  
       google.calendar.refreshEvents();  
-    }
+    } 
   },
   generatePreviousTravel: function(event) {
     this.travelType = 'previous';
@@ -192,7 +192,12 @@ Please use 'else where' button to choose proper location");
         'current_travel_node[has_normalized]' : '1',
       },
       success: this.waitForTravels,
-      error: this.error
+      error: function(response) { 
+        hideLoader();
+        if (response.rc == 401) {
+          alert("You must authorize Timejust to access your calendar. Please go to " + App.config.web_url);
+        } 
+      }
     });
   },    
   renderButton: function() {

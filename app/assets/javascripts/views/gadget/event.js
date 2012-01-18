@@ -3,11 +3,7 @@
 <p class="gt_button"><a href="#" class="leave_from">LEAVE FROM !</a></p>\
 */
 App.Views.EventView = Backbone.View.extend({
-  events: {
-    'click .clear'        : 'clear'
-  },
   initialize: function(){
-    this.selectedEvent = undefined;
     _.bindAll(this, 'calendarEventOccured');
     _.bindAll(this, 'error');
     _.bindAll(this, 'onEventCallback');
@@ -22,6 +18,7 @@ App.Views.EventView = Backbone.View.extend({
     this.previousEvent = null;
     this.nextEvent = null;
     this.alias = null;
+    this.selectedEvent = null;
     this.nextEventRequest = false;
     this.normalizedReq = new Array();
     this.isInitialized = false;
@@ -40,7 +37,13 @@ App.Views.EventView = Backbone.View.extend({
   '),
   // Calendar event was clicked, store and display it
   calendarEventOccured: function(calendarEvent){
+    if (this.isInitialized != true) {
+      return;
+    }    
     if (calendarEvent && calendarEvent['id']) {
+      if (this.selectedEvent != null) {
+        this.clear();
+      }
       // don't use event from proposals calendars
       if (!App.config.calendar_names || 
         $.inArray(calendarEvent['calendar']['name'], 
@@ -100,9 +103,6 @@ App.Views.EventView = Backbone.View.extend({
     google.calendar.read.getEvents(callback, [email], startDate, endDate);
   },
   onEventCallback: function(response) {
-    if (this.isInitialized != true) {
-      return;
-    }
     var res = response[0];
     if ('error' in res) {
       alert('Something went wrong');
@@ -235,19 +235,18 @@ App.Views.EventView = Backbone.View.extend({
     gadgets.window.adjustHeight();
   },
   // TODO spec
-  clear: function(event){
-    event.preventDefault();
+  clear: function(){
     showLoader();
     var self = this;
     app.user.purgeTravels({
       success: function(){
         google.calendar.refreshEvents();
-        self.selectedEvent = undefined;
-        self.render();
-        if(self.travels_view) {
-          self.travels_view.clear();
-        }
-        gadgets.window.adjustHeight();
+        self.selectedEvent = null;
+        // self.render();
+        // if (self.travels_view) {
+        //  self.travels_view.clear();
+        // }
+        // gadgets.window.adjustHeight();
         hideLoader();
       },
       error: function(){

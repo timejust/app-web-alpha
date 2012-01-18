@@ -16,10 +16,9 @@ class Api::EventsController < Api::BaseController
   def create
     if params[:event]
       timer = Timejust::LatencySniffer.new('Event:create')
-      timer.start()
+      timer.start()      
       
       current_user.find_or_create_calendars
-      current_user.purge_travels
       @event = Event.parse_from_google_gadget(params[:event])
       @event.base = params[:base]
       
@@ -38,6 +37,9 @@ class Api::EventsController < Api::BaseController
     else
       render :nothing => true, :status => :unprocessable_entity
     end
+  rescue OAuth2::HTTPError => e
+    Rails.logger.error(e)
+    render :nothing => true, :status => :unauthorized
   end
 
   # PUT /v1/events/:id/add_google_info
@@ -134,7 +136,7 @@ class Api::EventsController < Api::BaseController
       render :nothing => true, :status => :unprocessable_entity
     end
   end
-
+  
   # POST /v1/events/:id/write_to_calendar
   # Write travels events to Google Calendar
   #

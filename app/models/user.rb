@@ -171,8 +171,7 @@ class User
   end
 
   # Purge all google event created on user calendars
-  def purge_travels
-    
+  def purge_travels    
     TravelStep.where(state: :waiting, user_id: self.id).each do |travel_step|
       begin
         travel_step.destroy

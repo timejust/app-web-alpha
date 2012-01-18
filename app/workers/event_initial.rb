@@ -23,12 +23,6 @@ class EventInitial
     event.add_google_info(user.access_token)
     gtimer.end
 
-    # event.update_attribute(:state, "travel_nodes_progress")
-    # Resque.enqueue(EventTravelNodeSelector, event_id, ip)
-    # event.update_attribute(:state, 'travels_waiting')            
-    # Resque.enqueue(EventTravelType, event_id)
-    #event.update_attributes('travel_type' => 'local', 'state' => 'travels_progress')
-    #Resque.enqueue(EventApiProvider, event_id)
     event.update_attributes('travel_type' => 'local', 'state' => 'travels_progress')
     event.update_attributes('applicable_travel_api' => ['ratp', 'google-directions', 'timejust'])
     Resque.enqueue(EventAbstractApiProvider, event_id) 
