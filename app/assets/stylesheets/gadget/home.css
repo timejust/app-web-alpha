@@ -93,7 +93,7 @@ li.alias {
   display: block;
   font: normal 10px Arial; 
   margin: 5px 5px 3px 10px;
-  border-top: 1px solid;
+  border-top: 1px solid #707070;
 }
 ul .address { 
   width: 120px;
