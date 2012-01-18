@@ -11,6 +11,7 @@ App.Views.EventSummaryView = Backbone.View.extend({
     this.address = '';
     this.lat = 0.0;
     this.lng = 0.0;
+    this.normalized = false;
   },
   appendAddressBook: function(address, lat, lng, normalized) {
     if (this.summary != undefined) {
@@ -47,6 +48,7 @@ App.Views.EventSummaryView = Backbone.View.extend({
         this.lat = this.summary.alias[alias_index].lat;
         this.lng = this.summary.alias[alias_index].lng;
         this.address = this.summary.alias[alias_index].address;
+        this.normalized = true;
       }         
     } else {
       class_name = 'blue';   
@@ -68,6 +70,7 @@ App.Views.EventSummaryView = Backbone.View.extend({
         this.address = ab.address;
         this.lat = ab.lat;
         this.lng = ab.lng;
+        this.normalized = ab.normalized;
       }                
     }      
     var html = '<div class="' + class_name + '" style="';

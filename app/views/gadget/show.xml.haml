@@ -25,6 +25,7 @@
       <script type="text/javascript">
         App.config.web_url = '#{configatron.web.url}';
         App.config.api_url = '#{configatron.api.url}';
+        App.config.service_url = '#{configatron.service.url}';
         App.config.basic_auth = #{@basic_auth};
         App.config.auth_token = '#{current_user.authentication_token}';
         App.config.calendar_names = #{User.shared_calendars_properties.map{|properties| properties[:name]}};

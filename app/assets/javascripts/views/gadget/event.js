@@ -24,6 +24,7 @@ App.Views.EventView = Backbone.View.extend({
     this.alias = null;
     this.nextEventRequest = false;
     this.normalizedReq = new Array();
+    this.isInitialized = false;
     // List of google events
     this.events = new Array();
   },
@@ -99,6 +100,9 @@ App.Views.EventView = Backbone.View.extend({
     google.calendar.read.getEvents(callback, [email], startDate, endDate);
   },
   onEventCallback: function(response) {
+    if (this.isInitialized != true) {
+      return;
+    }
     var res = response[0];
     if ('error' in res) {
       alert('Something went wrong');
@@ -145,7 +149,7 @@ App.Views.EventView = Backbone.View.extend({
       return;
     }
     GoogleRequest.postWithoutEncoding({
-      url: "http://service-staging.timejust.com:8080/service-geo/v1/geo/recognition",
+      url: App.config.service_url + "/service-geo/v1/geo/recognition",
       params: JSON.stringify(body),
       success: this.onNormalizedAddress,
       error: function() {        
@@ -169,33 +173,32 @@ App.Views.EventView = Backbone.View.extend({
     this.renderTravelView();
   },
   renderTravelView: function() {    
-    for (var i = 0; i < this.events.length; ++i) {
-      var ev = this.events[i];
-      title = (ev == null ? null : ev.title)
-      var summary = new App.Models.EventSummary({alias: this.alias, title: title});
+    var self = this;
+    $.each(this.events, function(i, ev) {
+      var title = (ev == null ? null : ev.title)
+      var summary = new App.Models.EventSummary({alias: self.alias, title: title});
       if (ev != null) {
         summary.color = ev.color;
         // Append all addresses either from normalization process or google calendar.
-        if (this.events[i].addresses == undefined) {
+        if (ev.addresses == undefined) {
           if (ev.location != "")
             summary.appendAddressBook(ev.location, 0.0, 0.0, false);
         } else {
-          for (var k = 0; k < ev.addresses.length; ++k) {
-            var addresses = ev.addresses[k];
-            summary.appendAddressBook(addresses.address, 
-                addresses.location.lat, addresses.location.lng, true);  
-          }        
+          $.each(ev.addresses, function(k, address) {
+            summary.appendAddressBook(address.address, 
+                address.location.lat, address.location.lng, true);
+          });             
         }  
         summary.googleEventId = ev.id;
         summary.original_address = ev.location;
       } else {
         summary.original_address = "";
-      }      
-      this.travels_view.selectedEvent = this.selectedEvent;
+      }
+      self.travels_view.selectedEvent = self.selectedEvent;
       // Append summaries for previous, current, and next travel
       // to travel views and render them in the view.      
-      this.travels_view.appendEventSummary(i, summary);
-    }  
+      self.travels_view.appendEventSummary(i, summary);
+    });       
     hideLoader();  
     this.travels_view.render();
   },
@@ -203,20 +206,19 @@ App.Views.EventView = Backbone.View.extend({
     GoogleRequest.get({
       url: App.config.api_url + "/users/alias?email=" + email + "&nocache=" + new Date().getTime(),
       success: callback, 
-      error: function() {
-      }
+      error: callback
     });
   },
   onAlias: function(response) {
     this.alias = response.data;
     this.render();
+    this.isInitialized = true;
   },
   // Render the selected Event in gadget sidebar
   render: function(){
     if (this.selectedEvent){
       $(this.el).html(this.template(this.selectedEvent));
-    }
-    else{
+    } else{
       $(this.el).html("<p class=\"title\">Select an event</p>");
     }
     gadgets.window.adjustHeight();

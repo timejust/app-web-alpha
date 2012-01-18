@@ -32,7 +32,7 @@ App.Views.TravelsView = Backbone.View.extend({
   },
   handleEvent: function(e) {
     var self = this;
-    $.poll(function(retry){
+    $.poll(function(retry) {
       var ev = $.cookie('event');    
       if (ev == null || ev == "") {
         retry();
@@ -111,12 +111,10 @@ App.Views.TravelsView = Backbone.View.extend({
     if (response.rc == 404) {
       showLoader();
       retry();
-    }
-    else if (response.rc == 410) {
+    } else if (response.rc == 410) {
       hideLoader();
       this.model = null;
-    }
-    else if (response.rc == 200) {
+    } else if (response.rc == 200) {
       hideLoader();
       var travelView = null;      
       if (this.travelType == 'previous') {
@@ -141,6 +139,9 @@ App.Views.TravelsView = Backbone.View.extend({
     this.base = 'departure';
     this.generateTrip(event);
   },
+  sanityCheck: function(from, to) {
+    return (from.normalized == true && to.normalized == true);
+  },
   // Launch request to API to create event in database
   // If it was created successfully, show travel nodes selector view
   generateTrip: function(event){
@@ -155,6 +156,12 @@ App.Views.TravelsView = Backbone.View.extend({
     } else {
       from = this.currentEventView;
       to = this.nextEventView;
+    }    
+    if (this.sanityCheck(from, to) != true) {      
+      hideLoader();
+      alert("The address in your events is not valid.\n\
+Please use 'else where' button to choose proper location");
+      return;
     }    
     // TODO : use Event model and bind callback on created event
     GoogleRequest.post({
@@ -190,29 +197,38 @@ App.Views.TravelsView = Backbone.View.extend({
   },    
   renderButton: function() {
     if (this.previousTravelView.rendered == true) {
-      $('#previous_travel_btn').html('RELOAD THIS TRIP');  
+      $('#previous_travel_btn').html('RELOAD TRIP');  
     } else {
-      $('#previous_travel_btn').html('PLAN THIS TRIP');  
+      $('#previous_travel_btn').html('PLAN TRIP');  
     }    
     if (this.nextTravelView.rendered == true) {
-      $('#next_travel_btn').html('RELOAD THIS TRIP');      
+      $('#next_travel_btn').html('RELOAD TRIP');      
     } else {
-      $('#next_travel_btn').html('PLAN THIS TRIP');      
+      $('#next_travel_btn').html('PLAN TRIP');      
     }    
   },
+  default_layout: _.template('\
+    <div id="event_polling" style="display:none"></div>\
+    <div class="transportations"></div>\
+    <div id="previous_event"></div>\
+    <div id="previous_travel"></div>\
+    <a class="load_previous_travel" href="#">\
+      <div class="green_btn">\
+        <div id="previous_travel_btn" class="button_name"></div>\
+      </div>\
+    </a>\
+    <div id="current_event"></div>\
+    <div id="next_travel"></div>\
+    <a class="load_next_travel" href="#">\
+      <div class="green_btn">\
+        <div id="next_travel_btn" class="button_name"></div>\
+      </div>\
+    </a>\
+    <div id="next_event"></div>\
+  '),  
   render: function() {
     var self = this;
-    $(this.el).html("\
-    <div id='event_polling' style='display:none'></div>\
-    <div class='transportations'></div>\
-    <div id='previous_event'></div>\
-    <div id='previous_travel'></div>\
-    <a class='load_previous_travel' href='#'><div class='green_btn'><div id='previous_travel_btn' class='button_name'></div></div></a>\
-    <div id='current_event'></div>\
-    <div id='next_travel'></div>\
-    <a class='load_next_travel' href='#'><div class='green_btn'><div id='next_travel_btn' class='button_name'></div></div></a>\
-    <div id='next_event'></div>\
-    ");
+    $(this.el).html(this.default_layout);
     this.previousEventView.el = $('#previous_event').get(0);
     this.previousEventView.summary = this.summaries[0];
     this.currentEventView.el = $('#current_event').get(0);

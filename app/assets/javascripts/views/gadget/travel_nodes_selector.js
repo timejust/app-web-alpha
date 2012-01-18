@@ -136,7 +136,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       return;
     }
     GoogleRequest.postWithoutEncoding({
-      url: "http://service-staging.timejust.com:8080/service-geo/v1/geo/recognition",
+      url: App.config.service_url + "/service-geo/v1/geo/recognition",
       params: JSON.stringify(body),
       success: this.onNormalizedAddress,
       error: function() {        

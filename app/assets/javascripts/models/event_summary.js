@@ -20,19 +20,24 @@ App.Models.EventSummary = Backbone.Model.extend({
     return id;
   },
   appendAlias: function(title, address, lat, lng) {
-    var id = this.alias.length;
-    $.each(this.alias, function(i, a) {
-      if (a.title == title) {
-        id = i;
-      }
-    });
+    var id = 0;
+    if (this.alias != null) {
+      id = this.alias.length;    
+      $.each(this.alias, function(i, a) {
+        if (a.title == title) {
+          id = i;
+        }
+      });  
+    } else {
+      this.alias = new Array();
+    }
     this.alias[id] = {
       title: title, address: address, lat: lat, lng: lng};
     return id + this.addressBook.length;
   },
   dump: function() {
     var output = "title: " + this.title;    
-    if (this.alias != undefined) {
+    if (this.alias != null) {
       $.each(this.alias, function(i, a) {
         output += "\nalias: title=>" + a.title + ", address=>" + a.address;
         $.each(this.addressBook, function(k, ab) {          
