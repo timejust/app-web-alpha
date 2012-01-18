@@ -74,6 +74,13 @@ li.direction {
   font: bold 11px Arial; 
   margin-bottom: 5px;
 }
+a.top {
+  text-decoration: none;
+  color: #1D1D1D;
+}
+a.top:hover {
+  text-decoration: underline;
+}
 .alias a.value {
   margin-top: 5px;
   text-decoration: none;

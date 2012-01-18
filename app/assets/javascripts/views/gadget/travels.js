@@ -10,6 +10,7 @@ App.Views.TravelsView = Backbone.View.extend({
     'click .green_toggle'         : 'toggleSteps',
     'click .pink_toggle'          : 'toggleSteps',
     'click .value'                : 'changeTitle',
+    'click .top'                  : 'toggleEvent',
     'poll #event_polling'         : 'handleEvent'
   },
   initialize: function(){
@@ -293,6 +294,19 @@ Please use 'else where' button to choose proper location");
     container.toggle();
     gadgets.window.adjustHeight();
   },
+  toggleEvent: function(e) {
+    e.preventDefault();    
+    var toggle = $(e.currentTarget).parent('ul').find('.toggle').find('.gray_toggle');
+    var container = $(e.currentTarget).parent('ul').find('.aliases');
+    $(toggle).toggleClass('on');
+    $(toggle).toggleClass('off');
+    var title = $(e.currentTarget).parent('ul').find('.title');
+    var address = $(e.currentTarget).parent('ul').find('.address');    
+    this.toggleText(title, 22);
+    this.toggleHideText(address, 20);
+    container.toggle();
+    gadgets.window.adjustHeight();
+  },
   currentEvent: function(root) {
     if (root[0].id == 'previous_event') {
       event = this.previousEventView;
@@ -305,14 +319,13 @@ Please use 'else where' button to choose proper location");
   },
   grayToggleSteps: function(e) {
     e.preventDefault();    
-    var root = $(e.currentTarget).parent('li').parent('ul').parent('div').parent('div');
     var container = $(e.currentTarget).parent('li').parent('ul').find('.aliases');
     $(e.currentTarget).toggleClass('on');
     $(e.currentTarget).toggleClass('off');    
     var title = $(e.currentTarget).parent('li').parent('ul').find('.title');
     var address = $(e.currentTarget).parent('li').parent('ul').find('.address');    
-    this.toggleText(title, 23);
-    this.toggleHideText(address, 21);
+    this.toggleText(title, 22);
+    this.toggleHideText(address, 20);
     container.toggle();
     gadgets.window.adjustHeight();
   },

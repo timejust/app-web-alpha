@@ -81,39 +81,56 @@ App.Views.EventSummaryView = Backbone.View.extend({
         this.normalized = ab.normalized;
       }                
     }      
-    var html = '<div class="' + class_name + '" style="';
     var title = this.title;
     var address = this.address;
-    if (this.summary.color != null) {
-      html += 'background-color:' + this.summary.color;
-    }     
-    html += '"><ul class="event">';        
-    html += '<li class="toggle"><a class="gray_toggle off" href="#"></a></li>';            
-    html += '<li class="title" shorten="true" original="' + title + '">' + title.substring(0, 23);
-    if (title.length > 23) 
-      html += "...";
-    html += '</li>';
-    html += '<li class="address" shorten="true" original="' + address + '">' + address.substring(0, 21);
-    if (address.length > 21)
-      html += "...";      
-    var id = 0;
-    html += '</li><div class="aliases">';    
-    $.each(this.summary.addressBook, function(i, ab) {
-      html += '<li class="alias" style="';
-      if (this.selected == id)
-        html += 'font-weight: bold';
-      html += '"><a href="#" id="' + id + '" class="value">' + ab.address + '</a></li>';
-      id += 1;
-    });
-    $.each(this.summary.alias, function(i, al) {
-      html += '<li class="alias" style="';
-      if (this.selected == id)
-        html += 'font-weight: bold';
-      html += '"><a href="#" id="' + id + '" class="value">' + al.title + '</a></li>';
-      id += 1;
-    });
-    html += '<li class="alias"><a href="#" selector="true" class="value">else where</a></li></div></ul></div>';
-    $(this.el).html(html); 
+    var shorten_title = title.substring(0, 22);
+    if (title.length > 22) 
+      shorten_title += "...";
+    var shorten_address = address.substring(0, 20);
+    if (address.length > 20)
+      shorten_address += "...";      
+    
+    var id = 0;    
+    $(this.el).html(this.layout({
+      class_name: class_name, 
+      color: this.summary.color,
+      title: title,
+      shorten_title: shorten_title,
+      address: address,
+      shorten_address: shorten_address,
+      addressBook: this.summary.addressBook,
+      selected: this.selected,
+      id: id,
+      alias: this.summary.alias
+      }));
     $(this.el).find('.aliases').hide();    
-  }
+  },
+  layout: _.template('\
+  <div class="<%=class_name%>" style="<%if (color != null) { %>background-color:<%=color%> <%}%>">\
+    <ul class="event">\
+      <li class="toggle">\
+        <a class="gray_toggle off" href="#"></a>\
+      </li>\
+      <a class="top" href="#">\
+        <li class="title" shorten="true" original="<%=title%>"><%=shorten_title%></li>\
+      </a>\
+      <a class="top" href="#">\
+        <li class="address" shorten="true" original="<%=address%>"><%=shorten_address%></li>\
+      </a>\
+      <div class="aliases">\
+        <% $.each(addressBook, function(i, ab) { %>\
+          <li class="alias" style="<% if (selected == id) { %>font-weight: bold<% } %>">\
+            <a href="#" id="<%=id%>" class="value"><%=ab.address%></a>\
+          </li>\
+        <% id += 1;}); %>\
+        <% $.each(alias, function(i, ab) { %>\
+          <li class="alias" style="<% if (selected == id) { %>font-weight: bold<% } %>">\
+            <a href="#" id="<%=id%>" class="value"><%=ab.title%></a>\
+          </li>\
+        <% id += 1;}); %>\
+        <li class="alias"><a href="#" selector="true" class="value">else where</a></li>\
+      </div>\
+    </ul>\
+  </div>\
+  ')
 });
