@@ -350,7 +350,12 @@ Please use 'else where' button to choose proper location");
     var e = $(this.el).find('#event_polling');
     e.trigger('poll');   
   },  
-  clear: function(){
+  clear: function() {
+    this.previousEventView.clear();
+    this.currentEventView.clear();
+    this.nextEventView.clear();
+    this.previousTravelView.clear();
+    this.nextTravelView.clear();
     $(this.el).empty();
   }
 });

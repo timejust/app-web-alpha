@@ -4,6 +4,10 @@ App.Views.TravelView = Backbone.View.extend({
     this.model = null;
     this.rendered = false;
   },
+  clear: function() {
+    this.model = null;
+    this.rendered = false;
+  },
   // render each travel_steps of this travel
   render: function() {   
     var travels = this.model.travels;   

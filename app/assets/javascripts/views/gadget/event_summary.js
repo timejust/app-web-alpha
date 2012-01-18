@@ -25,6 +25,13 @@ App.Views.EventSummaryView = Backbone.View.extend({
     }
     return -1;
   },
+  clear: function() {
+    this.title = '';
+    this.address = '';
+    this.lat = 0.0;
+    this.lng = 0.0;
+    this.normalized = false;
+  },
   render: function() {
     var self = this;
     var alias_index = 0;
