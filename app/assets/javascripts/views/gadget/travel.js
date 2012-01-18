@@ -72,12 +72,11 @@ App.Views.TravelView = Backbone.View.extend({
           } else if (s.line == 'connections' && i == step.steps.length - 1) {
             mode = "walk";
           }       
-          if (current_mode != mode) {
-            html += '<li class="' + mode;
+          if (current_mode != mode) {            
             if (i != 0) {
-              html += '" style="margin-left: ' + (100 - (num_icons * 20)) / (num_icons - 1) + 'px';
+              html += '<li class="gray_bar" style="width: ' + (100 - (num_icons * 19)) / (num_icons - 1) + 'px"></li>'
             }
-            html += '"></li>';              
+            html += '<li class="' + mode + '"></li>';
           }
           current_mode = mode;          
         });
@@ -90,15 +89,9 @@ App.Views.TravelView = Backbone.View.extend({
           if (i == 0) {
             html += ' style="border-top: 0px"';
           }          
-          html += '><li class="where"';
-          if (i == 0 || i == step.steps.length - 1) {
-            html += ' style="color: #ffffff"';
-          }
-          html += '>' + parseFloat(s.distance) / 1000 + ' km</li><li class="direction"';
-          if (i == 0) {
-            html += ' style="font: bold 10px Arial"';
-          }
-          html += '>' + s.text_direction + '</li></ul>';
+          html += '><li class="where">';
+          html += Math.floor(Math.round(parseFloat(s.distance) / 100)) / 10 + 'km</li><li class="direction">';
+          html += s.text_direction + '</li></ul>';
         });
       } else {
         var departure_time = "";
@@ -149,7 +142,13 @@ App.Views.TravelView = Backbone.View.extend({
     });
     html += "</div>";
     this.rendered = true;
-    $(this.el).html(html);   
+    $(this.el).html(html); 
+        
+    /*  
+    $(this.el).html(this.layout({
+      travels: travels
+      }));
+      */
     $(this.el).find('.steps').hide();      
   },
   convertTimeformat: function(d) {
@@ -157,14 +156,12 @@ App.Views.TravelView = Backbone.View.extend({
     var hms = tok[1];
     tok = hms.split(':');
     return tok[0] + ":" + tok[1];
-  }
-  /*  
-  travel: _.template('\
-    <p class="icon_and_price">\
-      <% $.each(transports, function(i, transport){ %>\
-        <span class="icon <%= transport %>"></span>\
-      <% }); %>\
-    </p>\
+  },
+  layout: _.template('\
+  <div class="travels">\
+  <%$.each(travels, function(i, travel) {%>\
+    <% var color = "yellow";%>\
+  <%});%>\
+  </div>\
   ')
-  */
 });

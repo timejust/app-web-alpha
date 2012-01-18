@@ -36,6 +36,13 @@ div.green_btn .button_name {
 ul.direction_block {
   margin-top: 1px;
 }
+li.gray_bar {
+  background-image: url(/icons/line.png);
+  background-repeat: repeat;
+  display: inline-block;   
+  background-position: center center;
+  height: 16px;
+}
 li.toggle {
   float: left;
 }
@@ -430,25 +437,25 @@ ul li {
 }
 .walk {
   display: inline-block; 
-  width: 20px; 
+  width: 19px; 
   height: 20px; 
   vertical-align: sub;
   background-image:url(/icons/icn-strip_transports.png);
-  background-position: 0px 0px;
+  background-position: -1px 0px;
   background-repeat: no-repeat;
 }
 .metro {
   display: inline-block; 
-  width: 20px; 
+  width: 19px; 
   height: 20px; 
   vertical-align: sub;
   background-image:url(/icons/icn-strip_transports.png);
-  background-position: -44px 0px;
+  background-position: -45px 0px;
   background-repeat: no-repeat;
 }
 .car {
   display: inline-block; 
-  width: 20px; 
+  width: 19px; 
   height: 20px; 
   vertical-align: sub;
   background-image:url(/icons/icn-strip_transports.png);
@@ -457,19 +464,19 @@ ul li {
 }
 .train {
   display: inline-block; 
-  width: 20px; 
+  width: 19px; 
   height: 20px; 
   vertical-align: sub;
   background-image:url(/icons/icn-strip_transports.png);
-  background-position: -132px 0px;
+  background-position: -133px 0px;
   background-repeat: no-repeat;
 }
 .bus {
   display: inline-block; 
-  width: 20px; 
+  width: 19px; 
   height: 20px; 
   vertical-align: sub;
   background-image:url(/icons/icn-strip_transports.png);
-  background-position: -66px 0px;
+  background-position: -67px 0px;
   background-repeat: no-repeat;
 }
