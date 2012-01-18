@@ -83,8 +83,8 @@ App.Views.EventSummaryView = Backbone.View.extend({
     }      
     var title = this.title;
     var address = this.address;
-    var shorten_title = title.substring(0, 22);
-    if (title.length > 22) 
+    var shorten_title = title.substring(0, 20);
+    if (title.length > 20) 
       shorten_title += "...";
     var shorten_address = address.substring(0, 20);
     if (address.length > 20)
@@ -108,15 +108,19 @@ App.Views.EventSummaryView = Backbone.View.extend({
   layout: _.template('\
   <div class="<%=class_name%>" style="<%if (color != null) { %>background-color:<%=color%> <%}%>">\
     <ul class="event">\
-      <li class="toggle">\
-        <a class="gray_toggle off" href="#"></a>\
-      </li>\
-      <a class="top" href="#">\
-        <li class="title" shorten="true" original="<%=title%>"><%=shorten_title%></li>\
-      </a>\
-      <a class="top" href="#">\
-        <li class="address" shorten="true" original="<%=address%>"><%=shorten_address%></li>\
-      </a>\
+      <div class="top_toggle_container">\
+        <li class="toggle">\
+          <a class="gray_toggle off" href="#"></a>\
+          </li>\
+      </div>\
+      <div class="top_title_container">\
+        <a class="top" href="#">\
+          <li class="title" shorten="true" original="<%=title%>"><%=shorten_title%></li>\
+        </a>\
+        <a class="top" href="#">\
+          <li class="address" shorten="true" original="<%=address%>"><%=shorten_address%></li>\
+        </a>\
+      </div>\
       <div class="aliases">\
         <% $.each(addressBook, function(i, ab) { %>\
           <li class="alias" style="<% if (selected == id) { %>font-weight: bold<% } %>">\

@@ -275,7 +275,7 @@ Please use 'else where' button to choose proper location");
   },
   toggleHideText: function(el, limit) {
     if (el.attr('shorten') == 'true') {
-      el.html('');
+      el.html(el.attr('original'));
       el.attr('shorten', 'false');
     } else {
       var text = el.attr('original');
@@ -296,13 +296,13 @@ Please use 'else where' button to choose proper location");
   },
   toggleEvent: function(e) {
     e.preventDefault();    
-    var toggle = $(e.currentTarget).parent('ul').find('.toggle').find('.gray_toggle');
-    var container = $(e.currentTarget).parent('ul').find('.aliases');
+    var toggle = $(e.currentTarget).parent('div').parent('ul').find('.toggle').find('.gray_toggle');
+    var container = $(e.currentTarget).parent('div').parent('ul').find('.aliases');
     $(toggle).toggleClass('on');
     $(toggle).toggleClass('off');
-    var title = $(e.currentTarget).parent('ul').find('.title');
-    var address = $(e.currentTarget).parent('ul').find('.address');    
-    this.toggleText(title, 22);
+    var title = $(e.currentTarget).parent('div').parent('ul').find('.title');
+    var address = $(e.currentTarget).parent('div').parent('ul').find('.address');    
+    this.toggleText(title, 20);
     this.toggleHideText(address, 20);
     container.toggle();
     gadgets.window.adjustHeight();
@@ -319,12 +319,12 @@ Please use 'else where' button to choose proper location");
   },
   grayToggleSteps: function(e) {
     e.preventDefault();    
-    var container = $(e.currentTarget).parent('li').parent('ul').find('.aliases');
+    var container = $(e.currentTarget).parent('li').parent('div').parent('ul').find('.aliases');
     $(e.currentTarget).toggleClass('on');
     $(e.currentTarget).toggleClass('off');    
-    var title = $(e.currentTarget).parent('li').parent('ul').find('.title');
-    var address = $(e.currentTarget).parent('li').parent('ul').find('.address');    
-    this.toggleText(title, 22);
+    var title = $(e.currentTarget).parent('li').parent('div').parent('ul').find('.title');
+    var address = $(e.currentTarget).parent('li').parent('div').parent('ul').find('.address');    
+    this.toggleText(title, 20);
     this.toggleHideText(address, 20);
     container.toggle();
     gadgets.window.adjustHeight();
@@ -332,7 +332,7 @@ Please use 'else where' button to choose proper location");
   changeTitle: function(e) {
     e.preventDefault();    
     var el = $(e.currentTarget);
-    var container = el.parent('li').parent('.aliases');
+    var container = el.parent('li').parent('div').parent('.aliases');
     var root = container.parent('ul').parent('div').parent('div');       
     var event = this.currentEvent(root);
     if (el.attr('selector') == 'true') {
