@@ -162,14 +162,14 @@ a.clear {
 .white {
   margin-bottom: 3px;
   border-style: solid;
-  border-color: #1d1d1d;
+  border-color: #E7E7E7;
   color: #1d1d1d;  
   border-width: 1px;
 }
 .blue {
   margin-bottom: 3px;
   border-style: solid;
-  border-color: #1587bd;
+  border-color: #707070;
   background-color: #9fc6e7;
   color: #1d1d1d;  
   border-width: 1px;
