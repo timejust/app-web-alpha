@@ -53,7 +53,9 @@ li.distance {
 }
 li.direction {
   font: normal 10px Arial; 
-  text-align: left;  
+  text-align: left;
+  float: left;
+  width: 75%;
 }
 .pink li.where {
   margin-right: 5px;
@@ -250,6 +252,7 @@ a.clear {
   border-color: #e0c240;
   margin-left: 5px;
   margin-right: 5px;
+  display: inline-block;
 }
 ul { 
   margin-top: 5px;
