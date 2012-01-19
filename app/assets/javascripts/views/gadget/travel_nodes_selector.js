@@ -38,7 +38,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   	}).result(function(_event, _data) {
   	  if (_data) {
   	    this.value = _data.formatted_address;
-  	    self.map.fitBounds(_data.geometry.viewport);
+  	    // self.map.fitBounds(_data.geometry.viewport);
         // Initialize result array.
         self.results = [];
         var a = {};
@@ -193,18 +193,21 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   },
   adjustGoogleMap: function() {
     var kRange = 0.05;
+    var self = this;
+    self.bounds = null;
     $.each(this.markerList, function(i, marker) {
       var latlng = marker.getPosition();
       var bounds = new google.maps.LatLngBounds(
         new google.maps.LatLng(latlng.lat() - kRange, latlng.lng() - kRange), 
         new google.maps.LatLng(latlng.lat() + kRange, latlng.lng() + kRange));
-      if (this.bounds == null) {
-        this.bounds = bounds;
+      if (self.bounds == null) {
+        self.bounds = bounds;
       } else {
-        this.bounds.union(bounds); 
+        self.bounds.union(bounds); 
       }  
     });    
-    this.map.fitBounds(this.bounds);
+    if (self.bounds != null)
+      this.map.fitBounds(self.bounds);
   },
   showGoogleResult: function(e) {
     if (e != null)
