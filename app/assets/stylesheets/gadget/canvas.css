@@ -103,6 +103,24 @@ div.marker_3 {
   overflow: hidden;
   width: 20px;
 }
+div.marker_4 {
+  display: inline-block;
+  background: url(/icons/red_markers.png) 0px -136px no-repeat;
+  color: transparent;
+  height: 32px;
+  line-height: 15px;
+  overflow: hidden;
+  width: 20px;
+}
+div.marker_5 {
+  display: inline-block;
+  background: url(/icons/red_markers.png) 0px -170px no-repeat;
+  color: transparent;
+  height: 32px;
+  line-height: 15px;
+  overflow: hidden;
+  width: 20px;
+}
 div.logo {
   display: inline-block; 
   width: 143px; 

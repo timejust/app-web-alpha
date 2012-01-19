@@ -39,8 +39,15 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   	  if (_data) {
   	    this.value = _data.formatted_address;
   	    self.map.fitBounds(_data.geometry.viewport);
-        // var lng = _data.geometry.location.Ra
-        // var lat = _data.geometry.location.Qa                
+        // Initialize result array.
+        self.results = [];
+        var a = {};
+        a.address = _data.formatted_address;
+        a.location = {};
+        a.location.lat = _data.geometry.location.Pa;
+        a.location.lng = _data.geometry.location.Qa;        
+        self.results.push(a);          
+        self.showGoogleResult(null);
 	    }
 	  });
   }, 
@@ -224,7 +231,6 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       // First token is address, and rest of them are city + country normally.
       results += self.google_result({
         index: i,
-        title: a.title,
         address: tok[0],
         original_address: a.address,
         city: city,

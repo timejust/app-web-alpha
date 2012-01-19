@@ -52,9 +52,17 @@ App.Views.TravelView = Backbone.View.extend({
             mode = "train";                      
           } else if (s.line == 'connections' && i == step.steps.length - 1) {
             mode = "walk";
-          }          
+          }   
+          // We don't display same transportation icon twice in a row       
           if (current_mode != mode) {
-            num_icons += 1;
+            // We don't display walk icon between other icons, only display 
+            // when it's in the beginning or end.
+            if ((mode != "walk") || (i == 0 || i == step.steps.length - 1)) {
+              num_icons += 1;
+            } else {
+              // Let's pretend this mode doesn't exist.
+              mode = current_mode;
+            }
           }
           current_mode = mode;          
         })   
@@ -72,11 +80,19 @@ App.Views.TravelView = Backbone.View.extend({
           } else if (s.line == 'connections' && i == step.steps.length - 1) {
             mode = "walk";
           }       
+          // We don't display same transportation icon twice in a row
           if (current_mode != mode) {            
-            if (i != 0) {
-              html += '<li class="gray_bar" style="width: ' + (100 - (num_icons * 19)) / (num_icons - 1) + 'px"></li>'
-            }
-            html += '<li class="' + mode + '"></li>';
+            // We don't display walk icon between other icons, only display 
+            // when it's in the beginning or end.
+            if ((mode != "walk") || (i == 0 || i == step.steps.length - 1)) {
+              if (i > 0) {
+                html += '<li class="gray_bar" style="width: ' + (100 - (num_icons * 19)) / (num_icons - 1) + 'px"></li>'
+              }              
+              html += '<li class="' + mode + '"></li>';              
+            } else {
+              // Let's pretend this mode doesn't exist.
+              mode = current_mode;
+            }             
           }
           current_mode = mode;          
         });
@@ -90,7 +106,7 @@ App.Views.TravelView = Backbone.View.extend({
             html += ' style="border-top: 0px"';
           }          
           html += '><li class="where">';
-          html += Math.floor(Math.round(parseFloat(s.distance) / 100)) / 10 + 'km</li><li class="direction">';
+          html += (Math.floor(Math.round(parseFloat(s.distance) / 100)) / 10).toFixed(1) + 'km</li><li class="direction">';
           html += s.text_direction + '</li></ul>';
         });
       } else {

@@ -32,6 +32,8 @@ App.Views.EventSummaryView = Backbone.View.extend({
     this.lat = 0.0;
     this.lng = 0.0;
     this.normalized = false;
+    this.selected = -1;
+    this.summary = null;
   },
   render: function() {
     var self = this;

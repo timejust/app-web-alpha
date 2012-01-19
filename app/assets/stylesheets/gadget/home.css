@@ -35,6 +35,8 @@ div.green_btn .button_name {
 }
 ul.direction_block {
   margin-top: 1px;
+  display: inline-block;
+  width: 100%;
 }
 li.gray_bar {
   background-image: url(/icons/line.png);
@@ -55,7 +57,9 @@ li.direction {
   font: normal 10px Arial; 
   text-align: left;
   float: left;
-  width: 75%;
+  width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .pink li.where {
   margin-right: 5px;
@@ -501,7 +505,7 @@ ul li {
   height: 20px; 
   vertical-align: sub;
   background-image:url(/icons/icn-strip_transports.png);
-  background-position: -133px 0px;
+  background-position: -132px 0px;
   background-repeat: no-repeat;
 }
 .bus {

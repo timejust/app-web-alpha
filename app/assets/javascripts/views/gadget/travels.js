@@ -143,6 +143,9 @@ App.Views.TravelsView = Backbone.View.extend({
   sanityCheck: function(from, to) {
     return (from.normalized == true && to.normalized == true);
   },
+  duplicationCheck: function(from, to) {
+    return (from.address == to.address);
+  },
   // Launch request to API to create event in database
   // If it was created successfully, show travel nodes selector view
   generateTrip: function(event){
@@ -164,6 +167,11 @@ App.Views.TravelsView = Backbone.View.extend({
 Please use 'else where' button to choose proper location");
       return;
     }    
+    if (this.duplicationCheck(from, to) == true) {
+      hideLoader();
+      alert("The departure address and arrival address are same");
+      return;
+    }
     // TODO : use Event model and bind callback on created event
     GoogleRequest.post({
       url: App.config.api_url + "/events",
