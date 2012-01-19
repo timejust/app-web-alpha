@@ -78,6 +78,9 @@ li.direction {
   text-align: left;
   float: left;
   width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .travel li.title {
   font: bold 11px Arial; 
@@ -119,6 +122,9 @@ li.alias_address {
   float: right;
   margin-top: 2px;
   margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 li.alias {
   display: inline-block;
@@ -130,6 +136,9 @@ ul .address {
   display: inline-block; 
   font: normal 10px Arial; 
   margin: 3px 0px 5px 0px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #selectedEvent .title { 
   font: bold 1.1em/1.1em Arial; 
@@ -154,7 +163,7 @@ ul .address {
   color: #8f8f8f; 
   display: inline; 
   line-height: 11px; 
-  text-align: center 
+  text-align: center;
 }
 .schedule .event_date {
   overflow: hidden;

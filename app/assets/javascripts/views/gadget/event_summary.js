@@ -83,32 +83,18 @@ App.Views.EventSummaryView = Backbone.View.extend({
       }                
     }      
     var title = this.title;
-    var address = this.address;
-    var shorten_title = title.substring(0, this.kMaxLength);
-    if (title.length > this.kMaxLength - 3) {
-      shorten_title = title.substring(0, this.kMaxLength - 3);
-      shorten_title += "...";
-    } 
-      
-    var shorten_address = address.substring(0, this.kMaxLength);
-    if (address.length > this.kMaxLength - 3) {
-      shorten_address = address.substring(0, this.kMaxLength - 3);
-      shorten_address += "...";      
-    }      
+    var address = this.address;    
     
     var id = 0;    
     $(this.el).html(this.layout({
       class_name: class_name, 
       color: this.summary.color,
       title: title,
-      shorten_title: shorten_title,
       address: address,
-      shorten_address: shorten_address,
       addressBook: this.summary.addressBook,
       selected: this.selected,
       id: id,
       alias: this.summary.alias,
-      max_length: this.kMaxLength + 2
       }));
     $(this.el).find('.aliases').hide();    
   },
@@ -122,10 +108,10 @@ App.Views.EventSummaryView = Backbone.View.extend({
       </div>\
       <div class="top_title_container">\
         <a class="top" href="#">\
-          <li class="title" shorten="true" original="<%=title%>"><%=shorten_title%></li>\
+          <li class="title" shorten="true"><%=title%></li>\
         </a>\
         <a class="top" href="#">\
-          <li class="address" shorten="true" original="<%=address%>"><%=shorten_address%></li>\
+          <li class="address" shorten="true"><%=address%></li>\
         </a>\
       </div>\
       <div class="aliases">\
@@ -141,15 +127,7 @@ App.Views.EventSummaryView = Backbone.View.extend({
             <li class="alias" style="<% if (selected == id) { %>font-weight: bold<% } %>">\
               <a href="#" id="<%=id%>" class="value"><%=ab.title%></a>\
             </li>\
-            <li class="alias_address">\
-            <% var addr = ab.address;\
-              if (ab.title.length + 1 < max_length) {\
-                addr = ab.address.substring(0, max_length - ab.title.length);\
-              }\
-              if (ab.address.length > max_length - ab.title.length - 3) {\
-                addr = ab.address.substring(0, max_length - ab.title.length - 3) + "...";\
-              }%><%=addr%>\
-            </li>\
+            <li class="alias_address" style="width:<%=120-(ab.title.length * 6)%>px"><%=ab.address%></li>\
           </div>\
         <% id += 1;}); %>\
         <div class="alias_container">\

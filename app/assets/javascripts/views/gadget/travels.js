@@ -260,29 +260,12 @@ Please use 'else where' button to choose proper location");
     this.$('.white_toggle').toggleClass('on');
     this.$('.white_toggle').toggleClass('off');    
   },
-  toggleText: function(el, limit) {
+  toggleText: function(el) {
     if (el.attr('shorten') == 'true') {
-      el.html(el.attr('original'));
+      el.attr('style', 'white-space: normal');
       el.attr('shorten', 'false');
     } else {
-      var text = el.attr('original');
-      text = text.substring(0, limit);
-      if (el.attr('original').length > limit) 
-        text += "...";
-      el.html(text);          
-      el.attr('shorten', 'true');
-    }
-  },
-  toggleHideText: function(el, limit) {
-    if (el.attr('shorten') == 'true') {
-      el.html(el.attr('original'));
-      el.attr('shorten', 'false');
-    } else {
-      var text = el.attr('original');
-      text = text.substring(0, limit);
-      if (el.attr('original').length > limit) 
-        text += "...";
-      el.html(text);          
+      el.attr('style', 'white-space: nowrap');
       el.attr('shorten', 'true');
     }
   },
@@ -302,8 +285,8 @@ Please use 'else where' button to choose proper location");
     $(toggle).toggleClass('off');
     var title = $(e.currentTarget).parent('div').parent('ul').find('.title');
     var address = $(e.currentTarget).parent('div').parent('ul').find('.address');    
-    this.toggleText(title, 20);
-    this.toggleHideText(address, 20);
+    this.toggleText(title);
+    this.toggleText(address);
     container.toggle();
     gadgets.window.adjustHeight();
   },
@@ -324,8 +307,8 @@ Please use 'else where' button to choose proper location");
     $(e.currentTarget).toggleClass('off');    
     var title = $(e.currentTarget).parent('li').parent('div').parent('ul').find('.title');
     var address = $(e.currentTarget).parent('li').parent('div').parent('ul').find('.address');    
-    this.toggleText(title, 20);
-    this.toggleHideText(address, 20);
+    this.toggleText(title);
+    this.toggleText(address);
     container.toggle();
     gadgets.window.adjustHeight();
   },
