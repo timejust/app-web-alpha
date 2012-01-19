@@ -12,6 +12,7 @@ App.Views.EventSummaryView = Backbone.View.extend({
     this.lat = 0.0;
     this.lng = 0.0;
     this.normalized = false;
+    this.kMaxLength = 21;
   },
   appendAddressBook: function(address, lat, lng, normalized) {
     if (this.summary != undefined) {
@@ -83,12 +84,17 @@ App.Views.EventSummaryView = Backbone.View.extend({
     }      
     var title = this.title;
     var address = this.address;
-    var shorten_title = title.substring(0, 20);
-    if (title.length > 20) 
+    var shorten_title = title.substring(0, this.kMaxLength);
+    if (title.length > this.kMaxLength - 3) {
+      shorten_title = title.substring(0, this.kMaxLength - 3);
       shorten_title += "...";
-    var shorten_address = address.substring(0, 20);
-    if (address.length > 20)
+    } 
+      
+    var shorten_address = address.substring(0, this.kMaxLength);
+    if (address.length > this.kMaxLength - 3) {
+      shorten_address = address.substring(0, this.kMaxLength - 3);
       shorten_address += "...";      
+    }      
     
     var id = 0;    
     $(this.el).html(this.layout({
@@ -101,7 +107,8 @@ App.Views.EventSummaryView = Backbone.View.extend({
       addressBook: this.summary.addressBook,
       selected: this.selected,
       id: id,
-      alias: this.summary.alias
+      alias: this.summary.alias,
+      max_length: this.kMaxLength + 2
       }));
     $(this.el).find('.aliases').hide();    
   },
@@ -123,18 +130,34 @@ App.Views.EventSummaryView = Backbone.View.extend({
       </div>\
       <div class="aliases">\
         <% $.each(addressBook, function(i, ab) { %>\
-          <li class="alias" style="<% if (selected == id) { %>font-weight: bold<% } %>">\
-            <a href="#" id="<%=id%>" class="value"><%=ab.address%></a>\
-          </li>\
+          <div class="alias_container">\
+            <li class="alias" style="<% if (selected == id) { %>font-weight: bold<% } %>">\
+              <a href="#" id="<%=id%>" class="value"><%=ab.address%></a>\
+            </li>\
+          </div>\
         <% id += 1;}); %>\
         <% $.each(alias, function(i, ab) { %>\
-          <li class="alias" style="<% if (selected == id) { %>font-weight: bold<% } %>">\
-            <a href="#" id="<%=id%>" class="value"><%=ab.title%></a>\
-          </li>\
+          <div class="alias_container">\
+            <li class="alias" style="<% if (selected == id) { %>font-weight: bold<% } %>">\
+              <a href="#" id="<%=id%>" class="value"><%=ab.title%></a>\
+            </li>\
+            <li class="alias_address">\
+            <% var addr = ab.address;\
+              if (ab.title.length + 1 < max_length) {\
+                addr = ab.address.substring(0, max_length - ab.title.length);\
+              }\
+              if (ab.address.length > max_length - ab.title.length - 3) {\
+                addr = ab.address.substring(0, max_length - ab.title.length - 3) + "...";\
+              }%><%=addr%>\
+            </li>\
+          </div>\
         <% id += 1;}); %>\
-        <li class="alias"><a href="#" selector="true" class="value">else where</a></li>\
+        <div class="alias_container">\
+          <li class="alias"><a href="#" selector="true" class="value">else where</a></li>\
+        </div>\
       </div>\
     </ul>\
   </div>\
   ')
 });
+  

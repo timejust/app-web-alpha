@@ -332,7 +332,7 @@ Please use 'else where' button to choose proper location");
   changeTitle: function(e) {
     e.preventDefault();    
     var el = $(e.currentTarget);
-    var container = el.parent('li').parent('.aliases');
+    var container = el.parent('li').parent('div').parent('.aliases');
     var root = container.parent('ul').parent('div').parent('div');       
     var event = this.currentEvent(root);
     if (el.attr('selector') == 'true') {

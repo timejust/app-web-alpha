@@ -105,11 +105,23 @@ a.top:hover {
 .alias a.value:hover { 
   text-decoration: underline;
 }
-li.alias {
+div.alias_container {
   display: block;
   font: normal 10px Arial; 
-  margin: 5px 5px 3px 13px;
+  margin: 1px 5px 2px 13px;
   border-top: 1px solid #707070;
+}
+li.alias_address {
+  display: inline-block;
+  text-align: right;
+  float: right;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+li.alias {
+  display: inline-block;
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 ul .address { 
   width: 120px;
