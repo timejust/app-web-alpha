@@ -35,6 +35,18 @@ App.Models.EventSummary = Backbone.Model.extend({
       title: title, address: address, lat: lat, lng: lng};
     return id + this.addressBook.length;
   },
+  deleteAlias: function(title) {
+    var self = this;
+    if (title == null) {
+      return;
+    }
+    $.each(this.alias, function(i, a) {
+      if (a != null && a.title == title) {
+        self.alias.splice(i, 1);
+        return;
+      }
+    });
+  },
   dump: function() {
     var output = "title: " + this.title;    
     if (this.alias != null) {

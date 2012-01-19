@@ -59,15 +59,25 @@ App.Views.TravelsView = Backbone.View.extend({
       eventView = this.nextEventView;
     }
     if (eventView != null) {
+      var self = this;
+      // Delete alias first before add something
+      $.each(params.deleted_alias, function(i, d) {
+        self.previousEventView.deleteAlias(d);
+        self.currentEventView.deleteAlias(d);
+        self.nextEventView.deleteAlias(d);
+      });
       var id = eventView.appendAddressBook(params.address, params.lat, params.lng, true);
-      eventView.selected = id;
-      
+      eventView.selected = id;      
       // If there is param for title, it means this address became to alias as well.
       // Add this item into alias list as well.
       if (params.title != null) {
-        eventView.appendAlias(params.title, params.address, params.lat, params.lng);
-      }
-      eventView.render();
+        this.previousEventView.appendAlias(params.title, params.address, params.lat, params.lng);
+        this.currentEventView.appendAlias(params.title, params.address, params.lat, params.lng);
+        this.nextEventView.appendAlias(params.title, params.address, params.lat, params.lng);
+      }      
+      this.previousEventView.render();
+      this.currentEventView.render();
+      this.nextEventView.render();
     }
   },
   onAliasSelected: function(params) {
@@ -80,9 +90,28 @@ App.Views.TravelsView = Backbone.View.extend({
       eventView = this.nextEventView;
     }
     if (eventView != null) {
-      var id = eventView.appendAlias(params.title, params.address, params.lat, params.lng);
+      var self = this;
+      // Delete alias first before add something
+      $.each(params.deleted_alias, function(i, d) {
+        self.previousEventView.deleteAlias(d);
+        self.currentEventView.deleteAlias(d);
+        self.nextEventView.deleteAlias(d);
+      });     
+      var previousId = this.previousEventView.appendAlias(params.title, params.address, params.lat, params.lng);
+      var currentId = this.currentEventView.appendAlias(params.title, params.address, params.lat, params.lng);
+      var nextId = this.nextEventView.appendAlias(params.title, params.address, params.lat, params.lng);      
+      var id = 0;
+      if (params.stage == 'previous') {
+        id = previousId;
+      } else if (params.stage == 'current') {
+        id = currentId;
+      } else if (params.stage == 'next') {
+        id = nextId;
+      }            
       eventView.selected = id;
-      eventView.render();
+      this.previousEventView.render();
+      this.currentEventView.render();
+      this.nextEventView.render();
     }
   },
   waitForTravels: function(response){

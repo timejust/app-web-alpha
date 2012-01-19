@@ -55,7 +55,7 @@ class Api::UsersController < Api::BaseController
     end    
   end
   
-  # POST /v1/users/alias
+  # POST /v1/users/add_alias
   #
   def add_alias
     if User.exists?(conditions: {email: params[:email]})
@@ -65,7 +65,27 @@ class Api::UsersController < Api::BaseController
       FavoriteLocation.create(:user => user, 
         :title => params[:title], :address => params[:address], 
         :lat => params[:lat], :lng => params[:lng]);
+      render :nothing => true, :status => :ok
     else
+      render :nothing => true, :status => :not_found
     end
+  end
+  
+  # POST /v1/users/delete_alias
+  # 
+  # @param [String] email
+  # @param [String] title
+  #
+  def delete_alias
+    if User.exists?(conditions: {email: params[:email]})
+      user = User.where(email: params[:email]).first
+      return unauthorized! if current_user != user
+      
+      location = FavoriteLocation.find(:all, :conditions => { :user_id => user[:_id], :title => params[:title] })
+      location.destroy();
+      render :nothing => true, :status => :ok
+    else
+      render :nothing => true, :status => :not_found
+    end    
   end
 end

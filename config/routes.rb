@@ -92,6 +92,7 @@ TimejustApi::Application.routes.draw do
           put :purge_travels
           get :alias
           post :add_alias
+          post :delete_alias
         end
       end
     end

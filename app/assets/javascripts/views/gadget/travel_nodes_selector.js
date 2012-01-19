@@ -4,11 +4,11 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     'click .freq_address'   : 'showFreqAddress',
     'click .google_result'  : 'showGoogleResult',
     'click #google_result.control_block' : 'bookmarkAddress',
+    'click #alias_result.star_symbol' : 'bookmarkDelete',
     'click #result.address' : 'selectAddress',
     'click .title'          : 'selectAlias'
   },
   initialize: function(){
-    // _.bindAll(this, 'waitForTravelNodes');
     _.bindAll(this, 'onNormalizedAddress');
     this.ab = eval('(' + $.cookie('ab') + ')');
     this.alias = eval('(' + $.cookie('alias') + ')');
@@ -20,6 +20,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     }
     this.results = new Array();
     this.markerList = new Array();
+    this.deletingAliasList = new Array();
     this.render();
     this.bounds = null;
     this.showGoogleMap();
@@ -82,8 +83,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   alias_result: _.template('\
     <div class="result_block">\
       <div class="control_block">\
-        <div class="star_symbol on"></div>\
-        <div class="title"><%=title%></div>\
+        <div id="alias_result" class="star_symbol <%=star%>"></div>\
+        <div class="title"<% if (star == "off") { %> style="color: gray;font-style: italic;"<%} %>><%=title%></div>\
       </div>\
       <div class="address_block" data-address=\"<%=original_address%>\" data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\">\
         <div id="alias_marker" class="marker_container">\
@@ -173,6 +174,28 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       var alias = $(e.currentTarget).find('.save_as_alias');
       alias.html('<input id="alias_input" placeholder="Alias name..." />');
     }    
+  },
+  bookmarkDelete: function(e) {
+    var star = $(e.currentTarget);
+    var tok = star[0].className.split(' ');
+    var title = star.parent('div').find('.title')[0].textContent;
+    star.toggleClass('on');
+    star.toggleClass('off');           
+    if (tok[1] == 'off') {
+      star.parent('div').find('.title').attr('style', '');
+      var self = this;
+      $.each(this.deletingAliasList, function(i, a) {
+        if (a != null && a == title) {
+          self.deletingAliasList.splice(i, 1);
+          return;
+        }
+      });
+    } else {    
+      star.parent('div').find('.title').attr('style', 'color: gray;font-style: italic;cursor: text');       
+      // If user tries to delete the given alias, don't delete it right away.
+      // Put that in the deleting queue and delete later.
+      this.deletingAliasList.push(title);
+    }
   },
   showGoogleMap: function() {
     var latlng = new google.maps.LatLng(48.843, 2.275);
@@ -267,6 +290,16 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
             city += ",";
         }          
       });
+      // Check the deletingQueue, if exists in the list,
+      // we delete the alias with empty star symbol
+      var inDeleting = false;
+      $.each(self.deletingAliasList, function(i, d) {
+        if (d != null && d == a.title) {
+          inDeleting = true;
+          return;
+        }
+      });
+      
       // First token is address, and rest of them are city + country normally.
       results += self.alias_result({
         index: i,
@@ -275,7 +308,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         original_address: a.address,
         city: city,
         lat: a.lat,
-        lng: a.lng
+        lng: a.lng,
+        star: inDeleting == true ? "off" : "on"
       });
       self.createPin(a.lat, a.lng);      
     });
@@ -287,7 +321,32 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     e.preventDefault();
     var el = $(e.currentTarget);
     var address_block = el.parent('div').parent('div').find('.address_block');
+    var invalid = false;
     
+    $.each(this.deletingAliasList, function(i, d) {
+      if (d != null && d == el[0].textContent) {
+        invalid = true;
+        return;
+      }
+    });    
+    if (invalid == true) {
+      return;
+    }
+    // Delete alias if there are some deleting candidates
+    if (this.deletingAliasList.length > 0) {
+      $.each(this.deletingAliasList, function(i, d) {
+        GoogleRequest.post({
+          url: App.config.api_url + "/users/delete_alias",
+          params: { 
+            'email' : $.cookie('email'),
+            'title': d
+          },
+          success: function() {        
+          }
+        });
+      });            
+    }
+    // Let's go back to home canvas
     gadgets.views.requestNavigateTo('home');
         
     var ev = {};
@@ -298,8 +357,11 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     ev.params.lat = address_block.attr('data-lat');
     ev.params.lng = address_block.attr('data-lng');
     ev.params.stage = this.stage;
+    ev.params.deleted_alias = this.deletingAliasList;
     var json = JSON.stringify(ev, this.replacer);
-    $.cookie('event', json);
+    $.cookie('event', json);    
+    // Clear deleting alias list
+    this.deletingAliasList = [];
   },
   selectAddress: function(e) {
     e.preventDefault();
@@ -308,6 +370,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var control_block = el.parent('div').parent('div').find('.control_block');
     var alias = control_block.find('.save_as_alias').find('#alias_input');
     
+    // Add aliases if exists
     if (alias.length > 0) {
       // If there is an alias with the address, we save it
       GoogleRequest.post({
@@ -319,11 +382,26 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
           'lat': address_block.attr('data-lat'),
           'lng': address_block.attr('data-lng')
         },
-        success: {}
+        success: function() {        
+        }
       });
     }    
-
-    // If alias exist, create new one to call server side api
+    // Delete alias if exists in deleting list.
+    if (this.deletingAliasList.length > 0) {
+      $.each(this.deletingAliasList, function(i, d) {
+        GoogleRequest.post({
+          url: App.config.api_url + "/users/delete_alias",
+          params: { 
+            'email' : $.cookie('email'),
+            'title': d
+          },
+          success: function() {        
+          }
+        });
+      });
+    }
+    
+    // Let's go back to home canvas
     gadgets.views.requestNavigateTo('home');
         
     var ev = {};
@@ -336,8 +414,11 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     ev.params.lat = address_block.attr('data-lat');
     ev.params.lng = address_block.attr('data-lng');
     ev.params.stage = this.stage;
+    ev.params.deleted_alias = this.deletingAliasList;
     var json = JSON.stringify(ev, this.replacer);
-    $.cookie('event', json);     
+    $.cookie('event', json); 
+    // Clear deleting alias list
+    this.deletingAliasList = [];    
   },    
   replacer: function(key, value) {
     if (typeof value === 'number' && !isFinite(value)) {

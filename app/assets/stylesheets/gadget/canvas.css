@@ -43,21 +43,21 @@ div.left-bottom {
 }
 div.star_symbol.on {
   display: inline-block;
-  background: url(/icons/hpimgs28.png) -18px 0px no-repeat;
+  background: url(/icons/hpimgs28.png) -19px 0px no-repeat;
   color: transparent;
   height: 18px;
   line-height: 15px;
   overflow: hidden;
-  width: 20px;
+  width: 19px;
 }
 div.star_symbol.off {
   display: inline-block;
-  background: url(/icons/hpimgs28.png) -0px 0px no-repeat;
+  background: url(/icons/hpimgs28.png) 0px 0px no-repeat;
   color: transparent;
   height: 18px;
   line-height: 15px;
   overflow: hidden;
-  width: 20px;
+  width: 19px;
 }
 div.title {
   cursor: pointer;
@@ -163,6 +163,9 @@ div.control_block {
 }
 #google_result.control_block {
   margin-top: 5px;
+  cursor: pointer;
+}
+#alias_result.star_symbol {
   cursor: pointer;
 }
 div.save_as_alias {
