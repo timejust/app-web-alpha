@@ -266,6 +266,7 @@ a.clear {
   margin-left: 5px;
   margin-right: 5px;
   display: inline-block;
+  width: 140px;
 }
 ul { 
   margin-top: 5px;
