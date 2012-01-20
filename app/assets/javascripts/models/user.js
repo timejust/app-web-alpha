@@ -5,7 +5,7 @@ var User = Backbone.Model.extend({
     this.preferences = undefined;
     this.email = undefined;
     this.state = 'waiting';
-    this.pendingEvent = undefined;
+    // this.pendingEvent = undefined;
     this.bind('preferences:loaded', this.loadPendingEvents);
     this.loadPreferences();
   },
@@ -43,7 +43,7 @@ var User = Backbone.Model.extend({
     else{
       this.state = 'registered';
       if (response.rc == 200){
-        this.pendingEvent = response.data;
+        // this.pendingEvent = response.data;
       }
     }
     this.trigger('status:loaded');

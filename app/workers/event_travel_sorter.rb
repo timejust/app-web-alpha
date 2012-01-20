@@ -15,6 +15,8 @@ class EventTravelSorter
       end
     end
     
+    # Before creating travels on google calendar, return result first.
+    event.update_attribute(:state, 'travels_done')
     Resque.enqueue(EventSaver, event_id)
     timer.end()
   end

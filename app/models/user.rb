@@ -7,11 +7,13 @@ class User
   field :token, type: String
   field :refresh_token, type: String
   field :token_expires_at, type: Time
-
+  field :expired, type: Integer, default: 0
+  
   embeds_many :shared_calendars, class_name: "Calendar"
   has_many :events
   has_many :favorite_locations
-
+  index([[ :email, Mongo::ASCENDING ]])
+  
   attr :access_token_cache
 
   # Include default devise modules. Others available are:
@@ -81,13 +83,13 @@ class User
   def find_or_create_calendars
     calendars = Google::Calendar.list(self.access_token)
     if !calendars['error'] && calendars['data']['items']
-      calendars = calendars['data']['items']
+      calendars = calendars['data']['items']      
       User.shared_calendars_properties.each do |properties|
-        Rails.logger.info "Search for calendar named : #{properties[:name]}"
+        # Rails.logger.info "Search for calendar named : #{properties[:name]}"
         calendar = calendars.select{|calendar| calendar['title'] == properties[:name]}
         calendar = calendar.first
         unless calendar
-          Rails.logger.info "create calendar #{properties[:name]} with color #{properties[:color]}"
+          # Rails.logger.info "create calendar #{properties[:name]} with color #{properties[:color]}"
           calendar = Google::Calendar.create(
             self.access_token,
             {
@@ -98,13 +100,13 @@ class User
             }
           )
           calendar = calendar['data']
-        else
-          Rails.logger.info "calendar found : #{calendar['title'].inspect}"
-          Rails.logger.info "calendar must have color : #{properties[:color].inspect}"
-          Rails.logger.info "calendar have color : #{calendar['color'].inspect}"
+        else          
+          # Rails.logger.info "calendar found : #{calendar['title'].inspect}"
+          # Rails.logger.info "calendar must have color : #{properties[:color].inspect}"
+          # Rails.logger.info "calendar have color : #{calendar['color'].inspect}"
           if calendar['color'] != properties[:color]
             calendar_short_id = Google::Calendar.extract_google_id(calendar['id'])
-            Rails.logger.info "calendar has wrong color, update it"
+            # Rails.logger.info "calendar has wrong color, update it"
             Google::Calendar.update(
               self.access_token,
               calendar_short_id,
@@ -123,7 +125,7 @@ class User
           google_short_id: Google::Calendar.extract_google_id(calendar['id']),
           google_id: calendar['id']
         )
-        Rails.logger.info "local calendar : #{local_calendar.inspect}"
+        # Rails.logger.info "local calendar : #{local_calendar.inspect}"
       end
     else
       JSON.parse(calendars)

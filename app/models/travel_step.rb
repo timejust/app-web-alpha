@@ -23,6 +23,7 @@ class TravelStep
   field :calendar,            type: String
   field :steps_count,         type: Integer
   field :summary,             type: Array, default: []
+  index([[ :state, Mongo::ASCENDING ]])
 
   # not validates_presence_of :departure_time, :arrival_time because we need to
   # save the step with error state

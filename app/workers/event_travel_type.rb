@@ -2,10 +2,7 @@
 class EventTravelType
   @queue = :event_travel_type
 
-  def self.perform(event_id)
-    timer = Timejust::LatencySniffer.new('Event:EventTravelType')
-    timer.start()
-    
+  def self.perform(event_id)    
     event = Event.first(conditions: {id: event_id})
     unless event.previous_travel_nodes.blank? &&
       event.current_travel_nodes.blank? &&
@@ -15,6 +12,5 @@ class EventTravelType
     else
       Rails.logger.info " * No travel nodes confirmations found for #{event_id}"
     end
-    timer.end()
   end
 end

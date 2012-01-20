@@ -14,12 +14,15 @@ class Users::Oauth2Controller < ApplicationController
     # fetch email
     email = @access_token.get("https://www.googleapis.com/userinfo/email?alt=json")['data']['email']
 
+    #Rails.logger.info(@access_token.inspect)
+    
     # Create/Update user informations
     user = User.find_or_initialize_by(:email => email)
     user.update_attributes(
       :token => @access_token.token,
       :refresh_token => @access_token.refresh_token,
-      :token_expires_at => @access_token.expires_at
+      :token_expires_at => @access_token.expires_at,
+      :expired => 0
     )
 
     # Sign in user

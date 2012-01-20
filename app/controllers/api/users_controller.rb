@@ -21,12 +21,14 @@ class Api::UsersController < Api::BaseController
       user = User.where(email: params[:email]).first
       return unauthorized! if current_user != user
       user.find_or_create_calendars
-      if user.has_pending_events?
-        @event = user.last_pending_event
-        render :json => @event.to_json, :status => :ok
-      else
-        render :nothing => true, :status => :no_content
-      end
+      render :nothing => true, :status => :ok
+      
+      #if user.has_pending_events?
+      #  @event = user.last_pending_event
+      #  render :json => @event.to_json, :status => :ok
+      #else
+      #  render :nothing => true, :status => :no_content
+      #end
     else
       render :nothing => true, :status => :not_found
     end
@@ -38,7 +40,7 @@ class Api::UsersController < Api::BaseController
   #
   def purge_travels
     current_user.purge_travels
-    render :json => current_user.to_json, :status => :accepted
+    render :nothing => true, :status => :accepted
   end
 
   # GET /v1/users/alias

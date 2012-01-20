@@ -18,7 +18,7 @@ class Api::EventsController < Api::BaseController
       timer = Timejust::LatencySniffer.new('Event:create')
       timer.start()      
       
-      current_user.find_or_create_calendars
+      Resque.enqueue(GoogleCalendarCreator, current_user.email)      
       @event = Event.parse_from_google_gadget(params[:event])
       @event.base = params[:base]
       
@@ -29,7 +29,11 @@ class Api::EventsController < Api::BaseController
       @event.created_at = Time.now
       @event.user = current_user
       if @event.save
-        render :json => @event, :status => :created
+        if current_user.expired == 1
+          render :nothing => true, :status => :unauthorized
+        else
+          render :json => @event, :status => :created
+        end
       else
         render :json => @event.errors, :status => :unprocessable_entity
       end
@@ -37,9 +41,6 @@ class Api::EventsController < Api::BaseController
     else
       render :nothing => true, :status => :unprocessable_entity
     end
-  rescue OAuth2::HTTPError => e
-    Rails.logger.error(e)
-    render :nothing => true, :status => :unauthorized
   end
 
   # PUT /v1/events/:id/add_google_info
@@ -113,7 +114,11 @@ class Api::EventsController < Api::BaseController
   #
   def travels
     if @event.travels_done?
-      render :json => @event.to_json, :status => :ok
+      if current_user.expired == 1
+        render :nothing => true, :status => :unauthorized
+      else
+        render :json => @event.to_json, :status => :ok
+      end
     elsif @event.canceled?
       render :nothing => true, :status => :gone
     else

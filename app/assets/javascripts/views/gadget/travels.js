@@ -114,7 +114,7 @@ App.Views.TravelsView = Backbone.View.extend({
       this.nextEventView.render();
     }
   },
-  waitForTravels: function(response){
+  waitForTravels: function(response) {
     google.calendar.refreshEvents();
     this.apiEventId = response.data._id;
     var self = this;    
