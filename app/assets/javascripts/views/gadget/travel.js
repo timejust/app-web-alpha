@@ -32,11 +32,18 @@ App.Views.TravelView = Backbone.View.extend({
       html += '<ul><li class="' + color +'_estimate">' + step.estimated_time + '\'</li>';
       html += '<div class="transportation_symbol">';
       if (travel.travel_mode == 'car') {
-        html += '<li class="car"';
+        html += '<li class="walk"';
         if (step.estimated_time < 10) {
           html += ' style="margin-left:10px"';
         }
-        html += '></li><li class="distance">' + step.distance + '</li>';
+        var num_icons = 3;
+        var gray_width = ((100 - (num_icons * 19)) / (num_icons - 1)) - 18;
+        html += '></li>';
+        html += '<li class="gray_bar" style="width: ' + gray_width + 'px"></li>';
+        html += '<li class="car"></li><div class="distance_container">';
+        html += '<div class="distance">' + Math.floor(step.distance).toFixed(1) + 'km</div></div>';
+        html += '<li class="gray_bar" style="width: ' + gray_width + 'px"></li>';
+        html += '<li class="walk"></li>';
       } else {        
         var current_mode = "";
         var num_icons = 0;

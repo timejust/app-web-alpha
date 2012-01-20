@@ -48,10 +48,21 @@ li.gray_bar {
 li.toggle {
   float: left;
 }
-li.distance {
+div.distance {
   font: bold 11px Arial; 
-  margin-left: 10px;
+  color: white;  
+  display: inline-block;
+  margin: 2px 2px 0px 6px;
+}
+div.distance_container {
+  height: 17px;
+  border-radius: 8px;    
+  z-index: 1;
+  position: relative;
+  margin-left: -5px;
   vertical-align: 4px;
+  background-color: #e0c240;  
+  display: inline-block;
 }
 li.direction {
   font: normal 10px Arial; 
@@ -499,6 +510,8 @@ ul li {
   background-image:url(/icons/icn-strip_transports.png);
   background-position: -110px 0px;
   background-repeat: no-repeat;
+  z-index: 3;
+  position: relative;
 }
 .train {
   display: inline-block; 

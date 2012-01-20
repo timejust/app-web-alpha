@@ -118,7 +118,7 @@ class Travel
         estimated_time: (estimated_time / 60).round,
         departure_time: departure_time,
         arrival_time: arrival_time,
-        distance: (distance.to_f / 1000).to_f.round(2).to_s + " km",
+        distance: (distance.to_f / 1000).to_f.round(2).to_s,
         state: 'waiting',
         travel_type: direction,
         steps: steps,
