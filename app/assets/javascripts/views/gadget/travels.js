@@ -157,7 +157,9 @@ App.Views.TravelsView = Backbone.View.extend({
       this.renderButton();
       gadgets.window.adjustHeight();  
       google.calendar.refreshEvents();  
-    } 
+    } else if (response.rc == 401) {
+      alert("You must authorize Timejust to access your calendar. Please go to " + App.config.web_url);
+    }
   },
   generatePreviousTravel: function(event) {
     this.travelType = 'previous';
