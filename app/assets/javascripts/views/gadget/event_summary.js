@@ -134,7 +134,8 @@ App.Views.EventSummaryView = Backbone.View.extend({
             <li class="alias" style="<% if (selected == id) { %>font-weight: bold<% } %>">\
               <a href="#" id="<%=id%>" class="value"><%=ab.title%></a>\
             </li>\
-            <li class="alias_address" style="width:<%=120-(ab.title.length * 6)%>px"><%=ab.address%></li>\
+            <li class="alias_address" style="width:<%if (105-((ab.title.length - 1) * 5) > 0) {%>\
+              <%=105-((ab.title.length - 1) * 5)%><%} else {%><%=0%><%}%>px"><%=ab.address%></li>\
           </div>\
         <% id += 1;}); %>\
         <div class="alias_container">\

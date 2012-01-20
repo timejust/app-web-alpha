@@ -52,6 +52,16 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
 	    }
 	  });
   }, 
+  hitToSearch: function(node) {
+    var self = this;
+    $('#' + node).keypress(function(e) {
+      code = (e.keyCode ? e.keyCode : e.which);
+      if (code == 13) {
+        self.search(e);
+      }
+      // e.preventDefault();
+    });
+  },
   default_layout: _.template('\
     <div class="top"></div>\
     <div class="main">\
@@ -116,6 +126,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var top = $(this.el).find('.top');
     top.html(this.top_template);
     this.getGeoAutocomplete('maininput');    
+    this.hitToSearch('maininput');
     if (this.original_address != "") {
       $(this.el).find('#maininput')[0].value = this.original_address;      
     }        
