@@ -173,15 +173,21 @@ class TravelStep
 
   # Destroy all associated google events
   def destroy_google_event
-    if self.google_event_id && self.google_calendar_id
+    destroy_google_event_when(self.google_event_id, self.google_calendar_id)
+  end
+
+  def destroy_google_event_when(google_event_id, google_calendar_id)
+    if google_event_id && google_calendar_id
+      # Rails.logger.info "GOOGLE_EVENT_ID => ********* " + google_event_id
+      # Rails.logger.info "GOOGLE_CALENDAR_ID => ********* " + google_calendar_id
       Google::Event.destroy(
         self.event.user.access_token,
-        self.google_calendar_id,
-        self.google_event_id
+        google_calendar_id,
+        google_event_id
       )
     end
   end
-
+  
   # Destroy associated travel if there is no more travels
   # steps associated
   def destroy_travel

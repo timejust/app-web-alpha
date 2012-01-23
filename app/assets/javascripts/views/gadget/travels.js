@@ -16,6 +16,7 @@ App.Views.TravelsView = Backbone.View.extend({
   initialize: function(){
     showLoader();
     _.bindAll(this, 'waitForTravels');
+    _.bindAll(this, 'waitForCalendars');
     _.bindAll(this, 'handleEvent'); 
     gadgets.window.adjustHeight();
     this.ip = this.options.ip;    
@@ -133,6 +134,22 @@ App.Views.TravelsView = Backbone.View.extend({
       });
     });
   },
+  waitForCalendars: function() {    
+    var self = this;    
+    $.poll(function(retry){
+      GoogleRequest.get({
+        url: App.config.api_url + "/events/" + self.apiEventId + "/calendars?nocache=" + new Date().getTime(),
+        // TODO spec
+        success: function(response) {
+          google.calendar.refreshEvents();      
+        },
+        // TODO spec
+        error: function(response){
+          google.calendar.refreshEvents();
+        }
+      });
+    });
+  },
   // handle travel proposals response
   // if status is a 404, continue
   // if 410, stop, event was canceled
@@ -156,7 +173,9 @@ App.Views.TravelsView = Backbone.View.extend({
       travelView.render();  
       this.renderButton();
       gadgets.window.adjustHeight();  
-      google.calendar.refreshEvents();  
+      google.calendar.refreshEvents(); 
+      
+      this.waitForCalendars();
     } else if (response.rc == 401) {
       alert("You must authorize Timejust to access your calendar. Please go to " + App.config.web_url);
     }

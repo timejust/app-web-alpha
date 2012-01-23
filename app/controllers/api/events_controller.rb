@@ -113,7 +113,7 @@ class Api::EventsController < Api::BaseController
   # @return   [JSON]      JSON representation of event with its travels
   #
   def travels
-    if @event.travels_done?
+    if @event.travels_to_calendar_waiting?
       if current_user.expired == 1
         render :nothing => true, :status => :unauthorized
       else
@@ -126,6 +126,24 @@ class Api::EventsController < Api::BaseController
     end
   end
 
+  # GET /v1/events/:id/calendars
+  #
+  # Notify which adding items to Google Calendars has been done.
+  #
+  def calendars
+    if @event.travels_done?
+      if current_user.expired == 1
+        render :nothing => true, :status => :unauthorized
+      else
+        render :json => @event.to_json, :status => :ok
+      end
+    elsif @event.canceled?
+      render :nothing => true, :status => :gone
+    else
+      render :nothing => true, :status => :not_found
+    end
+  end
+  
   # PUT /vi/events/:id/cancel
   #
   # Cancel an event

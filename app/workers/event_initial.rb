@@ -27,9 +27,10 @@ class EventInitial
     event.update_attributes('applicable_travel_api' => ['ratp', 'google-directions', 'timejust'])
     Resque.enqueue(EventAbstractApiProvider, event_id) 
     timer.end()
-  #rescue Exception => e
-  #  Rails.logger.error e
-  #  event.error
-  #  $stderr.puts e
+  rescue OAuth2::HTTPError => e
+    @user.update_attributes(
+      :expired => 1
+    )    
+    event.update_attribute(:state, 'error')
   end
 end

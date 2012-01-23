@@ -69,6 +69,7 @@ TimejustApi::Application.routes.draw do
           put :add_google_info
           post :write_travels_to_calendar
           get :around
+          get :calendars
         end
         collection do
           get :status_for_user
