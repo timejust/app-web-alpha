@@ -133,8 +133,6 @@ div.alias_container {
 }
 li.alias_address {
   display: inline-block;
-  text-align: right;
-  float: right;
   margin-top: 2px;
   margin-bottom: 2px;
   white-space: nowrap;
