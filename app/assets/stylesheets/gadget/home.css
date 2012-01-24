@@ -129,7 +129,7 @@ div.alias_container {
   display: block;
   font: normal 10px Arial; 
   margin: 1px 5px 2px 13px;
-  border-top: 1px solid #707070;
+  border-top: 1px solid #E7E7E7;
 }
 li.alias_address {
   display: inline-block;
@@ -230,7 +230,7 @@ a.clear {
 .blue {
   margin-bottom: 3px;
   border-style: solid;
-  border-color: #707070;
+  border-color: #E7E7E7;
   background-color: #9fc6e7;
   color: #1d1d1d;  
   border-width: 1px;
