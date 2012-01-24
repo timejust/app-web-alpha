@@ -176,6 +176,17 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       this.showGoogleResult(null);
     }    
   },
+  saveAlias: function(node) {
+    var self = this;
+    $('#' + node).keypress(function(e) {
+      code = (e.keyCode ? e.keyCode : e.which);
+      if (code == 13) {
+        var el = $(e.currentTarget);
+        var alias = el.parent('div');
+        alias.html('<div>alias @' + el[0].value + ' added</div>');
+      }
+    });
+  },
   bookmarkAddress: function(e) {
     var star = $(e.currentTarget).find('.star_symbol');
     var tok = star[0].className.split(' ');
@@ -184,6 +195,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       star.toggleClass('off'); 
       var alias = $(e.currentTarget).find('.save_as_alias');
       alias.html('<input id="alias_input" placeholder="Alias name..." />');
+      this.saveAlias("alias_input");
     }    
   },
   bookmarkDelete: function(e) {
@@ -202,7 +214,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         }
       });
     } else {    
-      star.parent('div').find('.title').attr('style', 'color: gray;font-style: italic;cursor: text');       
+      star.parent('div').find('.title').attr('style', 'color: gray;font-style: italic;cursor: text');                     
       // If user tries to delete the given alias, don't delete it right away.
       // Put that in the deleting queue and delete later.
       this.deletingAliasList.push(title);

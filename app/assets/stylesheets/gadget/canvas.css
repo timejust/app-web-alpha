@@ -24,13 +24,13 @@ div.left-middle {
 }
 div.left {
   float: left;
-  width: 28%;
+  width: 25%;
   display: inline;
 }
 div.right {
   display: inline;
   float: right;
-  width: 72%;
+  width: 75%;
 }
 div.map_view {
   width: 100%;
@@ -283,7 +283,7 @@ div.freq_address, div.google_result {
   margin-bottom: 15px;
 }
 div.google_result {
-  margin-left: 20%;
+  margin-left: 15%;
 }
 #maininput {
   background: white;
