@@ -261,7 +261,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       $.each(tok, function(i, c) {
         if (i > 0) {
           city += c;
-          if (i < tok.length)
+          if (i + 1 < tok.length)
             city += ",";
         }          
       });
@@ -297,7 +297,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       $.each(tok, function(i, c) {
         if (i > 0) {
           city += c;
-          if (i < tok.length)
+          if (i + 1 < tok.length)
             city += ",";
         }          
       });

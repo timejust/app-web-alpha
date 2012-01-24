@@ -121,6 +121,42 @@ div.marker_5 {
   overflow: hidden;
   width: 20px;
 }
+div.marker_6 {
+  display: inline-block;
+  background: url(/icons/red_markers.png) 0px -204px no-repeat;
+  color: transparent;
+  height: 32px;
+  line-height: 15px;
+  overflow: hidden;
+  width: 20px;
+}
+div.marker_7 {
+  display: inline-block;
+  background: url(/icons/red_markers.png) 0px -238px no-repeat;
+  color: transparent;
+  height: 32px;
+  line-height: 15px;
+  overflow: hidden;
+  width: 20px;
+}
+div.marker_8 {
+  display: inline-block;
+  background: url(/icons/red_markers.png) 0px -272px no-repeat;
+  color: transparent;
+  height: 32px;
+  line-height: 15px;
+  overflow: hidden;
+  width: 20px;
+}
+div.marker_9 {
+  display: inline-block;
+  background: url(/icons/red_markers.png) 0px -306px no-repeat;
+  color: transparent;
+  height: 32px;
+  line-height: 15px;
+  overflow: hidden;
+  width: 20px;
+}
 div.logo {
   display: inline-block; 
   width: 143px; 
