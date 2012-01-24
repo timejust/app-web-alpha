@@ -17,6 +17,11 @@ div.top {
   border-bottom: 2px solid #CCCCCC;
   display: inline-block;
 }
+div.left-middle {
+  overflow-y: scroll;
+  height: 100%;
+  width: 100%;
+}
 div.left {
   float: left;
   width: 28%;

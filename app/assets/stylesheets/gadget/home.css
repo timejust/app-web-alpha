@@ -87,7 +87,7 @@ li.direction {
   color: #549378;
   float: left;
 }
-.event li.title {
+.event div.title {
   font: bold 11px Arial; 
   margin: -2px 0px;
   text-align: left;
