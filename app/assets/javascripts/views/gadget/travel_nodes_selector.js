@@ -309,8 +309,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
           inDeleting = true;
           return;
         }
-      });
-      
+      });      
       // First token is address, and rest of them are city + country normally.
       results += self.alias_result({
         index: i,
@@ -374,6 +373,17 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     // Clear deleting alias list
     this.deletingAliasList = [];
   },
+  cleanupAliasTitle: function(title) {
+    var newTitle = title;
+    while (newTitle.indexOf('@') != -1) {
+      if (newTitle[0] == '@') {
+        newTitle = newTitle.substring(1, newTitle.length);
+      } else {
+        break;
+      }
+    }
+    return newTitle;
+  },
   selectAddress: function(e) {
     e.preventDefault();
     var el = $(e.currentTarget);
@@ -389,8 +399,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
           self.deletingAliasList.push(a.title);
         }
       });
-    }
-  
+    }  
     // Delete alias if exists in deleting list.
     if (this.deletingAliasList.length > 0) {
       $.each(this.deletingAliasList, function(i, d) {
@@ -404,8 +413,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
           }
         });
       });
-    }
-        
+    }        
     // Add aliases if exists
     if (alias.length > 0) {
       // If there is an alias with the address, we save it
@@ -414,7 +422,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         params: { 
           'email' : $.cookie('email'),
           'address': address_block.attr('data-address'),
-          'title': '@' + alias[0].value,
+          'title': '@' + this.cleanupAliasTitle(alias[0].value),
           'lat': address_block.attr('data-lat'),
           'lng': address_block.attr('data-lng')
         },
@@ -430,7 +438,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     ev.type = 'EVENT_ADDRESS_SELECTED';
     ev.params = {};
     if (alias.length > 0) {
-      ev.params.title = '@' + alias[0].value;
+      ev.params.title = '@' + this.cleanupAliasTitle(alias[0].value);
     }    
     ev.params.address = address_block.attr('data-address');
     ev.params.lat = address_block.attr('data-lat');
