@@ -28,7 +28,7 @@ div.green_btn {
   width: 152px;
   height: 30px;
   text-align: center;
-  margin-bottom: 3px;
+  margin-bottom: 7px;
 }
 div.green_btn .button_name {
   margin-top: 9px;
@@ -211,7 +211,7 @@ a.clear {
   text-decoration: none;
 }
 .gray {
-  margin-bottom: 3px;
+  margin-bottom: 1px;
   border-style: solid;
   border-color: #8e8e8e;
   background-color: #a8a8a8;
@@ -219,14 +219,14 @@ a.clear {
   border-width: 1px;
 }
 .white {
-  margin-bottom: 3px;
+  margin-bottom: 1px;
   border-style: solid;
   border-color: #E7E7E7;
   color: #1d1d1d;  
   border-width: 1px;
 }
 .blue {
-  margin-bottom: 3px;
+  margin-bottom: 1px;
   border-style: solid;
   border-color: #E7E7E7;
   background-color: #9fc6e7;
@@ -234,7 +234,7 @@ a.clear {
   border-width: 1px;
 }
 .green {
-  margin-bottom: 3px;
+  margin-bottom: 1px;
   border-style: solid;
   border-color: #52a884;
   background-color: #92e1c0;
@@ -248,7 +248,7 @@ a.clear {
   margin-right: 5px;
 }
 .pink {
-  margin-bottom: 3px;
+  margin-bottom: 1px;
   border-style: solid;
   border-color: #bd6f89;
   background-color: #fe96b8;
@@ -262,7 +262,7 @@ a.clear {
   margin-right: 5px;
 }
 .yellow {
-  margin-bottom: 3px;
+  margin-bottom: 1px;
   border-style: solid;
   border-color: #e0c240;
   background-color: #fbe983;
