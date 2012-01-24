@@ -4,6 +4,7 @@ var App = {
   Controllers: {},
   config: {
     time: "hh:mm a",
+    time24: "hh:mm",
     date: "ddd dd MMM yyyy hh:mm",
     dateOnly: "dd MMM yyyy"
   }

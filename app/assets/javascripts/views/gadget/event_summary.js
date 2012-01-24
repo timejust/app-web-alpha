@@ -74,6 +74,7 @@ App.Views.EventSummaryView = Backbone.View.extend({
           ab = this.summary.addressBook[0];
         } else if (this.summary.selected > -1) {
           ab = this.summary.alias[this.summary.selected];
+          ab.normalized = true;
         }
       } else {
         // We look up from address book first and alias book later.
