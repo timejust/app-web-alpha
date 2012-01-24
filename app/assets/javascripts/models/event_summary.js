@@ -5,6 +5,7 @@ App.Models.EventSummary = Backbone.Model.extend({
     this.color = null;
     this.googleEventId = '';
     this.addressBook = new Array();
+    this.selected = -1;
   },
   appendAddressBook: function(address, lat, lng, normalized) {
     var id = this.addressBook.length;
@@ -18,6 +19,17 @@ App.Models.EventSummary = Backbone.Model.extend({
         title: this.title, address: address, lat: lat, lng: lng, normalized: normalized};        
     }   
     return id;
+  },
+  setAliasSelect: function(title) {
+    var id = -1;
+    if (this.alias != null) {
+      $.each(this.alias, function(i, a) {
+        if (a.title == title) {
+          id = i;
+        }
+      });  
+    } 
+    this.selected = id;
   },
   appendAlias: function(title, address, lat, lng) {
     var id = 0;
@@ -52,10 +64,12 @@ App.Models.EventSummary = Backbone.Model.extend({
     if (this.alias != null) {
       $.each(this.alias, function(i, a) {
         output += "\nalias: title=>" + a.title + ", address=>" + a.address;
-        $.each(this.addressBook, function(k, ab) {          
-          output += "\naddress=> " + ab.address + ", lat=>" + ab.lat + ", lng=>" + 
-              ab.lng + ", normalized=>" + ab.normalized;
-        });
+        if (this.addressBook != null) {
+          $.each(this.addressBook, function(k, ab) {          
+            output += "\naddress=> " + ab.address + ", lat=>" + ab.lat + ", lng=>" + 
+                ab.lng + ", normalized=>" + ab.normalized;
+          });  
+        }        
       });
     }
     alert(output);   

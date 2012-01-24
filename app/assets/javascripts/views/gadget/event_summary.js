@@ -72,7 +72,9 @@ App.Views.EventSummaryView = Backbone.View.extend({
       if (this.selected == -1) {
         if (this.summary.addressBook.length > 0) {
           ab = this.summary.addressBook[0];
-        }  
+        } else if (this.summary.selected > -1) {
+          ab = this.summary.alias[this.summary.selected];
+        }
       } else {
         // We look up from address book first and alias book later.
         if (this.summary.addressBook.length > this.selected) {
@@ -134,8 +136,8 @@ App.Views.EventSummaryView = Backbone.View.extend({
             <li class="alias" style="<% if (selected == id) { %>font-weight: bold<% } %>">\
               <a href="#" id="<%=id%>" class="value"><%=ab.title%></a>\
             </li>\
-            <li class="alias_address" style="width:<%if (105-((ab.title.length - 1) * 5) > 0) {%>\
-              <%=105-((ab.title.length - 1) * 5)%><%} else {%><%=0%><%}%>px"><%=ab.address%></li>\
+            <li class="alias_address" style="width:<%if (105-((ab.title.length - 1) * 4) > 0) {%>\
+              <%=105-((ab.title.length - 1) * 4)%><%} else {%><%=0%><%}%>px"><%=ab.address%></li>\
           </div>\
         <% id += 1;}); %>\
         <div class="alias_container">\

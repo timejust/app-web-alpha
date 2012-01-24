@@ -137,9 +137,28 @@ App.Views.EventView = Backbone.View.extend({
     this.events[2] = this.nextEvent;    
     for (var i = 0; i < this.events.length; ++i) {
       if (this.events[i] != undefined && this.events[i].location != "") {
-        body.push(this.toRecognizer(this.events[i], id.toString(), this.ip))  
-        this.normalizedReq[id] = i;
-        id += 1;
+        var loc = this.events[i].location;
+        var isAlias = false;
+        // If location is started with '@', we assume the location is
+        // alias first. Let's try to find the keyword from the alias list.
+        // If exists, do not normalize it. If not, we need to normalize it.
+        if (loc.length > 0 && loc[0] == '@') {
+          $.each(this.alias, function(i, a) {
+            if (a.title == loc) {
+              // Found it. Do not normalize this
+              isAlias = true;
+              return;
+            }
+          });          
+        }         
+        if (isAlias == false) {
+          body.push(this.toRecognizer(this.events[i], id.toString(), this.ip))  
+          this.normalizedReq[id] = i;
+          id += 1;  
+          this.events[i].alias = false;
+        } else {
+          this.events[i].alias = true;
+        }
       }
     }   
     if (body.length == 0) {
@@ -181,8 +200,13 @@ App.Views.EventView = Backbone.View.extend({
         summary.color = ev.color;
         // Append all addresses either from normalization process or google calendar.
         if (ev.addresses == undefined) {
-          if (ev.location != "")
-            summary.appendAddressBook(ev.location, 0.0, 0.0, false);
+          if (ev.location != "") {
+            if (ev.alias == false) {
+              summary.appendAddressBook(ev.location, 0.0, 0.0, false);
+            } else {
+              summary.setAliasSelect(ev.location);
+            }
+          }            
         } else {
           $.each(ev.addresses, function(k, address) {
             summary.appendAddressBook(address.address, 
@@ -194,6 +218,7 @@ App.Views.EventView = Backbone.View.extend({
       } else {
         summary.original_address = "";
       }
+      // summary.dump();
       self.travels_view.selectedEvent = self.selectedEvent;
       // Append summaries for previous, current, and next travel
       // to travel views and render them in the view.      

@@ -154,7 +154,7 @@ App.Views.TravelsView = Backbone.View.extend({
   // if status is a 404, continue
   // if 410, stop, event was canceled
   // if 200, show travel proposals
-  handleTravelResponse: function(response, retry){
+  handleTravelResponse: function(response, retry) {
     if (response.rc == 404) {
       showLoader();
       retry();
