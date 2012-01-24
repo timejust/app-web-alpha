@@ -92,8 +92,7 @@ App.Views.EventSummaryView = Backbone.View.extend({
       }                
     }      
     var title = this.title;
-    var address = this.address;    
-    
+    var address = this.address;        
     var id = 0;    
     $(this.el).html(this.layout({
       class_name: class_name, 

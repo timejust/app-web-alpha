@@ -380,7 +380,32 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var address_block = el.parent('div').parent('div').find('.address_block');
     var control_block = el.parent('div').parent('div').find('.control_block');
     var alias = control_block.find('.save_as_alias').find('#alias_input');
+    var self = this;
     
+    // If we already have same alias which we added just now, delete previous ones.
+    if (alias.length > 0 && this.alias.length > 0) {
+      $.each(this.alias, function(i, a) {
+        if (a.title == '@' + alias[0].value) {
+          self.deletingAliasList.push(a.title);
+        }
+      });
+    }
+  
+    // Delete alias if exists in deleting list.
+    if (this.deletingAliasList.length > 0) {
+      $.each(this.deletingAliasList, function(i, d) {
+        GoogleRequest.post({
+          url: App.config.api_url + "/users/delete_alias",
+          params: { 
+            'email' : $.cookie('email'),
+            'title': d
+          },
+          success: function() {        
+          }
+        });
+      });
+    }
+        
     // Add aliases if exists
     if (alias.length > 0) {
       // If there is an alias with the address, we save it
@@ -397,20 +422,6 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         }
       });
     }    
-    // Delete alias if exists in deleting list.
-    if (this.deletingAliasList.length > 0) {
-      $.each(this.deletingAliasList, function(i, d) {
-        GoogleRequest.post({
-          url: App.config.api_url + "/users/delete_alias",
-          params: { 
-            'email' : $.cookie('email'),
-            'title': d
-          },
-          success: function() {        
-          }
-        });
-      });
-    }
     
     // Let's go back to home canvas
     gadgets.views.requestNavigateTo('home');
