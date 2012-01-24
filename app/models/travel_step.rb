@@ -102,13 +102,34 @@ class TravelStep
     end
   end
 
+  def to_formatted_text(dir) 
+    text = ""
+    title = ""
+    departure_time = DateTime.strptime(dir["dep_time"], "%Y-%m-%d %H:%M:%S").to_time    
+    
+    if dir["text_direction"] == ""      
+      line = dir["line"]
+      if dir["line"] == "base" || dir["line"] == "connections" 
+        line = "walk" 
+      end      
+      headsign = dir["headsign"]
+      if line == "walk"
+        headsign = ((arrival_time.to_i - departure_time.to_i) / 60).to_s + " min" 
+      end      
+      title = dir["dep_name"] + " > (" + line + " " + headsign +") > " + dir["arr_name"];
+    else
+      title = dir["text_direction"] + " (" + dir['distance'].to_s + " m)"
+    end        
+    text = departure_time.strftime("%H:%M") + " | " + title + ""
+  end
+  
   def google_event_detail
+    detail = ""
     if self.steps
-      <<-EOS
-#{self.public_url}
-#{self.steps.join('
-')}
-      EOS
+      self.steps.each do |step|
+        detail += to_formatted_text(step) + "\n"
+      end
+      detail
     else
       "no details"
     end
