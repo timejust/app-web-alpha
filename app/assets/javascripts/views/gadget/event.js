@@ -32,7 +32,7 @@ App.Views.EventView = Backbone.View.extend({
       <li class="event_date"></li>\
       <li><%= $.format.date(google.calendar.utils.toDate(startTime), App.config.dateOnly) %></li>\
       <li class="event_time"></li>\
-      <li><%= startTime.hour %>:<%= startTime.minute %></li>\
+      <li><%if(startTime.hour < 10){%>0<%}%><%=startTime.hour%>:<%if(startTime.minute < 10){%>0<%}%><%= startTime.minute %></li>\
     </ul>\
   '),
   // Calendar event was clicked, store and display it
