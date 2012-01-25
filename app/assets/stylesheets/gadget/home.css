@@ -14,6 +14,14 @@ div.powered_by_google {
   background-image:url(/icons/powered-by-google.png);
   background-repeat: no-repeat;
 }
+a.plus_container {
+  background-image: url(/icons/plus.png);
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  float: right;
+  margin-right: 4px;  
+}
 div.green_btn {
   background-position: center; 
   display: inline-block;   
@@ -246,6 +254,7 @@ a.clear {
   border-color: #52a884;
   margin-left: 5px;
   margin-right: 5px;
+  margin-bottom: 5px;
 }
 .pink {
   margin-bottom: 1px;
@@ -260,6 +269,7 @@ a.clear {
   border-color: #bd6f89;
   margin-left: 5px;
   margin-right: 5px;
+  margin-bottom: 5px;
 }
 .yellow {
   margin-bottom: 1px;

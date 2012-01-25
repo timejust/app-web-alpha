@@ -75,10 +75,11 @@ TimejustApi::Application.routes.draw do
           get :status_for_user
         end
       end
-      resources :travels, :only => [:destroy] do
+      resources :travels, :only => [] do
         member do
           put :confirm
           put :bookmark
+          post :save
         end
       end
       resources :travel_steps, :only => [:destroy] do

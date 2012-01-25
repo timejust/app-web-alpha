@@ -32,6 +32,15 @@ class Api::TravelsController < Api::BaseController
     render :json => @travel.to_json, :status => :no_content
   end
 
+  # POST /v1/travels/:id/save
+  #
+  # Copy it to user calendar
+  #
+  def save
+    @travel.write_travel_steps_to_calendar
+    render :json => @travel.to_json, :status => :ok
+  end
+  
   private
 
   # Load event by id

@@ -11,7 +11,8 @@ App.Views.TravelsView = Backbone.View.extend({
     'click .pink_toggle'          : 'toggleSteps',
     'click .value'                : 'changeTitle',
     'click .top'                  : 'toggleEvent',
-    'poll #event_polling'         : 'handleEvent'
+    'poll #event_polling'         : 'handleEvent',
+    'click .plus_container'       : 'addToCalendar'
   },
   initialize: function(){
     showLoader();
@@ -335,6 +336,25 @@ Please use 'else where' button to choose proper location");
       el.attr('shorten', 'true');
     }
   },
+  addToCalendar: function(e) {
+    var el = $(e.currentTarget);    
+    showLoader();
+    GoogleRequest.post({
+      url: App.config.api_url + "/travels/" + el.attr('id') + "/save",
+      params: {},
+      success: function(response) {
+        hideLoader();
+        alert("Succeeded to write the travel to your calendar!!!")
+        google.calendar.refreshEvents();
+      },
+      error: function(response) { 
+        hideLoader();
+        if (response.rc == 401) {
+          alert("You must authorize Timejust to access your calendar. Please go to " + App.config.web_url);
+        } 
+      }
+    });
+  },  
   toggleSteps: function(e) {
     e.preventDefault();    
     var container = $(e.currentTarget).parent('li').parent('ul').parent('div').find('.steps');
