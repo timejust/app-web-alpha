@@ -83,7 +83,7 @@ class Travel
     end
   end
   
-  def create_travel_step(travel, mode, direction=:forward)
+  def create_travel_step(travel, mode, direction=:forward, departure, arrival)
     # if return status is not ok, we cannot create a step.
     if travel["status"] == "ok"
       trip = travel["trip"]
@@ -126,7 +126,9 @@ class Travel
         travel_type: direction,
         steps: steps,
         steps_count: (steps.size - 1),
-        summary: [mode]
+        summary: [mode],
+        departure: departure,
+        arrival: arrival
       }                          
       
       #unless estimated_time.between?(1, @@max_travel_hours)

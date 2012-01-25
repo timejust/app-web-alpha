@@ -141,11 +141,19 @@ App.Views.TravelsView = Backbone.View.extend({
         url: App.config.api_url + "/events/" + self.apiEventId + "/calendars?nocache=" + new Date().getTime(),
         // TODO spec
         success: function(response) {
-          google.calendar.refreshEvents();      
+          if (response.rc == 200) {
+            google.calendar.refreshEvents();        
+          } else {
+            alert("WTF???");
+          }
         },
         // TODO spec
         error: function(response){
-          google.calendar.refreshEvents();
+          if (response.rc == 404) {
+            retry();
+          } else {
+            alert("WTF???");
+          }
         }
       });
     });

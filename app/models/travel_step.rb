@@ -23,6 +23,8 @@ class TravelStep
   field :calendar,            type: String
   field :steps_count,         type: Integer
   field :summary,             type: Array, default: []
+  field :departure,           type: String
+  field :arrival,             type: String
   index([[ :state, Mongo::ASCENDING ]])
 
   # not validates_presence_of :departure_time, :arrival_time because we need to
@@ -102,34 +104,75 @@ class TravelStep
     end
   end
 
-  def to_formatted_text(dir) 
+  def to_formatted_text(steps) 
     text = ""
-    title = ""
-    departure_time = DateTime.strptime(dir["dep_time"], "%Y-%m-%d %H:%M:%S").to_time    
-    
-    if dir["text_direction"] == ""      
-      line = dir["line"]
-      if dir["line"] == "base" || dir["line"] == "connections" 
-        line = "walk" 
-      end      
-      headsign = dir["headsign"]
-      if line == "walk"
-        headsign = ((arrival_time.to_i - departure_time.to_i) / 60).to_s + " min" 
-      end      
-      title = dir["dep_name"] + " > (" + line + " " + headsign +") > " + dir["arr_name"];
-    else
-      title = dir["text_direction"] + " (" + dir['distance'].to_s + " m)"
-    end        
-    text = departure_time.strftime("%H:%M") + " | " + title + ""
+    previous_mode = ""
+    departure_at = nil
+    i = 0
+    steps.each do |step|
+      departure_time = DateTime.strptime(step["dep_time"], "%Y-%m-%d %H:%M:%S").to_time    
+      arrival_time = DateTime.strptime(step["arr_time"], "%Y-%m-%d %H:%M:%S").to_time    
+      title = ""
+      #duration = 0      
+      i += 1
+      
+      if step["text_direction"] == ""      
+        mode = step["line"]
+        Rails.logger.info mode
+        if mode == "base"
+          departure_at = departure_time
+        else          
+          if mode == "connections"
+            if departure_at == nil
+              departure_at = departure_time
+            end
+            if step["arr_name"] == "" and i == steps.length
+              arrival = self.arrival
+            else
+              arrival = step["arr_name"]
+            end 
+            
+            if arrival != ""           
+              title = "Walk to " + arrival + " (" + ((arrival_time.to_i - departure_at.to_i) / 60).to_s + " min)" 
+            end
+          else
+            departure_at = departure_time
+            headsign = step["headsign"]
+            title =  mode + " to " + headsign +" > stop at " + step["arr_name"];  
+          end
+          
+          if previous_mode != "" and previous_mode != mode
+            text += "\n" + departure_at.strftime("%H:%M") + " | " + step["dep_name"].upcase + "\n\n"
+          end
+          
+          if title != ""
+            if mode != "connections"
+              text += departure_at.strftime("%H:%M") + " : " + title + "\n"
+            else
+              text += "           " + title + "\n"
+            end
+          end
+          
+          departure_at = nil          
+          previous_mode = mode        
+        end        
+      else
+        departure_at = departure_time
+        text += departure_at.strftime("%H:%M") + " : " + step["text_direction"] + " (" + step['distance'].to_s + " m)"
+      end             
+    end   
+    text     
   end
   
   def google_event_detail
     detail = ""
     if self.steps
-      self.steps.each do |step|
-        detail += to_formatted_text(step) + "\n"
-      end
-      detail
+      detail += self.departure_time.strftime("%H:%M") + " | " + self.departure.upcase + "\n\n"
+      detail += to_formatted_text(self.steps)
+      #self.steps.each do |step|
+      #  detail += to_formatted_text(step) + "\n"
+      #end
+      detail += "\n" + self.arrival_time.strftime("%H:%M") + " | " + self.arrival.upcase + "\n"
     else
       "no details"
     end

@@ -45,7 +45,8 @@ class EventAbstractApiProvider
           direction = itinerary.direction
           mode = itinerary.mode
           
-          itinerary.travel.create_travel_step(trip, mode, direction)        
+          itinerary.travel.create_travel_step(trip, mode, direction, 
+            event.previous_travel_node.address, event.current_travel_node.address)        
         end
       end
     end
