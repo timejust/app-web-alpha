@@ -113,7 +113,6 @@ class TravelStep
       departure_time = DateTime.strptime(step["dep_time"], "%Y-%m-%d %H:%M:%S").to_time    
       arrival_time = DateTime.strptime(step["arr_time"], "%Y-%m-%d %H:%M:%S").to_time    
       title = ""
-      #duration = 0      
       i += 1
       
       if step["text_direction"] == ""      
