@@ -118,7 +118,6 @@ class TravelStep
       
       if step["text_direction"] == ""      
         mode = step["line"]
-        Rails.logger.info mode
         if mode == "base"
           departure_at = departure_time
         else          
@@ -158,7 +157,7 @@ class TravelStep
         end        
       else
         departure_at = departure_time
-        text += departure_at.strftime("%H:%M") + " : " + step["text_direction"] + " (" + step['distance'].to_s + " m)"
+        text += departure_at.strftime("%H:%M") + " : " + step["text_direction"].gsub(/(&nbsp;)/, ' ') + " (" + step['distance'].to_s + " m)\n"
       end             
     end   
     text     
