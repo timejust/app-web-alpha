@@ -337,8 +337,10 @@ Please use 'else where' button to choose proper location");
     }
   },
   addToCalendar: function(e) {
-    var el = $(e.currentTarget);    
+    e.preventDefault();  
     showLoader();
+    gadgets.window.adjustHeight();
+    var el = $(e.currentTarget);        
     GoogleRequest.post({
       url: App.config.api_url + "/travels/" + el.attr('id') + "/save",
       params: {},
@@ -346,12 +348,14 @@ Please use 'else where' button to choose proper location");
         hideLoader();
         alert("Succeeded to write the travel to your calendar!!!")
         google.calendar.refreshEvents();
+        gadgets.window.adjustHeight();
       },
       error: function(response) { 
         hideLoader();
         if (response.rc == 401) {
           alert("You must authorize Timejust to access your calendar. Please go to " + App.config.web_url);
         } 
+        gadgets.window.adjustHeight();
       }
     });
   },  
