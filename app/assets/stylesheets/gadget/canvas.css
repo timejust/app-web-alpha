@@ -25,6 +25,7 @@ div.left-middle {
 div.left {
   float: left;
   width: 25%;
+  height: 83%;
   display: inline;
 }
 div.right {
@@ -170,20 +171,25 @@ div.logo {
   background-repeat: no-repeat;
   margin: 10px 0px 10px 2%;
 }
+div.address_container {
+  margin-left: 10px;
+  width: 89%;
+}
 #alias.address {
   margin-top: 5px;
   font-size: 13px;
   font-weight: bold;
   vertical-align: top;
-  margin-left: 10px;
 }
 #result.address {
   font-size: 16px;
   color: #15C;
   font-weight: bold;
   vertical-align: top;
-  margin-left: 10px;
   cursor: pointer;
+}
+div.marker_container {
+  float: left;
 }
 #alias_marker.marker_container {
   margin-top: 5px;
@@ -192,8 +198,7 @@ div.logo {
 }
 div.city {
   display: block;
-  margin-left: 33px;
-  margin-top: -15px;
+  margin-top: 5px;
 }
 div.address_block {
   display: block;
@@ -214,7 +219,7 @@ div.save_as_alias {
   font-style: italic;
   color: #666;
   vertical-align: 3px;
-  margin-left: 9px;
+  margin-left: 7px;
 }
 div.results_block {
   margin: 20px 20px 20px 20px;

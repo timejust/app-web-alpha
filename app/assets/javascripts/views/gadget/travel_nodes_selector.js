@@ -100,8 +100,10 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         <div id="alias_marker" class="marker_container">\
           <div class="marker_<%=index%>"></div>\
         </div>\
-        <div id="alias" class="address"><%=address%></div>\
-        <div class="city"><%=city%></div>\
+        <div class="address_container">\
+          <div id="alias" class="address"><%=address%></div>\
+          <div class="city"><%=city%></div>\
+        </div>\
       </div>\
     </div>\
   '),
@@ -111,8 +113,10 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         <div class="marker_container">\
           <div class="marker_<%=index%>"></div>\
         </div>\
-        <div id="result" class="address"><%=address%></div>\
-        <div class="city"><%=city%></div>\
+        <div class="address_container">\
+          <div id="result" class="address"><%=address%></div>\
+          <div class="city"><%=city%></div>\
+        </div>\
       </div>\
       <div id="google_result" class="control_block">\
         <div class="star_symbol off"></div>\
@@ -183,7 +187,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       if (code == 13) {
         var el = $(e.currentTarget);
         var alias = el.parent('div');
-        alias.html('<div>alias @' + el[0].value + ' added</div>');
+        alias.html('<div class="alias" alias="' + el[0].value + '">alias @' + el[0].value + ' added</div>');
       }
     });
   },
@@ -399,15 +403,15 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   selectAddress: function(e) {
     e.preventDefault();
     var el = $(e.currentTarget);
-    var address_block = el.parent('div').parent('div').find('.address_block');
-    var control_block = el.parent('div').parent('div').find('.control_block');
-    var alias = control_block.find('.save_as_alias').find('#alias_input');
+    var address_block = el.parent('div').parent('div').parent('div').find('.address_block');
+    var control_block = el.parent('div').parent('div').parent('div').find('.control_block');
+    var alias = control_block.find('.save_as_alias').find('.alias').attr('alias');
     var self = this;
     
     // If we already have same alias which we added just now, delete previous ones.
-    if (alias.length > 0 && this.alias.length > 0) {
+    if (alias != null && this.alias.length > 0) {
       $.each(this.alias, function(i, a) {
-        if (a.title == '@' + alias[0].value) {
+        if (a.title == '@' + alias) {
           self.deletingAliasList.push(a.title);
         }
       });
@@ -427,14 +431,14 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       });
     }        
     // Add aliases if exists
-    if (alias.length > 0) {
+    if (alias != 0) {
       // If there is an alias with the address, we save it
       GoogleRequest.post({
         url: App.config.api_url + "/users/add_alias",
         params: { 
           'email' : $.cookie('email'),
           'address': address_block.attr('data-address'),
-          'title': '@' + this.cleanupAliasTitle(alias[0].value),
+          'title': '@' + this.cleanupAliasTitle(alias),
           'lat': address_block.attr('data-lat'),
           'lng': address_block.attr('data-lng')
         },
@@ -450,7 +454,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     ev.type = 'EVENT_ADDRESS_SELECTED';
     ev.params = {};
     if (alias.length > 0) {
-      ev.params.title = '@' + this.cleanupAliasTitle(alias[0].value);
+      ev.params.title = '@' + this.cleanupAliasTitle(alias);
     }    
     ev.params.address = address_block.attr('data-address');
     ev.params.lat = address_block.attr('data-lat');
