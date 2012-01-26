@@ -271,6 +271,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var left = $(this.el).find('.left');
     var container = left.find('.left-middle');
     var results = '<div class="results_block">';
+    var kMaxPins = 10;    
+    var generalPin = (kMaxPins < this.results.length ? true : false);    
     $.each(this.results, function(i, a) {
       var tok = a.address.split(',');
       var city = "";
@@ -283,7 +285,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       });
       // First token is address, and rest of them are city + country normally.
       results += self.google_result({
-        index: i,
+        index: generalPin ? 100 : i,
         address: tok[0],
         original_address: a.address,
         city: city,
@@ -307,6 +309,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var left = $(this.el).find('.left');
     var container = left.find('.left-middle');
     var results = '<div class="results_block">';
+    var kMaxPins = 10;    
+    var generalPin = (kMaxPins < this.results.length ? true : false);
     $.each(this.alias, function(i, a) {
       var tok = a.address.split(',');
       var city = "";
@@ -328,7 +332,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       });      
       // First token is address, and rest of them are city + country normally.
       results += self.alias_result({
-        index: i,
+        index: generalPin ? 100 : i,
         title: a.title,
         address: tok[0],
         original_address: a.address,

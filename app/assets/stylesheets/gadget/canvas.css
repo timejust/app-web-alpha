@@ -88,6 +88,15 @@ div.title {
   vertical-align: top;
   margin-left: 10px;
 }
+div.marker_100 {
+  display: inline-block;
+  background: url(/icons/general_marker.png) 0px 0px no-repeat;
+  color: transparent;
+  height: 32px;
+  line-height: 15px;
+  overflow: hidden;
+  width: 20px;
+}
 div.marker_0 {
   display: inline-block;
   background: url(/icons/red_markers.png) 0px 0px no-repeat;
