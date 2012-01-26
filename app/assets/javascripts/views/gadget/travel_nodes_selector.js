@@ -93,7 +93,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   alias_result: _.template('\
     <div class="result_block">\
       <div class="control_block">\
-        <div id="alias_result" class="star_symbol <%=star%>"></div>\
+        <div id="alias_result" class="alias_symbol <%=star%>">@</div>\
         <div class="title"<% if (star == "off") { %> style="color: gray;font-style: italic;"<%} %>><%=title%></div>\
       </div>\
       <div class="address_block" data-address=\"<%=original_address%>\" data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\">\
@@ -119,7 +119,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         </div>\
       </div>\
       <div id="google_result" class="control_block">\
-        <div class="star_symbol off"></div>\
+        <div class="alias_symbol off">@</div>\
         <div class="save_as_alias">Save as alias</div>\
       </div>\
     </div>\
@@ -192,7 +192,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     });
   },
   bookmarkAddress: function(e) {
-    var star = $(e.currentTarget).find('.star_symbol');
+    var star = $(e.currentTarget).find('.alias_symbol');
     var tok = star[0].className.split(' ');
     if (tok[1] == 'off') {
       star.toggleClass('on');

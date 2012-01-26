@@ -65,6 +65,19 @@ div.star_symbol.off {
   overflow: hidden;
   width: 19px;
 }
+div.alias_symbol.on {
+  display: inline-block;
+  font-weight: bolder;
+  font-size: 20px;
+  margin-top: -4px;
+}
+div.alias_symbol.off {
+  display: inline-block;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  color: white;
+  font-size: 20px;
+  margin-top: -2px;
+}
 div.title {
   cursor: pointer;
   font-size: 16px;
@@ -218,7 +231,7 @@ div.save_as_alias {
   font-size: 13px;
   font-style: italic;
   color: #666;
-  vertical-align: 3px;
+  vertical-align: 1px;
   margin-left: 7px;
 }
 div.results_block {
