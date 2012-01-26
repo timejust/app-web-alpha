@@ -1,7 +1,8 @@
 # encoding: UTF-8
 class EventInitial
   @queue = :event_initial
-
+  @user = nil
+  
   def self.perform(event_id, ip)    
     timer = Timejust::LatencySniffer.new('Event:EventInitial')
     timer.start()
@@ -16,11 +17,11 @@ class EventInitial
     return unless event.waiting?
 
     utimer.start
-    user = User.first(conditions: {id: event.user_id})
+    @user = User.first(conditions: {id: event.user_id})
     utimer.end
     
     gtimer.start
-    event.add_google_info(user.access_token)
+    event.add_google_info(@user.access_token)
     gtimer.end
 
     event.update_attributes('travel_type' => 'local', 'state' => 'travels_progress')

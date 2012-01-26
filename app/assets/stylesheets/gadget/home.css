@@ -254,7 +254,6 @@ a.clear {
   border-color: #52a884;
   margin-left: 5px;
   margin-right: 5px;
-  margin-bottom: 5px;
 }
 .pink {
   margin-bottom: 1px;
@@ -269,7 +268,6 @@ a.clear {
   border-color: #bd6f89;
   margin-left: 5px;
   margin-right: 5px;
-  margin-bottom: 5px;
 }
 .yellow {
   margin-bottom: 1px;
@@ -286,6 +284,9 @@ a.clear {
   margin-right: 5px;
   display: inline-block;
   width: 140px;
+}
+div.travel_container {
+  margin-bottom: 5px;
 }
 ul { 
   margin-top: 5px;
@@ -537,5 +538,191 @@ ul li {
   vertical-align: sub;
   background-image:url(/icons/icn-strip_transports.png);
   background-position: -67px 0px;
+  background-repeat: no-repeat;
+}
+.bus_line {
+  height: 15px;
+  width: 15px;
+  border-radius: 0px;
+  vertical-align: 4px;
+  background-color: #E7E7E7;
+  display: inline-block;
+  border: 1px solid #1D1D1D;
+}
+div.bus_line_container {
+  color: #1D1D1D;
+  margin-left: 1px;
+  margin-top: 1px;
+  font: bold 11px Arial;
+}
+.metro_1 {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/metro_lines.png);
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
+}
+.metro_2 {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/metro_lines.png);
+  background-position: -16px 0px;
+  background-repeat: no-repeat;
+}
+.metro_3 {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/metro_lines.png);
+  background-position: -32px 0px;
+  background-repeat: no-repeat;
+}
+.metro_4 {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/metro_lines.png);
+  background-position: -64px 0px;
+  background-repeat: no-repeat;
+}
+.metro_5 {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/metro_lines.png);
+  background-position: -80px 0px;
+  background-repeat: no-repeat;
+}
+.metro_6 {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/metro_lines.png);
+  background-position: -96px 0px;
+  background-repeat: no-repeat;
+}
+.metro_7 {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/metro_lines.png);
+  background-position: -112px 0px;
+  background-repeat: no-repeat;
+}
+.metro_8 {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/metro_lines.png);
+  background-position: -16px -16px;
+  background-repeat: no-repeat;
+}
+.metro_9 {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/metro_lines.png);
+  background-position: -32px -16px;
+  background-repeat: no-repeat;
+}
+.metro_10 {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/metro_lines.png);
+  background-position: -48px -16px;
+  background-repeat: no-repeat;
+}
+.metro_11 {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/metro_lines.png);
+  background-position: -64px -16px;
+  background-repeat: no-repeat;
+}
+.metro_12 {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/metro_lines.png);
+  background-position: -80px -16px;
+  background-repeat: no-repeat;
+}
+.metro_13 {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/metro_lines.png);
+  background-position: -96px -16px;
+  background-repeat: no-repeat;
+}
+.metro_14 {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/metro_lines.png);
+  background-position: -112px -16px;
+  background-repeat: no-repeat;
+}
+.train_a {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/rer_lines.png);
+  background-position: -0px -0px;
+  background-repeat: no-repeat;
+}
+.train_b {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/rer_lines.png);
+  background-position: -16px -0px;
+  background-repeat: no-repeat;
+}
+.train_c {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/rer_lines.png);
+  background-position: -32px -0px;
+  background-repeat: no-repeat;
+}
+.train_d {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/rer_lines.png);
+  background-position: -48px -0px;
+  background-repeat: no-repeat;
+}
+.train_e {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/rer_lines.png);
+  background-position: -64px -0px;
   background-repeat: no-repeat;
 }

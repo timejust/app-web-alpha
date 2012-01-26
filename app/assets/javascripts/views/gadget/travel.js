@@ -26,7 +26,7 @@ App.Views.TravelView = Backbone.View.extend({
       else if (travel.calendar == 'PinkProposal') 
         color = 'pink';      
       var step = travel.travel_steps[0];
-      html += '<div class="' + color + '"><ul class="travel"><li><a class="';
+      html += '<div class="' + color + '"><div class="travel_container"><ul class="travel"><li><a class="';
       html += color + '_toggle off" href="#"></a></li>';
       html += '<li class="title">' + travel.travel_mode + '</li><a class="plus_container" href="#" id="' + travel._id + '"></a></ul>';
       html += '<ul><li class="' + color +'_estimate">' + step.estimated_time + '\'</li>';
@@ -46,17 +46,22 @@ App.Views.TravelView = Backbone.View.extend({
         html += '<li class="walk"></li>';
       } else {        
         var current_mode = "";
+        var current_line = "";
         var num_icons = 0;
         $.each(step.steps, function(i, s) {
           var mode = current_mode;
+          var line = "";
           if (s.line == 'base' || s.line == '') {
             mode = "walk";
           } else if (s.line.indexOf('metro') != -1) {
             mode = "metro";
+            line = s.line.substring(5, s.line.length);
           } else if (s.line.indexOf('bus') != -1) {
             mode = "bus";
+            line = s.line.substring(3, s.line.length);
           } else if (s.line.indexOf('rer') != -1) {
-            mode = "train";                      
+            mode = "train";       
+            line = s.line.substring(3, s.line.length);               
           } else if (s.line == 'connections' && i == step.steps.length - 1) {
             mode = "walk";
           }   
@@ -71,19 +76,32 @@ App.Views.TravelView = Backbone.View.extend({
               mode = current_mode;
             }
           }
+          if (line != "") {
+            num_icons += 1;
+          }
           current_mode = mode;          
         })   
-        current_mode = "";     
+        current_mode = ""; 
+        var z = 0;   
+        // We need to calcuate overlaid margin if too many icons 
+        // exist in the strip.
+        var margin_left = self.calculateOveray(num_icons);
+        var width = (105 - (num_icons * 19)) / (num_icons - 1);
+        
         $.each(step.steps, function(i, s) {
           var mode = current_mode;
+          var line = "";
           if (s.line == 'base' || s.line == '') {
             mode = "walk";
           } else if (s.line.indexOf('metro') != -1) {
             mode = "metro";
+            line = s.line.substring(5, s.line.length);
           } else if (s.line.indexOf('bus') != -1) {
             mode = "bus";
+            line = s.line.substring(3, s.line.length);
           } else if (s.line.indexOf('rer') != -1) {
             mode = "train";                      
+            line = s.line.substring(3, s.line.length);
           } else if (s.line == 'connections' && i == step.steps.length - 1) {
             mode = "walk";
           }       
@@ -92,19 +110,44 @@ App.Views.TravelView = Backbone.View.extend({
             // We don't display walk icon between other icons, only display 
             // when it's in the beginning or end.
             if ((mode != "walk") || (i == 0 || i == step.steps.length - 1)) {
-              if (i > 0) {
-                html += '<li class="gray_bar" style="width: ' + (100 - (num_icons * 19)) / (num_icons - 1) + 'px"></li>'
+              if (i > 0) {                
+                if (width > 0)
+                  html += '<li class="gray_bar" style="width: ' + width + 'px"></li>'
               }              
-              html += '<li class="' + mode + '"></li>';              
+              html += '<li class="' + mode + '" style="z-index: ' + z + '; ';
+              if (i != 0) {
+                if (margin_left > 0)
+                  html += 'margin-left: -' + margin_left + 'px; ';
+              }
+              html +='"></li>';  
+              z += 1;            
             } else {
               // Let's pretend this mode doesn't exist.
               mode = current_mode;
             }             
           }
+          if (line != "") {
+            if (mode == "bus") {
+              html += '<li class="' + mode + '_line" style="z-index: ' + z + '; ';  
+            } else {
+              html += '<li class="' + mode + '_' + line + '" style="z-index: ' + z + '; ';  
+            }            
+            if (margin_left > 0)
+              html += 'margin-left: -' + margin_left + 'px; ';
+            if (mode == "bus") {
+              html += '"><div class="bus_line_container">' + line + '</div></li>';
+            } else {
+              html += '"></li>';
+            }
+            z += 1;
+          }                                    
           current_mode = mode;          
         });
       }
-      html += '</div></ul><div class="steps">';
+      html += '</div></ul>';
+      
+      // Display travel steps
+      html += '<div class="steps">';
       var distance = 0;
       if (travel.travel_mode == 'car') {
         $.each(step.steps, function(i, s) {
@@ -161,7 +204,7 @@ App.Views.TravelView = Backbone.View.extend({
           }          
         });
       }
-      html += '</div></div>';
+      html += '</div></div></div>';
     });
     html += "</div>";
     this.rendered = true;
@@ -173,6 +216,11 @@ App.Views.TravelView = Backbone.View.extend({
       }));
       */
     $(this.el).find('.steps').hide();      
+  },
+  calculateOveray: function(icons) {
+    if (icons * 19 <= 105)
+      return 0;
+    return ((icons * 19) - 105) / (icons - 1);
   },
   convertTimeformat: function(d) {
     var tok = d.split(' ');
