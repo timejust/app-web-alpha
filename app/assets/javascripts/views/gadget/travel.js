@@ -9,6 +9,7 @@ App.Views.TravelView = Backbone.View.extend({
     this.rendered = false;
   },
   // render each travel_steps of this travel
+  // TODO: refactoring needed....
   render: function() {   
     var travels = this.model.travels;   
     var arrival_address = this.model.current_travel_node.address;
@@ -85,8 +86,8 @@ App.Views.TravelView = Backbone.View.extend({
         var z = 0;   
         // We need to calcuate overlaid margin if too many icons 
         // exist in the strip.
-        var margin_left = self.calculateOveray(num_icons);
-        var width = (105 - (num_icons * 19)) / (num_icons - 1);
+        var margin_left = Math.round(self.calculateOveray(num_icons));
+        var width = Math.round((105 - (num_icons * 19)) / (num_icons - 1));
         
         $.each(step.steps, function(i, s) {
           var mode = current_mode;

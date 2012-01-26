@@ -63,13 +63,14 @@ div.star_symbol.off {
   height: 18px;
   line-height: 15px;
   overflow: hidden;
-  width: 19px;
+  width: 19px;  
 }
 div.alias_symbol.on {
   display: inline-block;
   font-weight: bolder;
   font-size: 20px;
-  margin-top: -4px;
+  margin-top: -2px;
+  cursor: pointer;
 }
 div.alias_symbol.off {
   display: inline-block;
@@ -77,6 +78,7 @@ div.alias_symbol.off {
   color: white;
   font-size: 20px;
   margin-top: -2px;
+  cursor: pointer;
 }
 div.title {
   cursor: pointer;

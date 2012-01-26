@@ -4,7 +4,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     'click .freq_address'   : 'showFreqAddress',
     'click .google_result'  : 'showGoogleResult',
     'click #google_result.control_block' : 'bookmarkAddress',
-    'click #alias_result.star_symbol' : 'bookmarkDelete',
+    'click #alias_result.alias_symbol' : 'bookmarkDelete',
     'click #result.address' : 'selectAddress',
     'click .title'          : 'selectAlias'
   },
