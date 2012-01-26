@@ -431,7 +431,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       });
     }        
     // Add aliases if exists
-    if (alias != 0) {
+    if (alias != null) {
       // If there is an alias with the address, we save it
       GoogleRequest.post({
         url: App.config.api_url + "/users/add_alias",
@@ -453,7 +453,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var ev = {};
     ev.type = 'EVENT_ADDRESS_SELECTED';
     ev.params = {};
-    if (alias.length > 0) {
+    if (alias != null) {
       ev.params.title = '@' + this.cleanupAliasTitle(alias);
     }    
     ev.params.address = address_block.attr('data-address');

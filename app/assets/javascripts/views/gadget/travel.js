@@ -29,7 +29,7 @@ App.Views.TravelView = Backbone.View.extend({
       var step = travel.travel_steps[0];
       html += '<div class="' + color + '"><div class="travel_container"><ul class="travel"><li><a class="';
       html += color + '_toggle off" href="#"></a></li>';
-      html += '<li class="title">' + travel.travel_mode + '</li><a class="plus_container" href="#" id="' + travel._id + '"></a></ul>';
+      html += '<li class="title">' + travel.travel_mode.toUpperCase() + '</li><a class="plus_container" href="#" id="' + travel._id + '"></a></ul>';
       html += '<ul><li class="' + color +'_estimate">' + step.estimated_time + '\'</li>';
       html += '<div class="transportation_symbol">';
       if (travel.travel_mode == 'car') {
