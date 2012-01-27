@@ -53,6 +53,9 @@ App.Views.EventSummaryView = Backbone.View.extend({
       if (this.selected > 0) {
         // We assume this event does not have proper address book.        
         alias_index = this.selected;
+        if (this.summary.addressBook.length > 0) {
+          alias_index = alias_index - this.summary.addressBook.length;
+        }
       }      
       if (this.summary.alias.length > 0) {
         if (this.prefix != undefined) {

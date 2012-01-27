@@ -27,28 +27,48 @@ App.Views.TravelView = Backbone.View.extend({
       else if (travel.calendar == 'PinkProposal') 
         color = 'pink';      
       var step = travel.travel_steps[0];
+      if (step.state == "error") {
+        return;
+      }      
       html += '<div class="' + color + '"><div class="travel_container"><ul class="travel"><li><a class="';
       html += color + '_toggle off" href="#"></a></li>';
-      html += '<li class="title">' + travel.travel_mode.toUpperCase() + '</li><a class="plus_container" href="#" id="' + travel._id + '"></a></ul>';
+      html += '<li class="title">' + travel.travel_mode.toUpperCase() + '</li>';      
+      html += '<a class="plus_container" href="#" id="' + travel._id + '"></a></ul>';
       html += '<ul><li class="' + color +'_estimate">' + step.estimated_time + '\'</li>';
       html += '<div class="transportation_symbol">';
       if (travel.travel_mode == 'car') {
-        html += '<li class="walk"';
+        html += '<li class="walk" style="';
+        var margin = 0;
         if (step.estimated_time < 10) {
-          html += ' style="margin-left:10px"';
+          html += 'margin-left:10px;';
         }
+        if (step.estimated_time > 100) {
+          margin = 5;
+        }
+        
         var num_icons = 3;
         var step_width = 34;
-        if (step.distance > 10) {
+        if (step.distance > 10 && step.distance < 100) {
           step_width = 39;
-        }
-        var gray_width = ((105 - (num_icons * 19) - step_width) / (num_icons - 1));
-        html += '></li>';
-        html += '<li class="gray_bar" style="width: ' + gray_width + 'px"></li>';
-        html += '<li class="car"></li><div class="distance_container" style="width: ' + (step_width + 5) + 'px">';
+        } 
+        if (step.distance > 100) {
+          step_width = 44;
+        }        
+        var margin_left = ((57 + step_width + 5) - (105 - margin)) / 2;        
+        var gray_width = ((105 - margin - (num_icons * 19) - step_width) / (num_icons - 1));
+        html += 'z-index: 5;"></li>';
+        html += '<li class="gray_bar" style="width: ' + gray_width + 'px; z-index: 4;"></li>';
+        html += '<li class="car" style="z-index: 3;';
+        if (margin_left > 0)
+          html += 'margin-left: -' + margin_left + 'px; ';
+        html += '"></li>';
+        html += '<div class="distance_container" style="width: ' + (step_width + 5) + 'px; z-index: 2;">';
         html += '<div class="distance">' + Math.floor(step.distance).toFixed(1) + 'km</div></div>';
-        html += '<li class="gray_bar" style="width: ' + gray_width + 'px"></li>';
-        html += '<li class="walk"></li>';
+        html += '<li class="gray_bar" style="width: ' + gray_width + 'px; z-index: 1"></li>';
+        html += '<li class="walk" style="z-index: 0;';
+        if (margin_left > 0)
+          html += 'margin-left: -' + margin_left + 'px;';
+        html += '"></li>';
       } else {        
         var current_mode = "";
         var current_line = "";
@@ -92,7 +112,7 @@ App.Views.TravelView = Backbone.View.extend({
         var z = 0;   
         // We need to calcuate overlaid margin if too many icons 
         // exist in the strip.
-        var margin_left = Math.round(self.calculateOveray(num_icons, num_transport_icons));
+        var margin_left = Math.round(self.calculateOverlay(num_icons, num_transport_icons));
         var width = (105 - (num_icons * 19 + num_transport_icons * 16)) / ((num_icons) - 1);
         
         $.each(step.steps, function(i, s) {
@@ -224,7 +244,7 @@ App.Views.TravelView = Backbone.View.extend({
       */
     $(this.el).find('.steps').hide();      
   },
-  calculateOveray: function(icons, transport_icons) {
+  calculateOverlay: function(icons, transport_icons) {
     if ((icons * 19 + transport_icons * 16) <= 105)
       return 0;
     return ((icons * 19 + transport_icons * 16) - 105) / (icons + transport_icons - 1);

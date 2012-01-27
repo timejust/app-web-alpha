@@ -23,7 +23,7 @@ class EventSaver
     event = Event.first(conditions: {id: event_id})       
     @user = User.first(conditions: {id: event.user_id})
 
-    event.remove_duplicate_provider_errors
+    #event.remove_duplicate_provider_errors
 
     ctimer = Timejust::LatencySniffer.new('Task:TravelToGoogleCalendar')
     ctimer.start()

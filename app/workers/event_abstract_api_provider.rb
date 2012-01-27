@@ -36,11 +36,11 @@ class EventAbstractApiProvider
     direction.run()
     travels = direction.results() 
     if travels != ""
-      travels.each do |travel|
+      travels.each do |travel|                
         # travel has only one key now but in order to get key variable, 
         # we need to iterate through
         travel.each_key do |key|
-          trip = travel[key]
+          trip = travel[key]          
           itinerary = direction_map[key]        
           direction = itinerary.direction
           mode = itinerary.mode

@@ -87,13 +87,13 @@ class Travel
     end
   end
   
-  def create_travel_step(travel, mode, direction=:forward, departure, arrival)
+  def create_travel_step(travel, mode, direction=:forward, departure, arrival)  
+    self.update_attributes(transports: [mode])
+      
     # if return status is not ok, we cannot create a step.
     if travel["status"] == "ok"
       trip = travel["trip"]
-      format = "%Y-%m-%d %H:%M:%S"
-      
-      self.update_attributes(transports: [mode])
+      format = "%Y-%m-%d %H:%M:%S"      
             
       if trip["arr_time"] != "" && trip["dep_time"] != ""
         arrival_time = DateTime.strptime(trip["arr_time"], format).to_time
@@ -146,10 +146,11 @@ class Travel
         public_url: "",
         api_url: configatron.service.url + "/" + configatron.service.geo_direction,
         state: 'error',
-        travel_type: direction        
+        summary: [mode],
+        travel_type: direction 
       }
     end
-    
+  
     self.travel_steps.create(travel_step_param)    
   end
   
