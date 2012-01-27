@@ -19,7 +19,7 @@ div.top {
 }
 div.left {
   float: left;
-  height: 83%;
+  height: 87%;  
   position: absolute;
   left: 0;
   width: 27em;
@@ -27,8 +27,6 @@ div.left {
 div.right {
   position: relative;
   left: 27em;
-  width: 77em;
-  height: 94%;
   margin-left: 0;
 }
 div.map_view {
@@ -55,7 +53,7 @@ div.left-bottom {
   text-align: center;
   display: block;
   position: absolute;
-  bottom: 5px;
+  bottom: 0px;
   left: 7em;
 }
 div.star_symbol.on {

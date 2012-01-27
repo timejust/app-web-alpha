@@ -18,12 +18,40 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     if (this.original_address != '') {
       this.normalizeAddress(this.original_address);
     }
+    this.viewPortWidth = 0;
+    this.viewPortHeight = 0;
+    this.setResizeEventHandler();    
     this.results = new Array();
     this.markerList = new Array();
     this.deletingAliasList = new Array();
     this.render();
-    this.bounds = null;
-    this.showGoogleMap();
+    this.bounds = null;    
+  },
+  setResizeEventHandler: function() {
+    var self = this;
+    $(window).bind('resize', function () { 
+      // self.render();
+      self.resize();
+    });
+  },
+  getViewPorts: function() {
+    // the more standards compliant browsers (mozilla/netscape/opera/IE7) use 
+    // window.innerWidth and window.innerHeight
+    if (typeof window.innerWidth != 'undefined') {
+      this.viewPortWidth = window.innerWidth;
+      this.viewPortHeight = window.innerHeight;
+    } else if (typeof document.documentElement != 'undefined'
+              && typeof document.documentElement.clientWidth !=
+              'undefined' && document.documentElement.clientWidth != 0) {
+      // IE6 in standards compliant mode (i.e. with a valid doctype as 
+      // the first line in the document)              
+      this.viewPortWidth = document.documentElement.clientWidth;
+      this.viewPortHeight = document.documentElement.clientHeight;
+    } else {
+      // older versions of IE
+      this.viewPortWidth = document.getElementsByTagName('body')[0].clientWidth;
+      this.viewPortHeight = document.getElementsByTagName('body')[0].clientHeight;
+    }
   },
   getGeoAutocomplete: function(node) {
     var self = this;
@@ -124,9 +152,22 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       </div>\
     </div>\
   '),
+  resize: function() {
+    this.getViewPorts();
+    var top = $(this.el).find('.top');
+    var left = $(this.el).find('.main').find('.left');    
+    var map_height = this.viewPortHeight - top.height() - 1;
+    var map_width = this.viewPortWidth - left.width() - 1;
+    var style = "height: " + map_height + "px; width: " + map_width + "px;"
+    var right = $(this.el).find('.right');
+    right.attr("style", style);    
+    
+    gadgets.window.adjustHeight();
+  },
   // render the form for all travel nodes
   render: function(){
     $(this.el).html(this.default_layout);
+
     var top = $(this.el).find('.top');
     top.html(this.top_template);
     this.getGeoAutocomplete('maininput');    
@@ -136,7 +177,24 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     }        
     var left = $(this.el).find('.main').find('.left');
     left.html(this.left_template);    
-    gadgets.window.adjustHeight();
+    /*
+    alert("viewPortHeight: " + this.viewPortHeight);
+    alert("top.height: " + top.height());
+    alert("viewPortWidth: " + this.viewPortWidth);
+    alert("left.width: " + left.width());
+    */
+    // alert("width: " + $(this.el).width() + ", height: " + $(this.el).height());
+    /*
+    var map_height = this.viewPortHeight - top.height() - 1;
+    var map_width = this.viewPortWidth - left.width() - 1;
+    var style = "height: " + map_height + "px; width: " + map_width + "px;"
+    var right = $(this.el).find('.right');
+    right.attr("style", style);
+    this.showGoogleMap();
+    */
+    // gadgets.window.adjustHeight();
+    this.resize();
+    this.showGoogleMap();
   },
   search: function(e) {
     e.preventDefault();    
