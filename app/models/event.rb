@@ -446,6 +446,15 @@ class Event
     end
   end
 
+  # Geo location data is important to get valid result from geo service so 
+  # we clean up position information if there is invalid character or information.
+  def cleanupPosition(position)
+    if position == nil or position == "null"
+      position = 0
+    end
+    position
+  end
+  
   #
   # @param mode [String] type of transporataion
   # @param direction 
@@ -464,8 +473,8 @@ class Event
     end
    
     { :id => key.to_s,
-      :origin => "#{origin_travel.lat},#{origin_travel.lng}", 
-      :destination => "#{destination_travel.lat},#{destination_travel.lng}", 
+      :origin => "#{cleanupPosition(origin_travel.lat)},#{cleanupPosition(origin_travel.lng)}", 
+      :destination => "#{cleanupPosition(destination_travel.lat)},#{cleanupPosition(destination_travel.lng)}", 
       :time => time.to_i.to_s, 
       :mode => mode,
       :base => self.base }
