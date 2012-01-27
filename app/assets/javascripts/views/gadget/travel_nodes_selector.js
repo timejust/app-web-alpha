@@ -177,22 +177,6 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     }        
     var left = $(this.el).find('.main').find('.left');
     left.html(this.left_template);    
-    /*
-    alert("viewPortHeight: " + this.viewPortHeight);
-    alert("top.height: " + top.height());
-    alert("viewPortWidth: " + this.viewPortWidth);
-    alert("left.width: " + left.width());
-    */
-    // alert("width: " + $(this.el).width() + ", height: " + $(this.el).height());
-    /*
-    var map_height = this.viewPortHeight - top.height() - 1;
-    var map_width = this.viewPortWidth - left.width() - 1;
-    var style = "height: " + map_height + "px; width: " + map_width + "px;"
-    var right = $(this.el).find('.right');
-    right.attr("style", style);
-    this.showGoogleMap();
-    */
-    // gadgets.window.adjustHeight();
     this.resize();
     this.showGoogleMap();
   },
@@ -292,10 +276,25 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var container = $(this.el).find('.main').find('.right').find('.map_view');
     this.map = new google.maps.Map(container[0], myOptions);    
   },
-  createPin: function(lat, lng) {
+  createPin: function(lat, lng, index) {
+    if (index == null || index > 10) {
+      index = 10;
+    }
     var marker = new google.maps.Marker({    
       position: new google.maps.LatLng(lat, lng),    
-      map: this.map    
+      map: this.map,      
+      icon: new google.maps.MarkerImage(
+        App.config.web_url + "/icons/pins/" + index + ".png",
+        new google.maps.Size(20, 34),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(0, 34)
+        ),
+      shadow: new google.maps.MarkerImage(
+        App.config.web_url + "/icons/pins/shadow.png",
+        new google.maps.Size(37, 34),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(0, 34)
+        ),    
     });
     this.markerList.push(marker);
   },
@@ -304,7 +303,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var self = this;
     self.bounds = null;
     $.each(this.markerList, function(i, marker) {
-      var latlng = marker.getPosition();
+      var latlng = marker.getPosition();      
       var bounds = new google.maps.LatLngBounds(
         new google.maps.LatLng(latlng.lat() - kRange, latlng.lng() - kRange), 
         new google.maps.LatLng(latlng.lat() + kRange, latlng.lng() + kRange));
@@ -330,7 +329,6 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var container = left.find('.left-middle');
     var results = '<div class="results_block">';
     var kMaxPins = 10;    
-    var generalPin = (kMaxPins < this.results.length ? true : false);    
     $.each(this.results, function(i, a) {
       var tok = a.address.split(',');
       var city = "";
@@ -341,16 +339,17 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
             city += ",";
         }          
       });
+      var generalPin = (kMaxPins < i ? true : false);
       // First token is address, and rest of them are city + country normally.
       results += self.google_result({
-        index: generalPin ? 100 : i,
+        index: generalPin ? 10 : i,
         address: tok[0],
         original_address: a.address,
         city: city,
         lat: a.location.lat,
         lng: a.location.lng
       });     
-      self.createPin(a.location.lat, a.location.lng);      
+      self.createPin(a.location.lat, a.location.lng, i);      
     });    
     results += '</div>';
     container.html(results);    
@@ -368,7 +367,6 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var container = left.find('.left-middle');
     var results = '<div class="results_block">';
     var kMaxPins = 10;    
-    var generalPin = (kMaxPins < this.results.length ? true : false);
     $.each(this.alias, function(i, a) {
       var tok = a.address.split(',');
       var city = "";
@@ -382,6 +380,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       // Check the deletingQueue, if exists in the list,
       // we delete the alias with empty star symbol
       var inDeleting = false;
+      var generalPin = (kMaxPins < i ? true : false);
       $.each(self.deletingAliasList, function(i, d) {
         if (d != null && d == a.title) {
           inDeleting = true;
@@ -390,7 +389,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       });      
       // First token is address, and rest of them are city + country normally.
       results += self.alias_result({
-        index: generalPin ? 100 : i,
+        index: generalPin ? 10 : i,
         title: a.title,
         address: tok[0],
         original_address: a.address,
@@ -399,7 +398,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         lng: a.lng,
         star: inDeleting == true ? "off" : "on"
       });
-      self.createPin(a.lat, a.lng);      
+      self.createPin(a.lat, a.lng, i);      
     });
     results += '</div>';
     container.html(results);
