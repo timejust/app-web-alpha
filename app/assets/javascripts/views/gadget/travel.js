@@ -38,10 +38,14 @@ App.Views.TravelView = Backbone.View.extend({
           html += ' style="margin-left:10px"';
         }
         var num_icons = 3;
-        var gray_width = ((100 - (num_icons * 19)) / (num_icons - 1)) - 18;
+        var step_width = 34;
+        if (step.distance > 10) {
+          step_width = 39;
+        }
+        var gray_width = ((105 - (num_icons * 19) - step_width) / (num_icons - 1));
         html += '></li>';
         html += '<li class="gray_bar" style="width: ' + gray_width + 'px"></li>';
-        html += '<li class="car"></li><div class="distance_container">';
+        html += '<li class="car"></li><div class="distance_container" style="width: ' + (step_width + 5) + 'px">';
         html += '<div class="distance">' + Math.floor(step.distance).toFixed(1) + 'km</div></div>';
         html += '<li class="gray_bar" style="width: ' + gray_width + 'px"></li>';
         html += '<li class="walk"></li>';
@@ -49,6 +53,7 @@ App.Views.TravelView = Backbone.View.extend({
         var current_mode = "";
         var current_line = "";
         var num_icons = 0;
+        var num_transport_icons = 0;
         $.each(step.steps, function(i, s) {
           var mode = current_mode;
           var line = "";
@@ -78,7 +83,8 @@ App.Views.TravelView = Backbone.View.extend({
             }
           }
           if (line != "") {
-            num_icons += 1;
+            // num_icons += 1;
+            num_transport_icons += 1;
           }
           current_mode = mode;          
         })   
@@ -86,8 +92,8 @@ App.Views.TravelView = Backbone.View.extend({
         var z = 0;   
         // We need to calcuate overlaid margin if too many icons 
         // exist in the strip.
-        var margin_left = Math.round(self.calculateOveray(num_icons));
-        var width = Math.round((105 - (num_icons * 19)) / (num_icons - 1));
+        var margin_left = Math.round(self.calculateOveray(num_icons, num_transport_icons));
+        var width = (105 - (num_icons * 19 + num_transport_icons * 16)) / ((num_icons) - 1);
         
         $.each(step.steps, function(i, s) {
           var mode = current_mode;
@@ -218,10 +224,10 @@ App.Views.TravelView = Backbone.View.extend({
       */
     $(this.el).find('.steps').hide();      
   },
-  calculateOveray: function(icons) {
-    if (icons * 19 <= 105)
+  calculateOveray: function(icons, transport_icons) {
+    if ((icons * 19 + transport_icons * 16) <= 105)
       return 0;
-    return ((icons * 19) - 105) / (icons - 1);
+    return ((icons * 19 + transport_icons * 16) - 105) / (icons + transport_icons - 1);
   },
   convertTimeformat: function(d) {
     var tok = d.split(' ');

@@ -549,17 +549,17 @@ ul li {
   background-repeat: no-repeat;
 }
 .bus_line {
-  height: 15px;
-  width: 15px;
+  height: 14px;
+  width: 14px;
   border-radius: 0px;
-  vertical-align: 4px;
-  background-color: #E7E7E7;
+  vertical-align: 3px;
+  background-color: #FFFFFF;
   display: inline-block;
-  border: 1px solid #1D1D1D;
+  border: 1px solid #828282;
 }
 div.bus_line_container {
-  color: #1D1D1D;
-  margin-left: 1px;
+  color: #828282;
+  margin-left: 1.5px;
   margin-top: 1px;
   font: bold 11px Arial;
 }
