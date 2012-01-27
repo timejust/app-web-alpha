@@ -171,9 +171,9 @@ class TravelStep
   def google_event_detail
     detail = ""
     if self.steps
-      detail += self.departure_time.strftime("%H:%M") + " | " + self.departure.upcase + "\n\n"
+      detail += self.departure_time.utc.strftime("%H:%M") + " | " + self.departure.upcase + "\n\n"
       detail += to_formatted_text(self.steps)
-      detail += "\n" + self.arrival_time.strftime("%H:%M") + " | " + self.arrival.upcase + "\n"
+      detail += "\n" + self.arrival_time.utc.strftime("%H:%M") + " | " + self.arrival.upcase + "\n"
     else
       "no details"
     end
