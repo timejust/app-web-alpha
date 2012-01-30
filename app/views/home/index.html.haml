@@ -45,7 +45,8 @@
         %h4 "Get started start planning"
     - else
       %td
-        %h4 "You must first accept timejust to read your calendar" -#= link_to "Sign in with Google Apps Strategy (OpenId, will be usefull for google apps domains)", user_omniauth_authorize_path(:openid, :domain => 'gmail.com')
+        %h4 "You must first accept timejust to read your calendar" 
+        -#= link_to "Sign in with Google Apps Strategy (OpenId, will be usefull for google apps domains)", user_omniauth_authorize_path(:openid, :domain => 'gmail.com')
         
   %tr{"class" => "instrContent"}
     %td "Timejust Gadget needs the Google Chrome Frame add-on to work correctly."
