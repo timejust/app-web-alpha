@@ -37,9 +37,9 @@
       :user: "timejust"
       :password: "t1m3ju$t" 
   :gadget:
-    :url: "http://www.timejust.com/gadget/timejust.xml"
+    :url: "http://beta.timejust.com/gadget/timejust.xml"
   :web:
-    :url: "http://www.timejust.com"
+    :url: "http://beta.timejust.com"
   :ratp_proxy:
     :url: "http://proxy.timejust.com:80"
   :service:

@@ -34,8 +34,8 @@
   :gapps:
     :oauth:
       :for_domains:
-        :consumer_key: '502137022926.apps.googleusercontent.com'
-        :consumer_secret: 'RFvbtQoJM4wmxftpy17o1OJk'
+        :consumer_key: '748887703566.apps.googleusercontent.com'
+        :consumer_secret: 'A7cJOR9YX15qygzeJULIcokb'
       :for_gmail:
-        :consumer_key: '54779436562.apps.googleusercontent.com'
-        :consumer_secret: '0DoZNgo2ZJx3mT0D-QxdhJPF'
+        :consumer_key: '748887703566.apps.googleusercontent.com'
+        :consumer_secret: 'A7cJOR9YX15qygzeJULIcokb'
