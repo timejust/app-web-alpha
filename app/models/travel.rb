@@ -98,6 +98,8 @@ class Travel
       if trip["arr_time"] != "" && trip["dep_time"] != ""
         arrival_time = DateTime.strptime(trip["arr_time"], format).to_time
         departure_time = DateTime.strptime(trip["dep_time"], format).to_time
+        arrival_time = Timejust::TimeWithTimezone.new(event['timezone'], arrival_time).time()
+        departure_time = Timejust::TimeWithTimezone.new(event['timezone'], departure_time).time()        
         estimated_time = arrival_time.to_i - departure_time.to_i
       else
         # If arrival time and departure time are not provided, we have to 
@@ -111,6 +113,10 @@ class Travel
       distance = 0
       trip["steps"].each do |step|
         step["directions"].each do |dir|
+          arr_time = DateTime.strptime(dir["arr_time"], format).to_time
+          dep_time = DateTime.strptime(dir["dep_time"], format).to_time          
+          dir["arr_time"] = Timejust::TimeWithTimezone.new(event['timezone'], arr_time).time().to_s
+          dir["dep_time"] = Timejust::TimeWithTimezone.new(event['timezone'], dep_time).time().to_s
           distance += dir["distance"]
           steps.push(dir)
         end

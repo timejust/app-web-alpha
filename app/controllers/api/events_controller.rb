@@ -26,7 +26,7 @@ class Api::EventsController < Api::BaseController
       @event.create_previous_travel_node(params[:previous_travel_node]) if params[:previous_travel_node] && params[:previous_travel_node][:address].present?
       @event.create_current_travel_node(params[:current_travel_node]) if params[:current_travel_node] && params[:current_travel_node][:address].present?      
       @event.set_current_ip(params[:current_ip])            
-      @event.created_at = Time.now
+      @event.created_at = Time.now.utc
       @event.user = current_user
       if @event.save
         if current_user.expired == 1

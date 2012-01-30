@@ -91,12 +91,13 @@ class TravelStep
         location: self.invitation_location,
         when: [
           {
-            start: self.departure_time.utc.iso8601,
-            end: self.arrival_time.utc.iso8601
+            start: Timejust::TimeWithTimezone.new(event['timezone'], self.departure_time).utc_time().iso8601,
+            end: Timejust::TimeWithTimezone.new(event['timezone'], self.arrival_time).utc_time().iso8601
           }
         ]
       }
     )
+    #Rails.logger.info(google_event.inspect)
     if !google_event['error'] && google_event['data']
       # If we wrote something on primary calendar, don't save it because,
       # we delete later what we've written on google's but we don't want
@@ -116,8 +117,8 @@ class TravelStep
     departure_at = nil
     i = 0
     steps.each do |step|
-      departure_time = DateTime.strptime(step["dep_time"], "%Y-%m-%d %H:%M:%S").to_time    
-      arrival_time = DateTime.strptime(step["arr_time"], "%Y-%m-%d %H:%M:%S").to_time    
+      departure_time = DateTime.strptime(step["dep_time"], "%Y-%m-%d %H:%M:%S").to_time
+      arrival_time = DateTime.strptime(step["arr_time"], "%Y-%m-%d %H:%M:%S").to_time          
       title = ""
       i += 1
       
@@ -171,9 +172,9 @@ class TravelStep
   def google_event_detail
     detail = ""
     if self.steps
-      detail += self.departure_time.utc.strftime("%H:%M") + " | " + self.departure.upcase + "\n\n"
+      detail += self.departure_time.strftime("%H:%M") + " | " + self.departure.upcase + "\n\n"
       detail += to_formatted_text(self.steps)
-      detail += "\n" + self.arrival_time.utc.strftime("%H:%M") + " | " + self.arrival.upcase + "\n"
+      detail += "\n" + self.arrival_time.strftime("%H:%M") + " | " + self.arrival.upcase + "\n"
     else
       "no details"
     end
@@ -185,8 +186,8 @@ class TravelStep
   def to_ics
     cal = Icalendar::Calendar.new
     event = Icalendar::Event.new
-    event.start         = self.departure_time.utc.iso8601.gsub(/[-:]/, '')
-    event.end           = self.arrival_time.utc.iso8601.gsub(/[-:]/, '')
+    event.start         = self.departure_time.iso8601.gsub(/[-:]/, '')
+    event.end           = self.arrival_time.iso8601.gsub(/[-:]/, '')
     event.summary       = "#{self.invitation_title}"
     event.organizer     = %w(mailto:plan@timejust.com)
     event.description   = strip_tags(self.google_event_detail).gsub('&nbsp;', ' ')

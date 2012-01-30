@@ -21,6 +21,7 @@ class Event
   field :before_start_time,   type: Integer, default: 10
   field :after_end_time,      type: Integer, default: 15
   field :base,                type: String, default: "arrival"
+  field :timezone,            type: String
   
   # travels propositions
   embeds_many :previous_travel_nodes, as: :previous_travel_nodes,  class_name: "TravelNode", :order => :weight.desc
@@ -98,29 +99,37 @@ class Event
   #
   def self.parse_from_google_gadget(event_json)
     event = JSON.parse(event_json)
+    start_time = Time.new(
+      event['startTime']['year'],
+      event['startTime']['month'],
+      event['startTime']['date'],
+      event['startTime']['hour'],
+      event['startTime']['minute'],
+      event['startTime']['second']
+    )
+    end_time = Time.new(
+      event['endTime']['year'],
+      event['endTime']['month'],
+      event['endTime']['date'],
+      event['endTime']['hour'],
+      event['endTime']['minute'],
+      event['endTime']['second']
+    )
+    tz = Timejust::TimeWithTimezone.new(event['timezone'], start_time)
+    start_time = tz.utc_time()    
+    tz = Timejust::TimeWithTimezone.new(event['timezone'], end_time)
+    end_time = tz.utc_time()
+    
     Event.new(
       title: event['title'],
       location: event['location'],
       google_calendar_id: event['owner']['email'],
-      start_time: Time.new(
-        event['startTime']['year'],
-        event['startTime']['month'],
-        event['startTime']['date'],
-        event['startTime']['hour'],
-        event['startTime']['minute'],
-        event['startTime']['second']
-      ),
-      end_time: Time.new(
-        event['endTime']['year'],
-        event['endTime']['month'],
-        event['endTime']['date'],
-        event['endTime']['hour'],
-        event['endTime']['minute'],
-        event['endTime']['second']
-      ),
+      start_time: start_time,
+      end_time: end_time,
       before_start_time: event['before_start_time'],
-      after_end_time: event['after_end_time']
-    )
+      after_end_time: event['after_end_time'],
+      timezone: event['timezone']
+    )        
   end
 
   def self.parse_from_google_data(event)
