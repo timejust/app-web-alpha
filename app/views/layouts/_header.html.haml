@@ -1,7 +1,22 @@
 %header
-  %h1
-    Timejust
+  :javascript
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-24648624-1']);
+    _gaq.push(['_setDomainName', '.timejust.com']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
 
+  %nav
+    %ul
+      %li
+        = link_to image_tag('http://www.timejust.com/images/logoTJ.png', "alt"=>"Timejust - Let your calendar guide you!", "id"=>"logoTJ"), 'index'
+  #betaTitle
+    %h1 Hurrah! Hurrah! Hurrah! <br />Get started with timejust
+    %h2 and start planning trips in the Paris region
 - if user_signed_in?
   %p.hello
     = "Hello #{current_user.email}"

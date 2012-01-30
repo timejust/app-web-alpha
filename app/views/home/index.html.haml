@@ -19,29 +19,75 @@
   CFInstall.check({
     mode: "overlay"
   });
- 
-%ul
-  %li
-    1. Authorize timejust to read your calendar
-    = link_to "Grant Access", oauth2_authorize_path
-  %li
-    2. Install timejust pane in your calendar
-    - if user_signed_in?
-      = link_to "Install timejust pane and get started",
-        "https://www.google.com/calendar/render?gadgeturl=#{configatron.gadget.url}?auth_token=#{current_user.authentication_token}&#{Rails.env}=#{Time.now.to_i}",
-        :target => :_blank
-    - else
-      You must first accept timejust to read your calendar
 
--#= link_to "Sign in with Google Apps Strategy (OpenId, will be usefull for google apps domains)", user_omniauth_authorize_path(:openid, :domain => 'gmail.com')
+%table{"id" => "betaInstructions"}
+  %tr{"class" => "instrHead"}
+    %td
+      %h3 Internet Explorer users
+    %td
+      %h2 1
+    %td
+      %h2 2
+    %td
+      %h2 3
+  %tr{"class" => "instrHead"}
+    %td
+      %h4 
+        = link_to "Install the Google Chrome Frame add-on", "http://tools.google.com/chromeframe", "target" => "_blank"
+    %td
+      %h4 
+        = link_to "Grant access to your calendar", oauth2_authorize_path, "target" => "_blank"
+    - if user_signed_in?
+      %td
+        %h4 
+          = link_to "Install the Gadget", "https://www.google.com/calendar/render?gadgeturl=#{configatron.gadget.url}?auth_token=#{current_user.authentication_token}&#{Rails.env}=#{Time.now.to_i}", "target" => "_blank"
+      %td
+        %h4 "Get started start planning"
+    - else
+      %td
+        %h4 "You must first accept timejust to read your calendar" -#= link_to "Sign in with Google Apps Strategy (OpenId, will be usefull for google apps domains)", user_omniauth_authorize_path(:openid, :domain => 'gmail.com')
+        
+  %tr{"class" => "instrContent"}
+    %td "Timejust Gadget needs the Google Chrome Frame add-on to work correctly."
+    %td "Granting access to your calendar will enable Timejust to read events, and make sense of them to plan your trips."
+    %td "You will be asked to install the Gadget in Google Calendar. It will appear on the ride side of the screen, next to the calendar view."
+    %td "Timejust is up and running. Click an event and start planning trips around Paris (more destinations France and abroad coming soon)"        
 
 .footer
+  &copy; copyright Timejust 2012 - 
   .link
-    = link_to "Get some help", "http://www.timejust.com/FAQ"
-    = " / "
-    = link_to "Timejust home page", "http://www.timejust.com"
-  .copyright
-    &copy; 
-    = " Timejust 2012"
-    = " / "
-    = link_to "contact", "mailto:alpha-support@timejust.com"
+    = link_to "About Us", "http://www.timejust.com/about.php"
+    = " - "
+    = link_to "Our Blog", "http://www.scoop.it/t/ecalendars-the-next-travel-revolution"
+  .social
+    %script{:type => "text/javascript", :src  => "http://apis.google.com/js/plusone.js"}
+    #fb-root
+    :javascript
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+          fjs.parentNode.insertBefore(js, fjs);
+          }(document, 'script', 'facebook-jssdk'));
+    
+    %div{"class" => "g-plusone", "data-size" => "medium", "data-count" => "true"}
+    = link_to "Tweet", 'http://twitter.com/share', "class" => "twitter-share-button", "style" => "width:125px;", "data-count" => "horizontal"
+    %script{"type" => "text/javascript", "src" => "http://platform.twitter.com/widgets.js"}
+    
+    = link_to "Follow", 'https://twitter.com/Timejust', "class" => "twitter-follow-button", "data-show-count" => "true", "data-width" => "200px"
+    :javascript
+      !function(d,s,id){
+          var js,fjs=d.getElementsByTagName(s)[0];
+          if(!d.getElementById(id)){
+          js=d.createElement(s);
+          js.id=id;
+          js.src="//platform.twitter.com/widgets.js";
+          fjs.parentNode.insertBefore(js,fjs);
+        }}(document,"script","twitter-wjs");     
+    %div{"class" => "fb-like-box", "data-href" => "http://www.facebook.com/timejust", "data-width" => "292", "data-show-faces" => "false", "data-stream" => "false", "data-header" => "false", "style" => "padding:0px"}
+        
+  powered by 
+  = link_to image_tag('http://www.timejust.com/images/isokron.png', "alt"=>"isokron", "id"=>"powIsokron"), 'http://www.isokron.com'
+
+    

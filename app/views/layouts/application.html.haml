@@ -1,10 +1,16 @@
 !!! 5
 %html
   %head
-    %title= TimejustApi
-    = stylesheet_link_tag    "application"
-    = javascript_include_tag "application"
-    = csrf_meta_tags
+    %title Timejust - Beta install
+    %meta{:name => "keywords", :content => "timejust, calendar, travel and services, Google Calendar, datamining, transport, paris, metro" } 
+    %meta{:name => "description", :content => "Timejust datamines your calendar, and organize your travel and services. Leave your email to have latest news."} 
+    %meta{:name => "keywords", :content => "none" }
+    %link{"rel" => "icon", "href" => "http://www.timejust.com/images/favicon.png", "type" => "image/png"}
+    %link{"rel" => "apple-touch-icon", "href" => "http://www.timejust.com/images/apple-touch-icon.png", "type" => "image/png"}
+    %link{"rel" => "stylesheet", "href" => "http://www.timejust.com/style/site.css", "type" => "text/css", "media" => "screen"}    
+    <!--[if lt IE 9]>
+    %script{"src" => "http://html5shiv.googlecode.com/svn/trunk/html5.js"}
+    <![endif]-->
   %body
     = render partial: 'layouts/header'
     - if notice
