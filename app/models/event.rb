@@ -1,3 +1,5 @@
+require 'tzinfo'
+
 # encoding: utf-8
 class Event
   include Mongoid::Document
@@ -115,10 +117,10 @@ class Event
       event['endTime']['minute'],
       event['endTime']['second']
     )
-    tz = Timejust::TimeWithTimezone.new(event['timezone'], start_time)
-    start_time = tz.utc_time()    
-    tz = Timejust::TimeWithTimezone.new(event['timezone'], end_time)
-    end_time = tz.utc_time()
+    
+    tz = TZInfo::Timezone.get(event['timezone'])
+    start_time = tz.local_to_utc(start_time)
+    end_time = tz.local_to_utc(end_time)
     
     Event.new(
       title: event['title'],

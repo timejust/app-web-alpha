@@ -250,7 +250,7 @@ App.Views.TravelView = Backbone.View.extend({
     return ((icons * 19 + transport_icons * 16) - 105) / (icons + transport_icons - 1);
   },
   convertTimeformat: function(d) {
-    var tok = d.split(' ');
+    var tok = d.split('T');
     var hms = tok[1];
     tok = hms.split(':');
     return tok[0] + ":" + tok[1];

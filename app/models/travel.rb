@@ -1,3 +1,5 @@
+require 'tzinfo'
+
 # encoding: utf-8
 class Travel
   include Mongoid::Document
@@ -94,12 +96,11 @@ class Travel
     if travel["status"] == "ok"
       trip = travel["trip"]
       format = "%Y-%m-%d %H:%M:%S"      
+      tz = TZInfo::Timezone.get(event['timezone'])
             
-      if trip["arr_time"] != "" && trip["dep_time"] != ""
-        arrival_time = DateTime.strptime(trip["arr_time"], format).to_time
-        departure_time = DateTime.strptime(trip["dep_time"], format).to_time
-        arrival_time = Timejust::TimeWithTimezone.new(event['timezone'], arrival_time).time()
-        departure_time = Timejust::TimeWithTimezone.new(event['timezone'], departure_time).time()        
+      if trip["arr_time"] != "" && trip["dep_time"] != ""        
+        arrival_time = tz.utc_to_local(DateTime.strptime(trip["arr_time"], format).to_time)
+        departure_time = tz.utc_to_local(DateTime.strptime(trip["dep_time"], format).to_time)                
         estimated_time = arrival_time.to_i - departure_time.to_i
       else
         # If arrival time and departure time are not provided, we have to 
@@ -109,14 +110,14 @@ class Travel
         arrival_time = departure_time = estimated_time = 0
       end
           
+      Rails.logger.info "************************TIMEZONE => " + event['timezone']
+      
       steps = []    
       distance = 0
       trip["steps"].each do |step|
         step["directions"].each do |dir|
-          arr_time = DateTime.strptime(dir["arr_time"], format).to_time
-          dep_time = DateTime.strptime(dir["dep_time"], format).to_time          
-          dir["arr_time"] = Timejust::TimeWithTimezone.new(event['timezone'], arr_time).time().to_s
-          dir["dep_time"] = Timejust::TimeWithTimezone.new(event['timezone'], dep_time).time().to_s
+          dir["arr_time"] = tz.utc_to_local(DateTime.strptime(dir["arr_time"], format)).to_s
+          dir["dep_time"] = tz.utc_to_local(DateTime.strptime(dir["dep_time"], format)).to_s
           distance += dir["distance"]
           steps.push(dir)
         end
