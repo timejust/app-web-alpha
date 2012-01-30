@@ -18,6 +18,7 @@
         - lib/poll.js
         - lib/google_request.js
         - lib/string.js
+        - lib/cookie.js
         - gadget_common.js
         - models/user.js
         - models/event.js

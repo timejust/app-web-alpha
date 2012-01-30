@@ -15,7 +15,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     this.original_address = $.cookie('original_address');
     this.ip = $.cookie('ip');
     this.stage = $.cookie('stage');    
-    if (this.original_address != '') {
+    if (this.original_address != null && this.original_address != '') {
       this.normalizeAddress(this.original_address);
     }
     this.viewPortWidth = 0;
@@ -446,7 +446,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     ev.params.stage = this.stage;
     ev.params.deleted_alias = this.deletingAliasList;
     var json = JSON.stringify(ev, this.replacer);
-    $.cookie('event', json);    
+    timejust.setCookie('event', json);
     // Clear deleting alias list
     this.deletingAliasList = [];
   },
