@@ -28,7 +28,10 @@
   #betaTitle
     - if user_signed_in?
       %h1.hello
-        = "Hurrah! #{current_user.email}, now you can install the Gadget<br />Get started with timejust"
+        = "Hurrah! #{current_user.email}"
+        %br
+        = "Now you can install the Gadget"
+        
     - else    
       %h1 Hurrah! Hurrah! Hurrah!<br />Get started with timejust
     %h2 and start planning trips in the Paris region
