@@ -523,7 +523,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     ev.params.stage = this.stage;
     ev.params.deleted_alias = this.deletingAliasList;
     var json = JSON.stringify(ev, this.replacer);
-    $.cookie('event', json); 
+    timejust.setCookie('event', json);
     // Clear deleting alias list
     this.deletingAliasList = [];    
   },    

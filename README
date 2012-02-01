@@ -11,6 +11,7 @@ After logging, go to https://code.google.com/apis/console
 == Development == 
 
 ssh -v -nNT4 -R *:50002:192.168.15.101:80 ubuntu@staging.timejust.com
+ssh -v -nNT4 -R *:50004:192.168.15.101:80 ubuntu@staging.timejust.com
 
 == Tests ==
 

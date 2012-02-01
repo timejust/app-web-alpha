@@ -1,6 +1,6 @@
 :development:
   :api:
-    :url: "http://api.timejust.com:50001/v1"
+    :url: "http://api-staging.timejust.com:50001/v1"
     :basic_auth:
       :user: "timejust"
       :password: "t1m3ju$t" 
@@ -43,6 +43,6 @@
   :ratp_proxy:
     :url: "http://proxy.timejust.com:80"
   :service:
-    :url: "http://service-staging.timejust.com:8080"
+    :url: "http://service.timejust.com:8080"
     :geo_recognition: "service-geo/v1/geo/recognition"
     :geo_direction: "service-geo/v1/geo/direction"
