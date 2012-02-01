@@ -14,7 +14,13 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     this.alias = eval('(' + $.cookie('alias') + ')');
     this.original_address = $.cookie('original_address');
     this.ip = $.cookie('ip');
-    this.stage = $.cookie('stage');    
+    this.stage = $.cookie('stage');  
+    timejust.setCookie('ab', null);
+    timejust.setCookie('alias', null);
+    timejust.setCookie('original_address', null);
+    timejust.setCookie('ip', null);
+    timejust.setCookie('stage', null);
+      
     if (this.original_address != null && this.original_address != '') {
       this.normalizeAddress(this.original_address);
     }

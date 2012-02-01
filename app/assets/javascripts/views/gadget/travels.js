@@ -28,7 +28,7 @@ App.Views.TravelsView = Backbone.View.extend({
     this.nextEventView = new App.Views.EventSummaryView({prefix: "to", stage: 'next'});  
     this.previousTravelView = new App.Views.TravelView();
     this.nextTravelView = new App.Views.TravelView();
-    this.travelType = 'previous';      
+    this.travelType = 'previous';          
   },
   appendEventSummary: function(i, summary) {
     this.summaries[i] = summary;
@@ -47,7 +47,7 @@ App.Views.TravelsView = Backbone.View.extend({
           self.onAliasSelected(ev.params);
         }
         // Clear event cookie
-        timejust.setCookie('event', '');
+        timejust.setCookie('event', null);
       }  
     });                 
   },  
@@ -429,13 +429,7 @@ Please use 'else where' button to choose proper location");
     timejust.setCookie('original_address', summary.original_address);
     timejust.setCookie('ip', this.ip);
     timejust.setCookie('stage', stage);
-    /*
-    $.cookie('ab', ab, { expires: 1, domain: '.googleusercontent.com', path: '/gadgets' });    
-    $.cookie('alias', alias, { expires: 1, domain: '.googleusercontent.com', path: '/gadgets' });    
-    $.cookie('original_address', summary.original_address, { expires: 1, domain: '.googleusercontent.com', path: '/gadgets' });    
-    $.cookie('ip', this.ip, { expires: 1, domain: '.googleusercontent.com', path: '/gadgets' });    
-    $.cookie('stage', stage, { expires: 1, domain: '.googleusercontent.com', path: '/gadgets' });    
-    */
+    
     gadgets.views.requestNavigateTo('canvas', { ip: this.ip });
     this.runEventPoller();    
   },
@@ -447,6 +441,8 @@ Please use 'else where' button to choose proper location");
   },
   runEventPoller: function() {
     var e = $(this.el).find('#event_polling');
+    // Before starting event poller, clear event cookie
+    timejust.setCookie('event', null);
     e.trigger('poll');   
   },  
   clear: function() {
