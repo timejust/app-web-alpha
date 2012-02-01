@@ -27,7 +27,7 @@ App.Views.TravelView = Backbone.View.extend({
       else if (travel.calendar == 'PinkProposal') 
         color = 'pink';      
       var step = travel.travel_steps[0];
-      if (step.state == "error") {
+      if (step != null && step.state == "error") {
         return;
       }      
       html += '<div class="' + color + '"><div class="travel_container"><ul class="travel"><li><a class="';
