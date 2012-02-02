@@ -83,7 +83,7 @@ class TravelStep
   def create_google_event(calendar_id, calendar_name = nil)
     tz = TZInfo::Timezone.get(event['timezone'])
     
-    #Rails.logger.info "create_google_event - calendar_id: #{calendar_id}, calendar_name: #{calendar_name}"    
+    Rails.logger.info "create_google_event - calendar_id: #{calendar_id}, calendar_name: #{calendar_name}"    
     google_event = Google::Event.create(self.event.user.access_token, calendar_id,
       {
         title: self.summary.join('-'),
@@ -119,8 +119,6 @@ class TravelStep
     departure_at = nil
     i = 0
     steps.each do |step|
-      Rails.logger.info (step["dep_time"])
-      Rails.logger.info (step["arr_time"])
       departure_time = DateTime.strptime(step["dep_time"], "%Y-%m-%dT%H:%M:%S").to_time
       arrival_time = DateTime.strptime(step["arr_time"], "%Y-%m-%dT%H:%M:%S").to_time          
       title = ""
