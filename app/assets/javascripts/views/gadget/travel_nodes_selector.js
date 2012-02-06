@@ -118,7 +118,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   '),
   left_template: _.template('\
     <div class="left-top">\
-      <div class="google_result">Google Results</div>\
+      <div class="google_result">Search Results</div>\
       <div class="freq_address">Frequent Addresses</div>\
     </div>\
     <div class="left-middle"></div>\

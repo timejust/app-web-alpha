@@ -232,6 +232,7 @@ a.clear {
   border-color: #E7E7E7;
   color: #1d1d1d;  
   border-width: 1px;
+  min-height: 1.5em;
 }
 .blue {
   margin-bottom: 1px;

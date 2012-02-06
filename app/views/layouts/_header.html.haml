@@ -27,7 +27,8 @@
       %li
         %a{:href => "http://www.timejust.com/contact.php"} CONTACT
   
-  #betaTitle
+  -#
+    #betaTitle
     - if user_signed_in?
       %h1.hello
         = "Hurrah! #{current_user.email}"
@@ -36,5 +37,9 @@
         
     - else    
       %h1 Hurrah! Hurrah! Hurrah!<br />Get started with timejust
-    %h2 and start planning trips in the Paris region
+    %h2 start planning trips in Paris
+    
+  #betaTitle
+    %h1 Set-up Timejust
+    %h2 and start planning trips around Paris
     
