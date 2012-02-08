@@ -26,20 +26,3 @@
         %a{:href => "http://www.timejust.com/green.php"} GREEN
       %li
         %a{:href => "http://www.timejust.com/contact.php"} CONTACT
-  
-  -#
-    #betaTitle
-    - if user_signed_in?
-      %h1.hello
-        = "Hurrah! #{current_user.email}"
-        %br
-        = "Now you can install the Gadget"
-        
-    - else    
-      %h1 Hurrah! Hurrah! Hurrah!<br />Get started with timejust
-    %h2 start planning trips in Paris
-    
-  #betaTitle
-    %h1 Set-up Timejust
-    %h2 and start planning trips around Paris
-    

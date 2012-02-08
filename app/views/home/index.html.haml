@@ -1,65 +1,83 @@
-%script{:type => "text/javascript",
+-# OLDER HEADER
+  #betaTitle
+  - if user_signed_in?
+    %h1.hello
+      = "Hurrah! #{current_user.email}"
+      %br
+      = "Now you can install the Gadget"
+      
+  - else    
+    %h1 Hurrah! Hurrah! Hurrah!<br />Get started with timejust
+  %h2 start planning trips in Paris
+  
+  
+.bodyContent  
+  #betaTitle
+    %h1 Set-up Timejust
+    %h2 and start planning trips around Paris
+
+  %script{:type => "text/javascript",
         :src  => "http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"}
-%script{:type => "text/javascript",
+  %script{:type => "text/javascript",
         :src  => "http://html5shiv.googlecode.com/svn/trunk/html5.js"}
 
-:javascript
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-24648624-2']);
-  _gaq.push(['_trackPageview']);
+  :javascript
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-24648624-2']);
+    _gaq.push(['_trackPageview']);
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
  
-  CFInstall.check({
-    mode: "overlay"
-  });
+    CFInstall.check({
+      mode: "overlay"
+    });
 
-%table{:id => "betaInstructions"}
-  %tr{:class => "instrHead"}
-    <!--[if IE]>
-    %td
-      %h3 Internet Explorer users
-    <![endif]-->
-    %td
-      %h2{:class => user_signed_in? ? "grey" : ""} 1
-    %td
-      %h2{:class => user_signed_in? ? "" : "grey", :id => "second"} 2
-    %td
-      %h2{:class => "grey", :id => "third"} 3
-  %tr{:class => "instrHead"}
-    <!--[if IE]>
-    %td
-      %h4 
-        = link_to "Install the Google Chrome Frame add-on", "http://tools.google.com/chromeframe"
-    <![endif]-->
-    %td
-      %h4{:class => user_signed_in? ? "grey" : ""}
-        = link_to "Grant access to your calendar", oauth2_authorize_path
-    - if user_signed_in?
+  %table{:id => "betaInstructions"}
+    %tr{:class => "instrHead"}
+      <!--[if IE]>
       %td
-        %h4{:id => "secondtitle"}
-          = link_to "Install the Gadget", "https://www.google.com/calendar/render?gadgeturl=#{configatron.gadget.url}?auth_token=#{current_user.authentication_token}&#{Rails.env}=#{Time.now.to_i}", {:target => "_blank", :onclick => "document.getElementById('third').className = ''; document.getElementById('thirdtext').className = ''; document.getElementById('thirdtitle').className = ''; document.getElementById('second').className = 'grey'; document.getElementById('secondtext').className = 'grey'; document.getElementById('secondtitle').className = 'grey';"} 
-    - else
+        %h3 Internet Explorer users
+      <![endif]-->
       %td
-        %h4{:class => "grey"} Install the Gadget
-        -#= link_to "Sign in with Google Apps Strategy (OpenId, will be usefull for google apps domains)", user_omniauth_authorize_path(:openid, :domain => 'gmail.com')
-    %td
-      %h4{:class => "grey", :id => "thirdtitle"} Timejust is up and running
-  %tr{"class" => "instrContent"}
-    <!--[if IE]>
-    %td Timejust Gadget needs the Google Chrome Frame add-on to work correctly.
-    <![endif]-->
-    %td{:class => user_signed_in? ? "grey" : ""} Granting access to your calendar will enable Timejust to read events, and make sense of them to plan your trips.
-    %td{:class => user_signed_in? ? "" : "grey", :id => "secondtext"} You will be asked to install the Gadget in Google Calendar. It will appear on the ride side of the screen, next to the calendar view.
-    %td{:class => "grey", :id => "thirdtext"}
-      Click an event and start planning trips. More destinations coming soon.
-      %div{:id => "linkFAQ"}
-        = link_to "Questions: FAQ!", "http://www.timejust.com/FAQ/index.php"
-        \-
-        = link_to "Problems: mail us!", "mailto:beta@timejust.com"
+        %h2{:class => user_signed_in? ? "grey" : ""} 1
+      %td
+        %h2{:class => user_signed_in? ? "" : "grey", :id => "second"} 2
+      %td
+        %h2{:class => "grey", :id => "third"} 3
+    %tr{:class => "instrHead"}
+      <!--[if IE]>
+      %td
+        %h4 
+          = link_to "Install the Google Chrome Frame add-on", "http://tools.google.com/chromeframe"
+      <![endif]-->
+      %td
+        %h4{:class => user_signed_in? ? "grey" : ""}
+          = link_to "Grant access to your calendar", oauth2_authorize_path
+      - if user_signed_in?
+        %td
+          %h4{:id => "secondtitle"}
+            = link_to "Install the Gadget", "https://www.google.com/calendar/render?gadgeturl=#{configatron.gadget.url}?auth_token=#{current_user.authentication_token}&#{Rails.env}=#{Time.now.to_i}", {:target => "_blank", :onclick => "document.getElementById('third').className = ''; document.getElementById('thirdtext').className = ''; document.getElementById('thirdtitle').className = ''; document.getElementById('second').className = 'grey'; document.getElementById('secondtext').className = 'grey'; document.getElementById('secondtitle').className = 'grey';"} 
+      - else
+        %td
+          %h4{:class => "grey"} Install the Gadget
+          -#= link_to "Sign in with Google Apps Strategy (OpenId, will be usefull for google apps domains)", user_omniauth_authorize_path(:openid, :domain => 'gmail.com')
+      %td
+        %h4{:class => "grey", :id => "thirdtitle"} Timejust is up and running
+    %tr{"class" => "instrContent"}
+      <!--[if IE]>
+      %td Timejust Gadget needs the Google Chrome Frame add-on to work correctly.
+      <![endif]-->
+      %td{:class => user_signed_in? ? "grey" : ""} Granting access to your calendar will enable Timejust to read events, and make sense of them to plan your trips.
+      %td{:class => user_signed_in? ? "" : "grey", :id => "secondtext"} You will be asked to install the Gadget in Google Calendar. It will appear on the ride side of the screen, next to the calendar view.
+      %td{:class => "grey", :id => "thirdtext"}
+        Click an event and start planning trips. More destinations coming soon.
+        %div{:id => "linkFAQ"}
+          = link_to "Questions: FAQ!", "http://www.timejust.com/FAQ/index.php"
+          \-
+          = link_to "Problems: mail us!", "mailto:beta@timejust.com"
 
 = render partial: 'layouts/footer'
