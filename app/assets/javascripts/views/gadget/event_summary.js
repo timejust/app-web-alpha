@@ -56,7 +56,8 @@ App.Views.EventSummaryView = Backbone.View.extend({
         if (this.summary.addressBook.length > 0) {
           alias_index = alias_index - this.summary.addressBook.length;
         }
-      }      
+      } 
+      // If selected item is one of existing alias list.     
       if (this.summary.alias.length > 0) {
         if (this.prefix != undefined) {
           this.title = this.prefix + " " + this.summary.alias[alias_index].title;    
@@ -67,7 +68,18 @@ App.Views.EventSummaryView = Backbone.View.extend({
         this.lng = this.summary.alias[alias_index].lng;
         this.address = this.summary.alias[alias_index].address;
         this.normalized = true;
-      }         
+      } else {
+        // If the item is coming from the alias without title..
+        if (this.prefix != undefined) {
+          this.title = this.prefix;
+        } 
+        if (this.summary.addressBook.length > 0) {
+          this.lat = this.summary.addressBook[this.selected].lat;
+          this.lng = this.summary.addressBook[this.selected].lng;
+          this.address = this.summary.addressBook[this.selected].address;
+          this.normalized = true;
+        }
+      }    
     } else {
       class_name = 'blue';   
       this.title = this.summary.title;
