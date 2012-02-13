@@ -42,7 +42,7 @@ App.Views.EventSummaryView = Backbone.View.extend({
   },
   render: function() {
     var self = this;
-    var alias_index = 0;
+    var alias_index = -1;
     var class_name = "white";
     if (this.summary.title == null) {
       // If title is null, there is no proper event to show. In this case,
@@ -50,15 +50,20 @@ App.Views.EventSummaryView = Backbone.View.extend({
       // And display title of first alias for the title of summary instead of
       // event title.      
       class_name = 'white';
-      if (this.selected > 0) {
+      if (this.selected >= 0) {
         // We assume this event does not have proper address book.        
         alias_index = this.selected;
         if (this.summary.addressBook.length > 0) {
           alias_index = alias_index - this.summary.addressBook.length;
         }
-      } 
+      } else {
+        // If there is no event, we should display alias as a default value here
+        // if alias exists.
+        alias_index = 0;        
+      }
+      
       // If selected item is one of existing alias list.     
-      if (this.summary.alias.length > 0) {
+      if (this.summary.alias.length > 0 && alias_index >= 0) {
         if (this.prefix != undefined) {
           this.title = this.prefix + " " + this.summary.alias[alias_index].title;    
         } else {
