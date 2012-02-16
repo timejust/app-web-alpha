@@ -41,9 +41,13 @@
       <!--[if IE]>
       %td
         %h3 Internet Explorer users
+      %td
+        %h2{:class => "grey"} 1
       <![endif]-->
+      <!--[if !IE]> -->
       %td
         %h2{:class => user_signed_in? ? "grey" : ""} 1
+      <!-- <![endif]-->
       %td
         %h2{:class => user_signed_in? ? "" : "grey", :id => "second"} 2
       %td
@@ -53,10 +57,15 @@
       %td
         %h4 
           = link_to "Install the Google Chrome Frame add-on", "http://tools.google.com/chromeframe"
+      %td
+        %h4{:class => "grey"}
+          Grant access to your calendar
       <![endif]-->
+      <!--[if !IE]> -->
       %td
         %h4{:class => user_signed_in? ? "grey" : ""}
           = link_to "Grant access to your calendar", oauth2_authorize_path
+      <!-- <![endif]-->
       - if user_signed_in?
         %td
           %h4{:id => "secondtitle"}
@@ -70,8 +79,11 @@
     %tr{"class" => "instrContent"}
       <!--[if IE]>
       %td Timejust Gadget needs the Google Chrome Frame add-on to work correctly.
+      %td{:class => "grey"} Granting access to your calendar will enable Timejust to read events, and make sense of them to plan your trips.
       <![endif]-->
+      <!--[if !IE]> -->
       %td{:class => user_signed_in? ? "grey" : ""} Granting access to your calendar will enable Timejust to read events, and make sense of them to plan your trips.
+      <!-- <![endif]-->
       %td{:class => user_signed_in? ? "" : "grey", :id => "secondtext"} You will be asked to install the Gadget in Google Calendar. It will appear on the ride side of the screen, next to the calendar view.
       %td{:class => "grey", :id => "thirdtext"}
         Click an event and start planning trips. More destinations coming soon.
