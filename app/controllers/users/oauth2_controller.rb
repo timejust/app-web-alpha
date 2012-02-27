@@ -10,11 +10,11 @@ class Users::Oauth2Controller < ApplicationController
       params[:code],
       :redirect_uri => oauth2_callback_url
     )
-
+    
     # fetch email
     email = @access_token.get("https://www.googleapis.com/userinfo/email?alt=json")['data']['email']
 
-    #Rails.logger.info(@access_token.inspect)
+    Rails.logger.info(@access_token.inspect)
     
     # Create/Update user informations
     user = User.find_or_initialize_by(:email => email)
@@ -35,7 +35,10 @@ class Users::Oauth2Controller < ApplicationController
       redirect_to oauth2_failure_path(reason: 'user_has_no_calendar') and return
     end
 
-    redirect_to session[:return_to]||root_path
+    calendar_url = "https://www.google.com/calendar/render?gadgeturl=#{configatron.gadget.url}?auth_token=#{current_user.authentication_token}&#{Rails.env}=#{Time.now.to_i}"
+    
+    # redirect_to session[:return_to]||root_path
+    redirect_to calendar_url
   end
 
   def failure
@@ -46,7 +49,8 @@ class Users::Oauth2Controller < ApplicationController
     session[:return_to] = params[:return_to]||nil
     redirect_to OAuthHelper.client.web_server.authorize_url(
       :redirect_uri => oauth2_callback_url,
-      :scope => "https://www.googleapis.com/auth/userinfo#email https://www.google.com/calendar/feeds/"
+      :scope => "https://www.googleapis.com/auth/userinfo#email https://www.google.com/calendar/feeds/",
+      :access_type => "offline"
     ), :status => 303
   end
 end
