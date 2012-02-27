@@ -46,7 +46,21 @@
       %td
     %tr{"class" => "instrContent"}
       %td
+<<<<<<< HEAD
       %td Timejust Gadget needs the Google Chrome Frame add-on to work correctly on Internet Explorer.
+=======
+        %h4{:class => user_signed_in? ? "grey" : ""}
+          = link_to "Grant access to your calendar", oauth2_authorize_path
+      <!-- <![endif]-->
+      - if user_signed_in?        
+        %td
+          %h4{:id => "secondtitle"}
+            = link_to "Install the Gadget", "https://www.google.com/calendar/render?gadgeturl=#{configatron.gadget.url}?auth_token=#{current_user.authentication_token}&#{Rails.env}=#{Time.now.to_i}", {:target => "_blank", :onclick => "document.getElementById('third').className = ''; document.getElementById('thirdtext').className = ''; document.getElementById('thirdtitle').className = ''; document.getElementById('second').className = 'grey'; document.getElementById('secondtext').className = 'grey'; document.getElementById('secondtitle').className = 'grey';"} 
+      - else
+        %td
+          %h4{:class => "grey"} Install the Gadget
+          -#= link_to "Sign in with Google Apps Strategy (OpenId, will be usefull for google apps domains)", user_omniauth_authorize_path(:openid, :domain => 'gmail.com')
+>>>>>>> 3e9d18d392196cc35c15fb4eeab62cc74871ab95
       %td
     <![endif]-->
 

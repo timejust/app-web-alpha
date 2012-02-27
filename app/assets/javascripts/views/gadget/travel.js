@@ -12,8 +12,11 @@ App.Views.TravelView = Backbone.View.extend({
   // TODO: refactoring needed....
   render: function() {   
     var travels = this.model.travels;   
+    var departure_address = this.model.previous_travel_node.address;
     var arrival_address = this.model.current_travel_node.address;
     var self = this; 
+    var empty = false;
+    var availables = new Array();
     if (travels == null) {
       // display error
     }
@@ -27,9 +30,11 @@ App.Views.TravelView = Backbone.View.extend({
       else if (travel.calendar == 'PinkProposal') 
         color = 'pink';      
       var step = travel.travel_steps[0];
-      if (step != null && step.state == "error") {
+      if (step == null || step.state == "error") {
+        empty = true;
         return;
       }      
+      availables.push(travel)
       html += '<div class="' + color + '"><div class="travel_container"><ul class="travel"><li><a class="';
       html += color + '_toggle off" href="#"></a></li>';
       html += '<li class="title">' + travel.travel_mode.toUpperCase() + '</li>';      
@@ -85,7 +90,7 @@ App.Views.TravelView = Backbone.View.extend({
           } else if (s.line.indexOf('bus') != -1) {
             mode = "bus";
             line = s.line.substring(3, s.line.length);
-          } else if (s.line.indexOf('rer') != -1) {
+          } else if (s.line.indexOf('rer') != -1 || s.line.indexOf('transilien') != -1) {
             mode = "train";       
             line = s.line.substring(3, s.line.length);               
           } else if (s.line == 'connections' && i == step.steps.length - 1) {
@@ -126,7 +131,7 @@ App.Views.TravelView = Backbone.View.extend({
           } else if (s.line.indexOf('bus') != -1) {
             mode = "bus";
             line = s.line.substring(3, s.line.length);
-          } else if (s.line.indexOf('rer') != -1) {
+          } else if (s.line.indexOf('rer') != -1 || s.line.indexOf('transilien') != -1) {
             mode = "train";                      
             line = s.line.substring(3, s.line.length);
           } else if (s.line == 'connections' && i == step.steps.length - 1) {
@@ -233,6 +238,11 @@ App.Views.TravelView = Backbone.View.extend({
       }
       html += '</div></div></div>';
     });
+    
+    if (empty == true && availables.length == 0) {
+      html += "<div class='error'>Journey from " + departure_address + " to " + arrival_address + " soon available in Timejust</div>"
+    }
+    
     html += "</div>";
     this.rendered = true;
     $(this.el).html(html); 
