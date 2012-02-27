@@ -49,9 +49,11 @@
       %td
     <![endif]-->
     
-    -#<<<<<<< HEAD
-          %td Timejust Gadget needs the Google Chrome Frame add-on to work correctly on Internet Explorer.
-      =======
+    
+    -# COMMIT STRANGE CHANGES
+      -#
+        -#
+          %td Timejust Gadget needs the Google Chrome Frame add-on to work correctly on Internet Explorer
             %h4{:class => user_signed_in? ? "grey" : ""}
               = link_to "Grant access to your calendar", oauth2_authorize_path
           <!-- <![endif]-->
@@ -63,6 +65,5 @@
             %td
               %h4{:class => "grey"} Install the Gadget
               -#= link_to "Sign in with Google Apps Strategy (OpenId, will be usefull for google apps domains)", user_omniauth_authorize_path(:openid, :domain => 'gmail.com')
-      >>>>>>> 3e9d18d392196cc35c15fb4eeab62cc74871ab95
 
 = render partial: 'layouts/footer'
