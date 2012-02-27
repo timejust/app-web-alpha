@@ -79,8 +79,9 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         var a = {};
         a.address = _data.formatted_address;
         a.location = {};
-        a.location.lat = _data.geometry.location.Oa;
-        a.location.lng = _data.geometry.location.Pa;        
+        var location = _data.geometry.location
+        a.location.lat = (location.Oa != null ? location.Oa : location.Sa);        
+        a.location.lng = (location.Pa != null ? location.Pa : location.Ta);        
         self.results.push(a);          
         self.showGoogleResult(null);
 	    }

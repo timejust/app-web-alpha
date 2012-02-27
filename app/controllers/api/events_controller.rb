@@ -113,7 +113,7 @@ class Api::EventsController < Api::BaseController
   # @return   [JSON]      JSON representation of event with its travels
   #
   def travels
-    if @event.travels_to_calendar_waiting?
+    if @event.travels_to_calendar_waiting? or @event.travels_done?
       if current_user.expired == 1
         render :nothing => true, :status => :unauthorized
       else

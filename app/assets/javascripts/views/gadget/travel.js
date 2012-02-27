@@ -12,8 +12,10 @@ App.Views.TravelView = Backbone.View.extend({
   // TODO: refactoring needed....
   render: function() {   
     var travels = this.model.travels;   
+    var departure_address = this.model.previous_travel_node.address;
     var arrival_address = this.model.current_travel_node.address;
     var self = this; 
+    var empty = false;
     if (travels == null) {
       // display error
     }
@@ -27,7 +29,8 @@ App.Views.TravelView = Backbone.View.extend({
       else if (travel.calendar == 'PinkProposal') 
         color = 'pink';      
       var step = travel.travel_steps[0];
-      if (step != null && step.state == "error") {
+      if (step == null || step.state == "error") {
+        empty = true;
         return;
       }      
       html += '<div class="' + color + '"><div class="travel_container"><ul class="travel"><li><a class="';
@@ -233,6 +236,11 @@ App.Views.TravelView = Backbone.View.extend({
       }
       html += '</div></div></div>';
     });
+    
+    if (empty == true) {
+      html += "<div class='error'>Journey from " + departure_address + " to " + arrival_address + " soon available in Timejust</div>"
+    }
+    
     html += "</div>";
     this.rendered = true;
     $(this.el).html(html); 

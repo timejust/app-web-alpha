@@ -39,15 +39,15 @@ class EventAbstractApiProvider
       travels.each do |travel|                
         # travel has only one key now but in order to get key variable, 
         # we need to iterate through
-        travel.each_key do |key|
-          trip = travel[key]          
+        travel.each_key do |key|          
+          trip = travel[key]    
           itinerary = direction_map[key]        
           direction = itinerary.direction
           mode = itinerary.mode
           
           itinerary.travel.create_travel_step(trip, mode, direction, 
             event.previous_travel_node.address, event.current_travel_node.address)        
-        end
+        end              
       end
     end
     
