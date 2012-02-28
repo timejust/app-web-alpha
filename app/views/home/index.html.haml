@@ -1,16 +1,3 @@
--# OLDER HEADER
-  #betaTitle
-  - if user_signed_in?
-    %h1.hello
-      = "Hurrah! #{current_user.email}"
-      %br
-      = "Now you can install the Gadget"
-      
-  - else    
-    %h1 Hurrah! Hurrah! Hurrah!<br />Get started with timejust
-  %h2 start planning trips in Paris
-  
-  
 .bodyContent  
   #betaTitle
     %h1 Set-up Timejust
@@ -26,60 +13,57 @@
       mode: "overlay"
     });
 
+
   %table{:id => "betaInstructions"}
-    %tr{:class => "instrHead"}
-      <!--[if IE]>
-      %td
-        %h3 Internet Explorer users
-      %td
-        %h2{:class => "grey"} 1
-      <![endif]-->
-      <!--[if !IE]> -->
-      %td
-        %h2{:class => user_signed_in? ? "grey" : ""} 1
-      <!-- <![endif]-->
-      %td
-        %h2{:class => user_signed_in? ? "" : "grey", :id => "second"} 2
-      %td
-        %h2{:class => "grey", :id => "third"} 3
-    %tr{:class => "instrHead"}
-      <!--[if IE]>
-      %td
-        %h4 
-          = link_to "Install the Google Chrome Frame add-on", "http://tools.google.com/chromeframe"
-      %td
-        %h4{:class => "grey"}
-          Grant access to your calendar
-      <![endif]-->
-      <!--[if !IE]> -->
-      %td
-        %h4{:class => user_signed_in? ? "grey" : ""}
-          = link_to "Grant access to your calendar", oauth2_authorize_path
-      <!-- <![endif]-->
-      - if user_signed_in?        
-        %td
-          %h4{:id => "secondtitle"}
-            = link_to "Install the Gadget", "https://www.google.com/calendar/render?gadgeturl=#{configatron.gadget.url}?auth_token=#{current_user.authentication_token}&#{Rails.env}=#{Time.now.to_i}", {:target => "_blank", :onclick => "document.getElementById('third').className = ''; document.getElementById('thirdtext').className = ''; document.getElementById('thirdtitle').className = ''; document.getElementById('second').className = 'grey'; document.getElementById('secondtext').className = 'grey'; document.getElementById('secondtitle').className = 'grey';"} 
-      - else
-        %td
-          %h4{:class => "grey"} Install the Gadget
-          -#= link_to "Sign in with Google Apps Strategy (OpenId, will be usefull for google apps domains)", user_omniauth_authorize_path(:openid, :domain => 'gmail.com')
-      %td
-        %h4{:class => "grey", :id => "thirdtitle"} Timejust is up and running
+    <!--[if !IE]> -->
+    %tr
+      %th{:class => 'green-button-container', 'colspan' => '3'}
+        %a{:class => 'green-button', :href => oauth2_authorize_path } INSTALL
     %tr{"class" => "instrContent"}
-      <!--[if IE]>
-      %td Timejust Gadget needs the Google Chrome Frame add-on to work correctly.
-      %td{:class => "grey"} Granting access to your calendar will enable Timejust to read events, and make sense of them to plan your trips.
-      <![endif]-->
-      <!--[if !IE]> -->
-      %td{:class => user_signed_in? ? "grey" : ""} Granting access to your calendar will enable Timejust to read events, and make sense of them to plan your trips.
-      <!-- <![endif]-->
-      %td{:class => user_signed_in? ? "" : "grey", :id => "secondtext"} You will be asked to install the Gadget in Google Calendar. It will appear on the ride side of the screen, next to the calendar view.
-      %td{:class => "grey", :id => "thirdtext"}
+      %td
+        Granting access to your calendar will enable Timejust to read events, and make sense of them to plan your trips.
+      %td
+        Then you will be asked to install the Gadget in Google Calendar. It will appear on the ride side of the screen, next to the calendar view.
+      %td
         Click an event and start planning trips. More destinations coming soon.
         %div{:id => "linkFAQ"}
           = link_to "Questions: FAQ!", "http://www.timejust.com/FAQ/index.php"
           \-
           = link_to "Problems: mail us!", "mailto:beta@timejust.com"
+    <!-- <![endif]-->  
+    
+    <!--[if IE]>
+    %tr{:class => "instrHead"}
+      %th
+      %th
+        %h3 Internet Explorer users
+      %th
+    %tr{:class => "instrHead"}
+      %td
+      %td
+        %h4 
+          = link_to "Install the Google Chrome Frame add-on", "http://tools.google.com/chromeframe"
+      %td
+    %tr{"class" => "instrContent"}
+      %td
+      %td
+    <![endif]-->
+    
+    
+    -# COMMIT STRANGE CHANGES
+      -#
+        -#
+          %td Timejust Gadget needs the Google Chrome Frame add-on to work correctly on Internet Explorer
+            %h4{:class => user_signed_in? ? "grey" : ""}
+              = link_to "Grant access to your calendar", oauth2_authorize_path
+          <!-- <![endif]-->
+          - if user_signed_in?        
+            %td
+              %h4{:id => "secondtitle"}
+                = link_to "Install the Gadget", "https://www.google.com/calendar/render?gadgeturl=#{configatron.gadget.url}?auth_token=#{current_user.authentication_token}&#{Rails.env}=#{Time.now.to_i}", {:target => "_blank", :onclick => "document.getElementById('third').className = ''; document.getElementById('thirdtext').className = ''; document.getElementById('thirdtitle').className = ''; document.getElementById('second').className = 'grey'; document.getElementById('secondtext').className = 'grey'; document.getElementById('secondtitle').className = 'grey';"} 
+          - else
+            %td
+              %h4{:class => "grey"} Install the Gadget
+              -#= link_to "Sign in with Google Apps Strategy (OpenId, will be usefull for google apps domains)", user_omniauth_authorize_path(:openid, :domain => 'gmail.com')
 
 = render partial: 'layouts/footer'
