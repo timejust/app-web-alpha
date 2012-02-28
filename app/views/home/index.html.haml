@@ -1,8 +1,4 @@
-.bodyContent  
-  #betaTitle
-    %h1 Set-up Timejust
-    %h2 and start planning trips around Paris
-
+.bodyContent
   %script{:type => "text/javascript",
         :src  => "http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"}
   %script{:type => "text/javascript",
@@ -14,42 +10,37 @@
     });
 
 
-  %table{:id => "betaInstructions"}
-    <!--[if !IE]> -->
-    %tr
-      %th{:class => 'green-button-container', 'colspan' => '3'}
-        %a{:class => 'green-button', :href => oauth2_authorize_path } INSTALL
-    %tr{"class" => "instrContent"}
-      %td
-        Granting access to your calendar will enable Timejust to read events, and make sense of them to plan your trips.
-      %td
-        Then you will be asked to install the Gadget in Google Calendar. It will appear on the ride side of the screen, next to the calendar view.
-      %td
-        Click an event and start planning trips. More destinations coming soon.
-        %div{:id => "linkFAQ"}
-          = link_to "Questions: FAQ!", "http://www.timejust.com/FAQ/index.php"
-          \-
-          = link_to "Problems: mail us!", "mailto:beta@timejust.com"
-    <!-- <![endif]-->  
+
+  <!--[if !IE]> -->
+  #bInstallTitle
+    %a{:href => oauth2_authorize_path}
+      %img{:id => 'install-button', :src => 'http://www.timejust.com/images/InstallTJb.png', :alt => 'install timejust beta!'}
+    %h1 and start planning trips around Paris
+  #bInstallDetails
+    Google will ask you to install the Gadget in Google Calendar. It will appear on the ride side of the screen, next to the calendar view. Then click an event and start planning trips. More destinations coming soon.
+    %a{:href => 'http://www.timejust.com/FAQ/index.php'}Questions: FAQ!
+    \-
+    %a{:href => 'mailto:beta@timejust.com'}Problems: mail us!
+    -#linkFAQ
+      = link_to "Questions: FAQ!", "http://www.timejust.com/FAQ/index.php"
+      \-
+      = link_to "Problems: mail us!", "mailto:beta@timejust.com"
+  <!-- <![endif]-->  
     
-    <!--[if IE]>
+  <!--[if IE]>
+  %table{:id => "IETable"}
     %tr{:class => "instrHead"}
-      %th
       %th
         %h3 Internet Explorer users
-      %th
     %tr{:class => "instrHead"}
-      %td
       %td
         %h4 
           = link_to "Install the Google Chrome Frame add-on", "http://tools.google.com/chromeframe"
-      %td
     %tr{"class" => "instrContent"}
-      %td
-      %td
-    <![endif]-->
+      %td Timejust Gadget needs the Google Chrome Frame add-on to work correctly on Internet Explorer
+  <![endif]-->
     
-    
+  -#  
     -# COMMIT STRANGE CHANGES
       -#
         -#
