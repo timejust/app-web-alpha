@@ -11,25 +11,25 @@
   :ratp_proxy:
     :url: "http://proxy.timejust.com:80"
   :service:
-    :url: "http://service-staging.timejust.com"
-    :geo_recognition: "v1/geo/recognition"
-    :geo_direction: "v1/geo/direction"
+    :url: "http://service-staging.timejust.com:8080"
+    :geo_recognition: "service-geo/v1/geo/recognition"
+    :geo_direction: "service-geo/v1/geo/direction"
 :staging:
   :api:
-    :url: "http://api-staging.timejust.com/v1"
+    :url: "https://api-staging.timejust.com/v1"
     :basic_auth:
       :user: "timejust"
       :password: "t1m3ju$t" 
   :gadget:
-    :url: "http://staging.timejust.com/gadget/timejust.xml"
+    :url: "https://staging.timejust.com/gadget/timejust.xml"
   :web:
-    :url: "http://staging.timejust.com"
+    :url: "https://staging.timejust.com"
   :ratp_proxy:
     :url: "http://proxy.timejust.com:80"
   :service:
-    :url: "http://service-staging.timejust.com"
-    :geo_recognition: "v1/geo/recognition"
-    :geo_direction: "v1/geo/direction"
+    :url: "http://service-staging.timejust.com:8080"
+    :geo_recognition: "service-geo/v1/geo/recognition"
+    :geo_direction: "service-geo/v1/geo/direction"
 :production:
   :api:
     :url: "http://api.timejust.com/v1"
@@ -43,6 +43,6 @@
   :ratp_proxy:
     :url: "http://proxy.timejust.com:80"
   :service:
-    :url: "http://service.timejust.com"
-    :geo_recognition: "v1/geo/recognition"
-    :geo_direction: "v1/geo/direction"
+    :url: "http://service.timejust.com:8080"
+    :geo_recognition: "service-geo/v1/geo/recognition"
+    :geo_direction: "service-geo/v1/geo/direction"
