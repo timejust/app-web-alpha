@@ -102,6 +102,10 @@ App.Views.EventView = Backbone.View.extend({
     }
     google.calendar.read.getEvents(callback, [email], startDate, endDate);
   },
+  timeCompare: function(t1, t2) {
+    return (t1.year >= t2.year && t1.month >= t2.month && t1.date >= t2.date && 
+      t1.hour >= t2.hour && t1.minute >= t2.minute);
+  },
   onEventCallback: function(response) {
     var res = response[0];
     if ('error' in res) {
@@ -109,18 +113,32 @@ App.Views.EventView = Backbone.View.extend({
       return;
     }    
     var events = res['events'];    
-    if (this.nextEventRequest == false) {
-      if (events.length > 0) {
+    var e = null;
+    if (this.nextEventRequest == false) {      
+      for (var i = events.length - 1; i >= 0; i--) {
         // Get latest event from the list    
-        var e = events[events.length-1];
-        this.previousEvent = e;         
-      }      
+        e = events[i];
+        // Make sure the given event is valid in the given time range
+        if (!this.timeCompare(e.endTime, this.selectedEvent.startTime)) {
+          break;
+        } else {
+          e = null;
+        }                    
+      }              
+      this.previousEvent = e;               
       this.getCalendarEvent(this.user.email, this.selectedEvent.endTime, 1, true, this.onEventCallback);  
     } else {
-      if (events.length > 0) {
-        var e = events[0];
-        this.nextEvent = e;            
+      for (var i = events.length - 1; i >= 0; i--) {
+        // Get latest event from the list    
+        e = events[i];
+        // Make sure the given event is valid in the given time range
+        if (!this.timeCompare(e.startTime, this.selectedEvent.endTime)) {
+          break;
+        } else {
+          e = null;
+        }          
       }
+      this.nextEvent = e;     
       // Even if we don't retrieve any of events, we need to call
       // normalizeAddress function to process further events.
       this.normalizeAddress();  
@@ -168,7 +186,7 @@ App.Views.EventView = Backbone.View.extend({
       return;
     }
     GoogleRequest.postWithoutEncoding({
-      url: App.config.service_url + "/service-geo/v1/geo/recognition",
+      url: App.config.service_url + "/v1/geo/recognition",
       params: JSON.stringify(body),
       success: this.onNormalizedAddress,
       error: function() {        
@@ -234,8 +252,12 @@ App.Views.EventView = Backbone.View.extend({
       error: callback
     });
   },
-  onAlias: function(response) {
-    this.alias = response.data;
+  onAlias: function(response) {    
+    if (response.rc == 200) {
+      this.alias = response.data;
+    } else {
+      this.alias = new Array();
+    }
     this.render();
     this.isInitialized = true;
   },
