@@ -6,7 +6,7 @@ require 'utf8proc'
 module Timejust
   class GeoDirection      
     def initialize()  
-      @@url = configatron.service.url + "/" + configatron.service.geo_direction
+      @@url = configatron.service.http.url + "/" + configatron.service.geo_direction
       @@params = Array.new()  
       @@results = ""  
     end

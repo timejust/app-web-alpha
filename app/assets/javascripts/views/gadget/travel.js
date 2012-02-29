@@ -90,9 +90,12 @@ App.Views.TravelView = Backbone.View.extend({
           } else if (s.line.indexOf('bus') != -1) {
             mode = "bus";
             line = s.line.substring(3, s.line.length);
-          } else if (s.line.indexOf('rer') != -1 || s.line.indexOf('transilien') != -1) {
+          } else if (s.line.indexOf('rer') != -1) {
             mode = "train";       
             line = s.line.substring(3, s.line.length);               
+          } else if (s.line.indexOf('transilien') != -1) {
+            mode = "transilien";
+            line = s.line.substring(10, s.line.length);
           } else if (s.line == 'connections' && i == step.steps.length - 1) {
             mode = "walk";
           }   
@@ -131,9 +134,12 @@ App.Views.TravelView = Backbone.View.extend({
           } else if (s.line.indexOf('bus') != -1) {
             mode = "bus";
             line = s.line.substring(3, s.line.length);
-          } else if (s.line.indexOf('rer') != -1 || s.line.indexOf('transilien') != -1) {
+          } else if (s.line.indexOf('rer') != -1) {
             mode = "train";                      
             line = s.line.substring(3, s.line.length);
+          } else if (s.line.indexOf('transilien') != -1) {
+            mode = "transilien";
+            line = s.line.substring(10, s.line.length);
           } else if (s.line == 'connections' && i == step.steps.length - 1) {
             mode = "walk";
           }       

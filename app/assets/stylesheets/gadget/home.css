@@ -735,3 +735,84 @@ div.bus_line_container {
   background-position: -64px -0px;
   background-repeat: no-repeat;
 }
+.transilien {
+  display: inline-block; 
+  width: 19px; 
+  height: 20px; 
+  vertical-align: sub;
+  background-image:url(/icons/icn-strip_transports.png);
+  background-position: -132px 0px;
+  background-repeat: no-repeat;
+}
+.transilien_h {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/transiliens.png);
+  background-position: -0px -0px;
+  background-repeat: no-repeat;
+}
+.transilien_j {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/transiliens.png);
+  background-position: -16px -0px;
+  background-repeat: no-repeat;
+}
+.transilien_k {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/transiliens.png);
+  background-position: -32px -0px;
+  background-repeat: no-repeat;
+}
+.transilien_l {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/transiliens.png);
+  background-position: -0px -16px;
+  background-repeat: no-repeat;
+}
+.transilien_n {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/transiliens.png);
+  background-position: -16px -16px;
+  background-repeat: no-repeat;
+}
+.transilien_p {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/transiliens.png);
+  background-position: -32px -16px;
+  background-repeat: no-repeat;
+}
+.transilien_r {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/transiliens.png);
+  background-position: -48px -16px;
+  background-repeat: no-repeat;
+}
+.transilien_u {
+  display: inline-block; 
+  width: 16px; 
+  height: 16px; 
+  vertical-align: -1px;
+  background-image:url(/icons/transiliens.png);
+  background-position: -64px -0px;
+  background-repeat: no-repeat;
+}
