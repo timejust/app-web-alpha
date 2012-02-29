@@ -67,10 +67,10 @@ App.Views.EventView = Backbone.View.extend({
     this.render();
   },
   getTimeWithDiff: function(time, diff) {
-    var date = new Date();
-    date.setFullYear(time.year, time.month-1, time.date);
-    date.setHours(time.hour, time.minute, time.second, 0);
-    var unixtime = parseInt(date / 1000);
+    // var date = new Date();
+    // date.setFullYear(time.year, time.month-1, time.date);
+    // date.setHours(time.hour, time.minute, time.second, 0);
+    var unixtime = this.timeToUnix(time);//parseInt(date / 1000);
     unixtime += diff;
     date = new Date(unixtime * 1000);
     return {year: date.getFullYear(), month: date.getMonth() + 1, date: date.getDate(), 
@@ -102,9 +102,21 @@ App.Views.EventView = Backbone.View.extend({
     }
     google.calendar.read.getEvents(callback, [email], startDate, endDate);
   },
+  timeToUnix: function(time) {
+    var date = new Date();
+    date.setFullYear(time.year, time.month-1, time.date);
+    date.setHours(time.hour, time.minute, time.second, 0);
+    return parseInt(date / 1000);
+  },
   timeCompare: function(t1, t2) {
-    return (t1.year >= t2.year && t1.month >= t2.month && t1.date >= t2.date && 
-      t1.hour >= t2.hour && t1.minute >= t2.minute);
+    var rawTime1 = this.timeToUnix(t1);
+    var rawTime2 = this.timeToUnix(t2);    
+    if (rawTime1 > rawTime2) {
+      return 1;
+    } else if (rawTime1 == rawTime2) {
+      return 0;
+    } 
+    return -1;
   },
   onEventCallback: function(response) {
     var res = response[0];
@@ -119,7 +131,7 @@ App.Views.EventView = Backbone.View.extend({
         // Get latest event from the list    
         e = events[i];
         // Make sure the given event is valid in the given time range
-        if (!this.timeCompare(e.endTime, this.selectedEvent.startTime)) {
+        if (this.timeCompare(e.endTime, this.selectedEvent.startTime) <= 0) {
           break;
         } else {
           e = null;
@@ -128,11 +140,11 @@ App.Views.EventView = Backbone.View.extend({
       this.previousEvent = e;               
       this.getCalendarEvent(this.user.email, this.selectedEvent.endTime, 1, true, this.onEventCallback);  
     } else {
-      for (var i = events.length - 1; i >= 0; i--) {
+      for (var i = 0; i < events.length; i++) {
         // Get latest event from the list    
         e = events[i];
         // Make sure the given event is valid in the given time range
-        if (!this.timeCompare(e.startTime, this.selectedEvent.endTime)) {
+        if (this.timeCompare(e.startTime, this.selectedEvent.endTime) >= 0) {
           break;
         } else {
           e = null;
