@@ -67,7 +67,7 @@ class Api::UsersController < Api::BaseController
       FavoriteLocation.create(:user => user, 
         :title => params[:title], :address => params[:address], 
         :lat => params[:lat], :lng => params[:lng]);
-      render :nothing => true, :status => :ok
+      render :json => '{}', :status => :ok
     else
       render :nothing => true, :status => :not_found
     end
@@ -85,7 +85,7 @@ class Api::UsersController < Api::BaseController
       
       location = FavoriteLocation.find(:all, :conditions => { :user_id => user[:_id], :title => params[:title] })
       location.destroy();
-      render :nothing => true, :status => :ok
+      render :json => '{}', :status => :ok
     else
       render :nothing => true, :status => :not_found
     end    

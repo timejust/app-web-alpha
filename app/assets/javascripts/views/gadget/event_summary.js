@@ -26,6 +26,11 @@ App.Views.EventSummaryView = Backbone.View.extend({
     }
     return -1;
   },
+  selectAliasItem: function(title) {
+    if (this.summary != undefined) {
+      this.selected = this.summary.getIndexOfAliasByTitle(title);
+    }
+  },
   deleteAlias: function(title) {
     if (this.summary != undefined) {
       this.summary.deleteAlias(title);

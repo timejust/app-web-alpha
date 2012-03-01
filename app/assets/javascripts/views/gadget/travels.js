@@ -29,13 +29,14 @@ App.Views.TravelsView = Backbone.View.extend({
     this.previousTravelView = new App.Views.TravelView();
     this.nextTravelView = new App.Views.TravelView();
     this.travelType = 'previous';          
+    this.pollerRunning = false;
   },
   appendEventSummary: function(i, summary) {
     this.summaries[i] = summary;
   },
   handleEvent: function(e) {
     var self = this;
-    $.poll(function(retry) {
+    $.poll(200, function(retry) {
       var ev = $.cookie('event');    
       if (ev == null || ev == "") {
         retry();
@@ -45,12 +46,33 @@ App.Views.TravelsView = Backbone.View.extend({
           self.onAddressSelected(ev.params);
         } else if (ev.type == 'EVENT_ALIAS_SELECTED') {
           self.onAliasSelected(ev.params);
+        } else if (ev.type == 'EVENT_ALIAS_ADDED') {
+          self.onAliasAdded(ev.params);
+        } else if (ev.type == 'EVENT_ALIAS_DELETED') {
+          self.onAliasDeleted(ev.params);
         }
         // Clear event cookie
         timejust.setCookie('event', null);
+        retry();
       }  
     });                 
   },  
+  onAliasAdded: function(params) {
+    this.previousEventView.appendAlias(params.title, params.address, params.lat, params.lng);
+    this.currentEventView.appendAlias(params.title, params.address, params.lat, params.lng);
+    this.nextEventView.appendAlias(params.title, params.address, params.lat, params.lng);
+    this.previousEventView.render();
+    this.currentEventView.render();
+    this.nextEventView.render();    
+  },
+  onAliasDeleted: function(params) {
+    this.previousEventView.deleteAlias(params.title);
+    this.currentEventView.deleteAlias(params.title);
+    this.nextEventView.deleteAlias(params.title);
+    this.previousEventView.render();
+    this.currentEventView.render();
+    this.nextEventView.render();        
+  },
   onAddressSelected: function(params) {
     var eventView = null;
     if (params.stage == 'previous') {
@@ -61,22 +83,10 @@ App.Views.TravelsView = Backbone.View.extend({
       eventView = this.nextEventView;
     }
     if (eventView != null) {
-      var self = this;
-      // Delete alias first before add something
-      $.each(params.deleted_alias, function(i, d) {
-        self.previousEventView.deleteAlias(d);
-        self.currentEventView.deleteAlias(d);
-        self.nextEventView.deleteAlias(d);
-      });
+      var self = this;    
       var id = eventView.appendAddressBook(params.address, params.lat, params.lng, true);
       eventView.selected = id;      
-      // If there is param for title, it means this address became to alias as well.
-      // Add this item into alias list as well.
-      if (params.title != null) {
-        this.previousEventView.appendAlias(params.title, params.address, params.lat, params.lng);
-        this.currentEventView.appendAlias(params.title, params.address, params.lat, params.lng);
-        this.nextEventView.appendAlias(params.title, params.address, params.lat, params.lng);
-      }      
+
       this.previousEventView.render();
       this.currentEventView.render();
       this.nextEventView.render();
@@ -93,15 +103,16 @@ App.Views.TravelsView = Backbone.View.extend({
     }
     if (eventView != null) {
       var self = this;
-      // Delete alias first before add something
-      $.each(params.deleted_alias, function(i, d) {
-        self.previousEventView.deleteAlias(d);
-        self.currentEventView.deleteAlias(d);
-        self.nextEventView.deleteAlias(d);
-      });     
+      /*
       var previousId = this.previousEventView.appendAlias(params.title, params.address, params.lat, params.lng);
       var currentId = this.currentEventView.appendAlias(params.title, params.address, params.lat, params.lng);
       var nextId = this.nextEventView.appendAlias(params.title, params.address, params.lat, params.lng);      
+      */
+      // var id = eventView.getIndexOfAlias(params.title);
+      // eventView.selected = id;
+      eventView.selectAliasItem(params.title);
+      eventView.render();
+      /*
       var id = 0;
       if (params.stage == 'previous') {
         id = previousId;
@@ -114,6 +125,7 @@ App.Views.TravelsView = Backbone.View.extend({
       this.previousEventView.render();
       this.currentEventView.render();
       this.nextEventView.render();
+      */
     }
   },
   waitForTravels: function(response) {
@@ -429,9 +441,8 @@ Please use 'else where' button to choose proper location");
     timejust.setCookie('original_address', summary.original_address);
     timejust.setCookie('ip', this.ip);
     timejust.setCookie('stage', stage);
-    
+    this.runEventPoller();
     gadgets.views.requestNavigateTo('canvas', { ip: this.ip });
-    this.runEventPoller();    
   },
   replacer: function(key, value) {
     if (typeof value === 'number' && !isFinite(value)) {
@@ -440,10 +451,13 @@ Please use 'else where' button to choose proper location");
     return value;
   },
   runEventPoller: function() {
-    var e = $(this.el).find('#event_polling');
-    // Before starting event poller, clear event cookie
-    timejust.setCookie('event', null);
-    e.trigger('poll');   
+    if (this.pollerRunning != true) {
+      var e = $(this.el).find('#event_polling');
+      // Before starting event poller, clear event cookie
+      timejust.setCookie('event', null);
+      e.trigger('poll');         
+      this.pollerRunning = true;
+    }
   },  
   clear: function() {
     this.previousEventView.clear();

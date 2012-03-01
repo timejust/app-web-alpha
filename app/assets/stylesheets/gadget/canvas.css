@@ -1,3 +1,6 @@
+div.alias_result_container, div.google_result_container {
+  display: block;
+}
 #travelNodesSelector {
   width: 100%;
 }

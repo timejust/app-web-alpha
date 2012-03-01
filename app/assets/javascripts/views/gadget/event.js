@@ -100,7 +100,8 @@ App.Views.EventView = Backbone.View.extend({
     } else {
       this.previousEvent = null;
     }
-    google.calendar.read.getEvents(callback, [email], startDate, endDate);
+    var optionalParms = {'requestedFields': ['details']};
+    google.calendar.read.getEvents(callback, [email], startDate, endDate, optionalParms);
   },
   timeToUnix: function(time) {
     var date = new Date();

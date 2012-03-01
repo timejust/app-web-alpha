@@ -29,7 +29,17 @@ App.Models.EventSummary = Backbone.Model.extend({
         }
       });  
     } 
-    this.selected = id;
+  },
+  getIndexOfAliasByTitle: function(title) {
+    var id = -1;
+    if (this.alias != null) {
+      $.each(this.alias, function(i, a) {
+        if (a.title == title) {
+          id = i;
+        }
+      });  
+    }
+    return id + this.addressBook.length;
   },
   appendAlias: function(title, address, lat, lng) {
     var id = 0;
