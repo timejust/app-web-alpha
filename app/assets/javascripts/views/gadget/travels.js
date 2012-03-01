@@ -157,7 +157,7 @@ App.Views.TravelsView = Backbone.View.extend({
           if (response.rc == 200) {
             google.calendar.refreshEvents();        
           } else {
-            alert("WTF???");
+            alert("It seems normal but not really...");
           }
         },
         // TODO spec
@@ -165,7 +165,7 @@ App.Views.TravelsView = Backbone.View.extend({
           if (response.rc == 404) {
             retry();
           } else {
-            alert("WTF???");
+            alert("Something's gone bad...");
           }
         }
       });

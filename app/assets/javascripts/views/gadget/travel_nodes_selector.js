@@ -286,13 +286,15 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
           success: function() {                    
             if (self.alias != null & o != null) {   
               var replaced = false;
-              $.each(self.alias, function(i, a) {
+              var a = null;
+              for (var i = 0; i < self.alias.length; ++i) {
+                a = self.alias[i];
                 if (a.title == o.title) {
                   self.alias.splice(i, 1, o);
                   replaced = true;
-                  return;
+                  break;
                 }
-              });
+              }                            
               if (replaced != true)
                 self.alias.push(o);
             }                        
@@ -341,12 +343,14 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       },
       success: function() {                    
         if (self.alias != null) {   
-          $.each(self.alias, function(i, a) {
+          var a = null;
+          for (var i = 0; i < self.alias.length; ++i) {
+            a = self.alias[i];
             if (self.cleanupAliasTitle(a.title) == title) {
               self.alias.splice(i, 1);
-              return;
+              break;
             }
-          });
+          }        
         }                        
         var ev = {
           type: 'EVENT_ALIAS_DELETED',
@@ -368,17 +372,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var title = star.parent('div').find('.title')[0].textContent;
     star.toggleClass('on');
     star.toggleClass('off');           
-    /*
-    if (tok[1] == 'off') {
-      star.parent('div').find('.title').attr('style', '');
-      var self = this;
-      $.each(this.deletingAliasList, function(i, a) {
-        if (a != null && a == title) {
-          self.deletingAliasList.splice(i, 1);
-          return;
-        }
-      });
-      */
+
     if (tok[1] != 'off') {
       // star.parent('div').find('.title').attr('style', 'color: gray;font-style: italic;cursor: text');                     
       // If user tries to delete the given alias, don't delete it right away.
@@ -525,17 +519,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         });
         // Check the deletingQueue, if exists in the list,
         // we delete the alias with empty star symbol
-        // var inDeleting = false;
         var generalPin = (kMaxPins < i ? true : false);
-        /*
-        $.each(self.deletingAliasList, function(i, d) {
-          if (d != null && d == a.title) {
-            inDeleting = true;
-            return;
-          }
-        });
-        */      
-        // First token is address, and rest of them are city + country normally.
+       // First token is address, and rest of them are city + country normally.
         results += self.alias_result({
           index: generalPin ? 10 : i,
           title: a.title,
