@@ -64,6 +64,7 @@ App.Views.EventSummaryView = Backbone.View.extend({
       } else {
         // If there is no event, we should display alias as a default value here
         // if alias exists.
+        this.selected = 0;
         alias_index = 0;        
       }
       
@@ -97,8 +98,10 @@ App.Views.EventSummaryView = Backbone.View.extend({
       if (this.selected == -1) {
         if (this.summary.addressBook.length > 0) {
           ab = this.summary.addressBook[0];
+          this.selected = 0;
         } else if (this.summary.selected > -1) {
           ab = this.summary.alias[this.summary.selected];
+          this.selected = this.summary.selected;
           ab.normalized = true;
         }
       } else {
