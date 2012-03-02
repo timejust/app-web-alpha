@@ -19,7 +19,7 @@
 }
 div.transportations {
   display: inline-block; 
-  width: 150px; 
+  width: 140px; 
   height: 30px;
   background-image:url(/icons/transportations.png);
   background-repeat: no-repeat;
@@ -60,7 +60,7 @@ div.green_btn {
   color: #ffffff;
   text-decoration: none;
   background-size: 100px;
-  width: 152px;
+  width: 100%;
   height: 30px;
   text-align: center;
   margin-bottom: 7px;
@@ -127,13 +127,13 @@ li.direction {
   margin: -2px 0px;
   text-align: left;
   float: left;
-  width: 90%;
+  width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 ul .address { 
-  width: 120px;
+  width: 100%;
   display: inline-block; 
   font: normal 10px Arial; 
   margin: 3px 0px 5px 0px;
