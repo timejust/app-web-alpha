@@ -8,6 +8,7 @@ class User
   field :refresh_token, type: String
   field :token_expires_at, type: Time
   field :expired, type: Integer, default: 0
+  field :calendar_color, type: String
   
   embeds_many :shared_calendars, class_name: "Calendar"
   has_many :events
@@ -71,6 +72,17 @@ class User
     access_token_cache
   end
 
+  def lightenColor(color)
+    lightened = color
+    if color[0] == '#' and color.length == 7
+      r = [255, (color[1, 2].hex + 32)].min
+      g = [255, (color[3, 2].hex + 32)].min
+      b = [255, (color[5, 2].hex + 32)].min
+      lightened = r.to_s(16) + g.to_s(16) + b.to_s(16)      
+    end        
+    lightened
+  end
+  
   # Create all needed calendars.
   #
   # Search for calendars with configured names.
@@ -82,6 +94,18 @@ class User
   #
   def find_or_create_calendars
     calendars = Google::Calendar.list(self.access_token)
+    
+    # Iterate through calendar list and find out primary calendar.
+    #calendars['data']['items'].each do |c|            
+    #  Rails.logger.info (c.inspect)
+    #  if c['title'] == self.email
+    #    # If primary calendar is found, set the color of primary calendar
+    #    self.calendar_color = lightenColor(c['color'])        
+    #    self.save
+    #    break              
+    #  end
+    #end
+            
     if !calendars['error'] && calendars['data']['items']
       calendars = calendars['data']['items']      
       User.shared_calendars_properties.each do |properties|

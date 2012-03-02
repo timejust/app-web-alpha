@@ -102,30 +102,9 @@ App.Views.TravelsView = Backbone.View.extend({
       eventView = this.nextEventView;
     }
     if (eventView != null) {
-      var self = this;
-      /*
-      var previousId = this.previousEventView.appendAlias(params.title, params.address, params.lat, params.lng);
-      var currentId = this.currentEventView.appendAlias(params.title, params.address, params.lat, params.lng);
-      var nextId = this.nextEventView.appendAlias(params.title, params.address, params.lat, params.lng);      
-      */
-      // var id = eventView.getIndexOfAlias(params.title);
-      // eventView.selected = id;
+      var self = this;  
       eventView.selectAliasItem(params.title);
-      eventView.render();
-      /*
-      var id = 0;
-      if (params.stage == 'previous') {
-        id = previousId;
-      } else if (params.stage == 'current') {
-        id = currentId;
-      } else if (params.stage == 'next') {
-        id = nextId;
-      }            
-      eventView.selected = id;
-      this.previousEventView.render();
-      this.currentEventView.render();
-      this.nextEventView.render();
-      */
+      eventView.render();    
     }
   },
   waitForTravels: function(response) {
@@ -192,11 +171,10 @@ App.Views.TravelsView = Backbone.View.extend({
       }      
       travelView.model = response.data;
       travelView.render();  
-      this.renderButton();
+      this.renderButton();      
       gadgets.window.adjustHeight();  
-      google.calendar.refreshEvents(); 
-      
-      this.waitForCalendars();
+      google.calendar.refreshEvents();       
+      this.waitForCalendars();      
     } else if (response.rc == 401) {
       alert("You must authorize Timejust to access your calendar. Please go to " + App.config.web_url);
     }
@@ -350,26 +328,40 @@ Please use 'else where' button to choose proper location");
   },
   addToCalendar: function(e) {
     e.preventDefault();  
-    showLoader();
-    gadgets.window.adjustHeight();
-    var el = $(e.currentTarget);        
-    GoogleRequest.post({
-      url: App.config.api_url + "/travels/" + el.attr('id') + "/save",
-      params: {},
-      success: function(response) {
-        hideLoader();
-        alert("Succeeded to write the travel to your calendar!!!")
-        google.calendar.refreshEvents();
-        gadgets.window.adjustHeight();
-      },
-      error: function(response) { 
-        hideLoader();
-        if (response.rc == 401) {
-          alert("You must authorize Timejust to access your calendar. Please go to " + App.config.web_url);
-        } 
-        gadgets.window.adjustHeight();
-      }
-    });
+    var el = $(e.currentTarget);   
+    if (el.attr('added') != "" && el.attr('added') != 'true') {
+      showLoader();
+      gadgets.window.adjustHeight();      
+      el.toggleClass('on');        
+      GoogleRequest.post({
+        url: App.config.api_url + "/travels/" + el.attr('id') + "/save",
+        params: {},
+        success: function(response) {
+          if (response.rc == 200) {
+            el.attr('added', 'true');
+            // Replace new tooltip with new text
+            var tooltip = $("#tooltip_" + el[0].id);
+            tooltip[0].textContent = "added to your calendar";                       
+            // var primaryCalendarColor = response.data.primary_calendar_color;
+
+            // Change item color to the color of primary calendar
+            // var box = el.parent("ul").parent("div").parent("div");
+            // box.attr('style', 'background-color:' + primaryCalendarColor + ';border-color: #DDDDDD;');            
+          }
+          hideLoader();
+          google.calendar.refreshEvents();          
+          gadgets.window.adjustHeight();
+        },
+        error: function(response) { 
+          hideLoader();
+          el.toggleClass('off');        
+          if (response.rc == 401) {
+            alert("You must authorize Timejust to access your calendar. Please go to " + App.config.web_url);
+          } 
+          gadgets.window.adjustHeight();
+        }
+      });      
+    }     
   },  
   toggleSteps: function(e) {
     e.preventDefault();    

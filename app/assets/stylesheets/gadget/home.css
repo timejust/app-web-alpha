@@ -1,3 +1,18 @@
+.tooltip {
+  display:none;
+  background: transparent url(/icons/tooltip.png);
+  font-size:10px;
+  font-family: Arial, sans-serif;
+  font-weight: bold;  
+  height: 37px;
+  width: 90px;
+  padding: 5px;
+  color: #000000;
+  z-index: 5;
+  background-repeat: no-repeat;
+  padding-bottom: 0px;
+  margin-left: -10px;
+}
 .loader { 
   margin-top: 20px; 
   display: none; 
@@ -20,6 +35,14 @@ div.powered_by_google {
 }
 a.plus_container {
   background-image: url(/icons/plus.png);
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  float: right;
+  margin-right: 4px;  
+}
+a.plus_container.on {
+  background-image: url(/icons/added.png);
   width: 10px;
   height: 10px;
   display: inline-block;

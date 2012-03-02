@@ -126,7 +126,7 @@ App.Views.EventView = Backbone.View.extend({
       return;
     }    
     var events = res['events'];    
-    var e = null;
+    var e = null;    
     if (this.nextEventRequest == false) {      
       for (var i = events.length - 1; i >= 0; i--) {
         // Get latest event from the list    
@@ -154,7 +154,7 @@ App.Views.EventView = Backbone.View.extend({
       this.nextEvent = e;     
       // Even if we don't retrieve any of events, we need to call
       // normalizeAddress function to process further events.
-      this.normalizeAddress();  
+      this.normalizeAddress();       
     }    
   },
   toRecognizer: function(event, id, ip) {
@@ -228,7 +228,7 @@ App.Views.EventView = Backbone.View.extend({
       var title = (ev == null ? null : ev.title)
       var summary = new App.Models.EventSummary({alias: self.alias, title: title});
       if (ev != null) {
-        summary.color = ev.color;
+        summary.color = ev.palette.medium;
         // Append all addresses either from normalization process or google calendar.
         if (ev.addresses == undefined) {
           if (ev.location != "") {

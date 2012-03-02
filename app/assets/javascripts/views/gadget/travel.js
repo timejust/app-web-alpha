@@ -20,7 +20,7 @@ App.Views.TravelView = Backbone.View.extend({
     if (travels == null) {
       // display error
     }
-    var html = '<div class="travels">';
+    var html = '<div id="travel_container" class="travels">';
     $.each(travels, function(i, travel) {
       var color = 'yellow';
       if (travel.calendar == 'YellowProposal') 
@@ -39,6 +39,7 @@ App.Views.TravelView = Backbone.View.extend({
       html += color + '_toggle off" href="#"></a></li>';
       html += '<li class="title">' + travel.travel_mode.toUpperCase() + '</li>';      
       html += '<a class="plus_container" href="#" id="' + travel._id + '"></a></ul>';
+      html += '<div id="tooltip_' + travel._id + '" class="tooltip">copy to my calendar</div>';
       html += '<ul><li class="' + color +'_estimate">' + step.estimated_time + '\'</li>';
       html += '<div class="transportation_symbol">';
       if (travel.travel_mode == 'car') {
@@ -252,6 +253,18 @@ App.Views.TravelView = Backbone.View.extend({
     html += "</div>";
     this.rendered = true;
     $(this.el).html(html); 
+    
+    $.each(availables, function(i, a){
+      $("#travel_container #" + a._id).tooltip({
+        tip: "#tooltip_" + a._id
+      });  
+    })
+    /*
+    // $("#travel_container a[title]").tooltip();      
+    $("#travel_container a").tooltip({
+     tipClass:  
+    });
+    */      
         
     /*  
     $(this.el).html(this.layout({

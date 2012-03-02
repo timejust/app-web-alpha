@@ -12,7 +12,8 @@ class Travel
   field :calendar,     type: String
   field :provider,     type: String
   field :transports,   type: Array, default: []
-
+  field :primary_calendar_color, type: String
+  
   @@shared_calendars = configatron.shared_calendars.to_hash
   cattr_reader :shared_calendars
   @@max_travel_hours = 12.hours
@@ -44,6 +45,7 @@ class Travel
   # Write travels to Google Calendar
   #
   def write_travel_steps_to_calendar(calendar = nil)
+    self.primary_calendar_color = user.calendar_color
     # TODO not_in(state: ['error'])
     self.travel_steps.each do |travel_step|
       # Rails.logger.info calendar.inspect

@@ -100,6 +100,7 @@ class TravelStep
       }
     )
     Rails.logger.info(google_event.inspect)
+    Rails.logger.info(calendar_id)
     if !google_event['error'] && google_event['data']
       # If we wrote something on primary calendar, don't save it because,
       # we delete later what we've written on google's but we don't want

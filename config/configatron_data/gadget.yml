@@ -14,6 +14,7 @@
         - jquery.cookie.js        
         - underscore.js
         - backbone.min.js
+        - jquery.tools.min.js
         - jquery.dateFormat.js
         - lib/poll.js
         - lib/google_request.js
