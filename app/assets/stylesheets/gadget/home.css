@@ -5,13 +5,13 @@
   font-family: Arial, sans-serif;
   font-weight: bold;  
   height: 37px;
-  width: 90px;
+  width: 67px;
   padding: 5px;
   color: #000000;
   z-index: 5;
   background-repeat: no-repeat;
   padding-bottom: 0px;
-  margin-left: -10px;
+  margin-left: -30px;
 }
 .loader { 
   margin-top: 20px; 
