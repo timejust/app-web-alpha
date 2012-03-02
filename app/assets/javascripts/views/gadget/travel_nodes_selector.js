@@ -145,7 +145,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   alias_result: _.template('\
     <div class="result_block">\
       <div class="control_block">\
-        <div id="alias_result" class="alias_symbol <%=star%>">@</div>\
+        <div id="alias_result" class="alias_delete">@</div>\
         <div class="title"<% if (star == "off") { %> style="color: gray;font-style: italic;"<%} %>><%=title%></div>\
       </div>\
       <div class="address_block" data-address=\"<%=original_address%>\" data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\">\

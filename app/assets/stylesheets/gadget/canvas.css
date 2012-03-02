@@ -92,6 +92,14 @@ div.alias_symbol.off {
   margin-top: -2px;
   cursor: pointer;
 }
+div.alias_delete {
+  display: inline-block;
+  background: url(/icons/delete.png) 0px 0px no-repeat;
+  color: transparent;
+  height: 20px;
+  overflow: hidden;
+  width: 20px;
+}
 div.title {
   cursor: pointer;
   font-size: 16px;
