@@ -11,6 +11,7 @@ App.Views.TravelsView = Backbone.View.extend({
     'click .pink_toggle'          : 'toggleSteps',
     'click .value'                : 'changeTitle',
     'click .top'                  : 'toggleEvent',
+    'click .travel_title'         : 'toggleSteps',
     'poll #event_polling'         : 'handleEvent',
     'click .plus_container'       : 'addToCalendar'
   },
@@ -399,9 +400,10 @@ Please use 'else where' button to choose proper location");
   },  
   toggleSteps: function(e) {
     e.preventDefault();    
+    var toggle = $(e.currentTarget).parent('li').parent('ul').find('.toggle').find('a');
     var container = $(e.currentTarget).parent('li').parent('ul').parent('div').find('.steps');
-    $(e.currentTarget).toggleClass('on');
-    $(e.currentTarget).toggleClass('off');
+    $(toggle).toggleClass('on');
+    $(toggle).toggleClass('off');    
     container.toggle();
     gadgets.window.adjustHeight();
   },

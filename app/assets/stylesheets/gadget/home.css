@@ -149,9 +149,19 @@ ul .address {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.travel li.title {
+a.travel_title {
+  display: inline-block;
+  text-decoration: none;
+  color: #1D1D1D;
+  margin-top: -2px;
+}
+a.travel_title:hover {
+  text-decoration: underline;
+}
+.travel div.title {  
   font: bold 11px Arial; 
   margin-bottom: 5px;
+  display: inline;
 }
 a.top {
   text-decoration: none;

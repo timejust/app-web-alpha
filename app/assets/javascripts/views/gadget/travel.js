@@ -53,9 +53,9 @@ App.Views.TravelView = Backbone.View.extend({
         }
         hour_format = true;
       }
-      html += '<div class="' + color + '"><div class="travel_container"><ul class="travel"><li><a class="';
+      html += '<div class="' + color + '"><div class="travel_container"><ul class="travel"><li class="toggle"><a class="';
       html += color + '_toggle off" href="#"></a></li>';
-      html += '<li class="title">' + travel.travel_mode.toUpperCase() + '</li>';      
+      html += '<li><a class="travel_title" href="#"><div class="title">' + travel.travel_mode.toUpperCase() + '</div></a></li>';      
       html += '<a class="plus_container" href="#" id="' + travel._id + '"></a></ul>';
       html += '<div id="tooltip_' + travel._id + '" class="tooltip">copy to my calendar</div>';
       html += '<ul><li class="' + color +'_estimate">' + estimated_time + '</li>';

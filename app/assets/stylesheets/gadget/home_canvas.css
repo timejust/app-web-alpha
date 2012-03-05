@@ -78,30 +78,6 @@ p {
   margin: 0; 
   padding: 0 5px; 
 }
-.travel_title { 
-  margin: 10px 0 30px 10px; 
-  font: normal Arial; 
-  font-size: 20px; 
-}
-.travel_title .prefix { 
-  color: #8AB53E; 
-  margin-right: 5px; 
-  font: bold 1.5em; 
-}
-.travel_title .title_address { 
-  color: #8f8f8f; 
-  font: bold 1.5em; 
-}
-.travel_title ul { 
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-}
-.travel_title li { 
-  margin: 0 0 0 0; 
-  padding: 0 0 0 0; 
-  display: inline; 
-  text-align: center 
-}
 .travel_node_expand { 
   display: none; 
 }
