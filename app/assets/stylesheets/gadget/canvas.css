@@ -99,6 +99,7 @@ div.alias_delete {
   height: 20px;
   overflow: hidden;
   width: 20px;
+  cursor: pointer;
 }
 div.title {
   cursor: pointer;

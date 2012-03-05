@@ -64,9 +64,13 @@ class Api::UsersController < Api::BaseController
       user = User.where(email: params[:email]).first
       return unauthorized! if current_user != user
       
-      FavoriteLocation.create(:user => user, 
-        :title => params[:title], :address => params[:address], 
-        :lat => params[:lat], :lng => params[:lng]);
+      fav = FavoriteLocation.find_or_create_by(:user_id => user[:_id], 
+        :title => params[:title]);
+      fav.address = params[:address]
+      fav.lat = params[:lat]
+      fav.lng = params[:lng]
+      fav.save
+      
       render :json => '{}', :status => :ok
     else
       render :nothing => true, :status => :not_found

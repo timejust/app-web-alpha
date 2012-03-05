@@ -27,6 +27,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     this.viewPortHeight = 0;
     this.bounds = null;    
     var doNormalize = true;
+    // If the given address is alias, get location information from
+    // alias list and set it to result list.
     if (alias.isAlias(this.original_address)) {
       var a = alias.getAddressFromAlias(this.alias, this.original_address);
       if (a != null) {
@@ -109,7 +111,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         var location = _data.geometry.location
         a.location.lat = (location.Oa != null ? location.Oa : location.Sa);        
         a.location.lng = (location.Pa != null ? location.Pa : location.Ta);        
-        self.results.push(a);          
+        self.results.push(a);     
+        self.showAliasResult = false;     
         self.showGoogleResult(null, true);
 	    }
 	  });
@@ -158,7 +161,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   alias_result: _.template('\
     <div class="result_block">\
       <div class="control_block">\
-        <div id="alias_result" class="alias_delete">@</div>\
+        <div id="alias_result" class="alias_delete" />\
         <div class="title"<% if (star == "off") { %> style="color: gray;font-style: italic;"<%} %>><%=title%></div>\
       </div>\
       <div class="address_block" data-address=\"<%=original_address%>\" data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\">\
@@ -219,10 +222,11 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     this.showGoogleMap();
   },
   search: function(e) {
-    e.preventDefault();    
+    e.preventDefault();        
     var location = $('#maininput')[0].value;
     if (location != "") {
       this.results = [];
+      this.showAliasResult = false;
       this.normalizeAddress(location);
     }    
   },
@@ -383,12 +387,12 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var star = $(e.currentTarget);
     var tok = star[0].className.split(' ');
     var title = star.parent('div').find('.title')[0].textContent;
-    star.toggleClass('on');
-    star.toggleClass('off');           
+    // star.toggleClass('on');
+    // star.toggleClass('off');           
 
-    if (tok[1] != 'off') {
-      this.deleteAlias(title);
-    }   
+    // if (tok[1] != 'off') {
+    this.deleteAlias(title);
+    // }   
   },
   showGoogleMap: function() {
     var latlng = new google.maps.LatLng(48.843, 2.275);
