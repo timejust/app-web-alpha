@@ -29,6 +29,7 @@ App.Models.EventSummary = Backbone.Model.extend({
         }
       });  
     } 
+    this.selected = id;
   },
   getIndexOfAliasByTitle: function(title) {
     var id = -1;

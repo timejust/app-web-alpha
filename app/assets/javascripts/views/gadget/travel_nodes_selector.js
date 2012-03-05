@@ -10,6 +10,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   },
   initialize: function(){
     _.bindAll(this, 'onNormalizedAddress');
+    this.results = new Array();
+    this.markerList = new Array();    
     this.ab = eval('(' + $.cookie('ab') + ')');
     this.alias = eval('(' + $.cookie('alias') + ')');
     this.original_address = $.cookie('original_address');
@@ -20,21 +22,31 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     timejust.setCookie('original_address', null);
     timejust.setCookie('ip', null);
     timejust.setCookie('stage', null);    
-    if (this.original_address != null && this.original_address != '') {
-      this.normalizeAddress(this.original_address);
-      this.showAliasResult = false;
-    } else {
-      this.showAliasResult = true;
-    }  
+    this.showAliasResult = false;    
     this.viewPortWidth = 0;
     this.viewPortHeight = 0;
-    this.setResizeEventHandler();    
-    this.results = new Array();
-    this.markerList = new Array();
-//    this.deletingAliasList = new Array();
-    this.render();
     this.bounds = null;    
-    this.showFreqAddress(null);
+    var doNormalize = true;
+    if (alias.isAlias(this.original_address)) {
+      var a = alias.getAddressFromAlias(this.alias, this.original_address);
+      this.original_address = a.address;
+      this.results.push({address: a.address,
+        location: { lat: a.lat, lng: a.lng }
+        });  
+      doNormalize = false;    
+    } 
+    this.setResizeEventHandler();    
+    this.render();                  
+    this.showFreqAddress(null); 
+    if (doNormalize) {
+      if (this.original_address != null && this.original_address != '') {
+        this.normalizeAddress(this.original_address);
+      } else {
+        this.showAliasResult = true;        
+      }  
+    } else {
+      this.showGoogleResult(null, true);
+    }    
   },
   freqAddressClickHandler: function() {
     this.showAliasResult = true;
@@ -374,10 +386,6 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     star.toggleClass('off');           
 
     if (tok[1] != 'off') {
-      // star.parent('div').find('.title').attr('style', 'color: gray;font-style: italic;cursor: text');                     
-      // If user tries to delete the given alias, don't delete it right away.
-      // Put that in the deleting queue and delete later.
-      // this.deletingAliasList.push(title);
       this.deleteAlias(title);
     }   
   },

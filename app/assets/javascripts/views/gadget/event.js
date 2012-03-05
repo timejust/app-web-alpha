@@ -169,27 +169,17 @@ App.Views.EventView = Backbone.View.extend({
     for (var i = 0; i < this.events.length; ++i) {
       if (this.events[i] != undefined && this.events[i].location != "") {
         var loc = this.events[i].location;
-        var isAlias = false;
         // If location is started with '@', we assume the location is
         // alias first. Let's try to find the keyword from the alias list.
         // If exists, do not normalize it. If not, we need to normalize it.
-        if (loc.length > 0 && loc[0] == '@') {
-          $.each(this.alias, function(i, a) {
-            if (a.title == loc) {
-              // Found it. Do not normalize this
-              isAlias = true;
-              return;
-            }
-          });          
-        }         
-        if (isAlias == false) {
+        if (alias.isAlias(loc) && alias.getAddressFromAlias(this.alias, loc) != null) {
+          this.events[i].alias = true;
+        } else {
           body.push(this.toRecognizer(this.events[i], id.toString(), this.ip))  
           this.normalizedReq[id] = i;
           id += 1;  
           this.events[i].alias = false;
-        } else {
-          this.events[i].alias = true;
-        }
+        } 
       }
     }   
     if (body.length == 0) {
