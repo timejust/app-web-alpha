@@ -267,7 +267,6 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   },
   saveAlias: function(node) {
     var self = this;
-//    alias.find('#alias_input').focus();      
     $('#' + node).focus();
     $('#' + node).keypress(function(e) {
       code = (e.keyCode ? e.keyCode : e.which);
