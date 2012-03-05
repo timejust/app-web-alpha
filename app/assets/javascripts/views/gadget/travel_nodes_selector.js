@@ -4,7 +4,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     'click .freq_address'   : 'freqAddressClickHandler',
     'click .google_result'  : 'googleResultClickHandler',
     'click #google_result.control_block' : 'bookmarkAddress',
-    'click #alias_result.alias_symbol' : 'bookmarkDelete',
+    'click #alias_result.alias_delete' : 'bookmarkDelete',
     'click #result.address' : 'selectAddress',
     'click .title'          : 'selectAlias'
   },
@@ -157,7 +157,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   alias_result: _.template('\
     <div class="result_block">\
       <div class="control_block">\
-        <div id="alias_result" class="alias_symbol <%=star%>">@</div>\
+        <div id="alias_result" class="alias_delete">@</div>\
         <div class="title"<% if (star == "off") { %> style="color: gray;font-style: italic;"<%} %>><%=title%></div>\
       </div>\
       <div class="address_block" data-address=\"<%=original_address%>\" data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\">\
