@@ -240,6 +240,7 @@ div.marker_container {
   margin-top: 5px;
 }
 #alias_input {
+  margin-top: -2px;
 }
 div.city {
   display: block;
@@ -264,7 +265,8 @@ div.save_as_alias {
   font-style: italic;
   color: #666;
   vertical-align: 1px;
-  margin-left: 7px;
+  margin-top: 5px;
+  float: left;  
 }
 div.results_block {
   margin: 20px 20px 20px 20px;

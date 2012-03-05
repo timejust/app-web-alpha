@@ -114,6 +114,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         self.results.push(a);     
         self.showAliasResult = false;     
         self.showGoogleResult(null, true);
+        self.showFreqAddress(null);
 	    }
 	  });
   }, 
@@ -187,9 +188,9 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         </div>\
       </div>\
       <div id="google_result" class="control_block">\
-        <div class="alias_symbol off">@</div>\
-        <div class="save_as_alias">Save as alias</div>\
-        <img class="loader" src="<%=asset_server%>/assets/loader.gif" style="display: none;vertical-align: -2px;" />\
+        <div class="alias_symbol off"></div>\
+        <div class="save_as_alias">Click to save as alias</div>\
+        <img class="loader" src="<%=asset_server%>/assets/loader.gif" style="display: none;margin-top: 5px;" />\
       </div>\
     </div>\
   '),
@@ -208,7 +209,6 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   // render the form for all travel nodes
   render: function(){
     $(this.el).html(this.default_layout);
-
     var top = $(this.el).find('.top');
     top.html(this.top_template);
     this.getGeoAutocomplete('maininput');    
@@ -228,6 +228,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       this.results = [];
       this.showAliasResult = false;
       this.normalizeAddress(location);
+      this.showFreqAddress(null);
     }    
   },
   toRecognizer: function(location, id, ip) {
@@ -266,6 +267,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   },
   saveAlias: function(node) {
     var self = this;
+//    alias.find('#alias_input').focus();      
+    $('#' + node).focus();
     $('#' + node).keypress(function(e) {
       code = (e.keyCode ? e.keyCode : e.which);
       if (code == 13) {
@@ -342,7 +345,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       star.toggleClass('on');
       star.toggleClass('off'); 
       var alias = $(e.currentTarget).find('.save_as_alias');
-      alias.html('<input id="alias_input" placeholder="Alias name..." />');
+      alias.html('<input id="alias_input" placeholder="Alias name..." />');  
       this.saveAlias("alias_input");      
     }        
   },
@@ -626,7 +629,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       if (select_value){
         return select_value;
       }
-      else{
+      else {
         return '';
       }
     }

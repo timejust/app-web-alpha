@@ -118,8 +118,9 @@ App.Views.EventSummaryView = Backbone.View.extend({
           ab = this.summary.addressBook[this.selected];
         } else {
           if (this.selected >= this.summary.addressBook.length) {
-            ab = this.summary.alias[this.selected - this.summary.addressBook.length];          
-            ab.normalized = true;  
+            ab = this.summary.alias[this.selected - this.summary.addressBook.length];
+            if (ab != null)          
+              ab.normalized = true;  
           }          
         }
       }    
