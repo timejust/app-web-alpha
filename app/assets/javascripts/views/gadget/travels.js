@@ -25,6 +25,7 @@ App.Views.TravelsView = Backbone.View.extend({
     this.summaries = new Array();    
     this.previousEventView = new App.Views.EventSummaryView({prefix: "from", stage: 'previous'});
     this.currentEventView = new App.Views.EventSummaryView({stage: 'current'});
+    this.currentEventView.setCurrentEvent();
     this.nextEventView = new App.Views.EventSummaryView({prefix: "to", stage: 'next'});  
     this.previousTravelView = new App.Views.TravelView();
     this.nextTravelView = new App.Views.TravelView();

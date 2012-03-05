@@ -18,6 +18,9 @@ App.Views.EventSummaryView = Backbone.View.extend({
   setAliasClassType: function() {
     this.classType = "alias";
   },
+  setCurrentEvent: function() {
+    this.classType = "current";
+  },
   appendAddressBook: function(address, lat, lng, normalized) {
     if (this.summary != undefined) {
       return this.summary.appendAddressBook(address, lat, lng, normalized);
@@ -53,6 +56,7 @@ App.Views.EventSummaryView = Backbone.View.extend({
     var self = this;
     var alias_index = -1;
     var class_name = "white";
+    var border_color = "#DDDDDD";    
     if (this.summary.title == null) {
       // If title is null, there is no proper event to show. In this case,
       // let's display just alias and history list instead of events.
@@ -130,7 +134,10 @@ App.Views.EventSummaryView = Backbone.View.extend({
         this.lng = ab.lng;
         this.normalized = ab.normalized;
       }                
-    }      
+    } 
+    if (this.classType == "current") {
+      border_color = "#000000";
+    }     
     var title = this.title;
     var address = this.address;        
     var id = 0;    
@@ -143,11 +150,12 @@ App.Views.EventSummaryView = Backbone.View.extend({
       selected: this.selected,
       id: id,
       alias: this.summary.alias,
+      borderColor: border_color
       }));
     $(this.el).find('.aliases').hide();    
   },
   layout: _.template('\
-  <div class="<%=class_name%>" style="<%if (color != null) { %>background-color:<%=color%> <%}%>">\
+  <div class="<%=class_name%>" style="border-color:<%=borderColor%>;<%if (color != null) { %>background-color:<%=color%> <%}%>">\
     <ul class="event">\
       <div class="top_toggle_container">\
         <li class="toggle">\
