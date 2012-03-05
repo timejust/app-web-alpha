@@ -262,10 +262,10 @@ Please use 'else where' button to choose proper location");
     var btn = null;
     if (this.travelType == 'previous') {
       loading = this.previousLoading;
-      btn = $('#previous_travel_btn').parent('div')[0];
+      btn = $('#previous_travel_btn').parent('div').parent('a')[0];
     } else {
       loading = this.nextLoading;
-      btn = $('#next_travel_btn').parent('div')[0];
+      btn = $('#next_travel_btn').parent('div').parent('a')[0];
     }
     loading.style.display = "inline-block";        
     btn.style.display = "none";
@@ -275,13 +275,13 @@ Please use 'else where' button to choose proper location");
     var btn = null;
     if (this.travelType == 'previous') {
       loading = this.previousLoading;
-      btn = $('#previous_travel_btn').parent('div')[0];
+      btn = $('#previous_travel_btn').parent('div').parent('a')[0];
     } else {
       loading = this.nextLoading;
-      btn = $('#next_travel_btn').parent('div')[0];
+      btn = $('#next_travel_btn').parent('div').parent('a')[0];
     }
     loading.style.display = "none";
-    btn.style.display = "inline-block"
+    btn.style.display = "inline"
   },
   renderButton: function() {
     /*
@@ -304,16 +304,16 @@ Please use 'else where' button to choose proper location");
     <div class="transportations"></div>\
     <div id="previous_event"></div>\
     <div id="previous_travel"></div>\
+    <div id="previous_loading" class="loading" />\
     <a class="load_previous_travel" href="#">\
-      <div id="previous_loading" class="loading" />\
       <div class="green_btn">\
         <div id="previous_travel_btn" class="button_name"></div>\
       </div>\
     </a>\
     <div id="current_event"></div>\
     <div id="next_travel"></div>\
+    <div id="next_loading" class="loading" />\
     <a class="load_next_travel" href="#">\
-      <div id="next_loading" class="loading" />\
       <div class="green_btn">\
         <div id="next_travel_btn" class="button_name"></div>\
       </div>\
@@ -449,6 +449,11 @@ Please use 'else where' button to choose proper location");
       // Go to address selector page.
       this.showAddressSelector(event.summary, event.stage);
     } else {             
+      /*
+      if (el.attr('alias') == 'true' && event != this.currentEventView) {
+        event.setAliasClassType();
+      }
+      */
       event.selected = el.attr('id');
       event.render();
     }    
