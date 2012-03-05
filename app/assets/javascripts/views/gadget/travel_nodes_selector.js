@@ -29,11 +29,12 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var doNormalize = true;
     if (alias.isAlias(this.original_address)) {
       var a = alias.getAddressFromAlias(this.alias, this.original_address);
-      this.original_address = a.address;
-      this.results.push({address: a.address,
-        location: { lat: a.lat, lng: a.lng }
-        });  
-      doNormalize = false;    
+      if (a != null) {
+        this.original_address = a.address;
+        this.results.push({address: a.address,
+          location: { lat: a.lat, lng: a.lng } });  
+        doNormalize = false;  
+      }      
     } 
     this.setResizeEventHandler();    
     this.render();                  

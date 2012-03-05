@@ -156,13 +156,12 @@ App.Views.TravelsView = Backbone.View.extend({
   // if 200, show travel proposals
   handleTravelResponse: function(response, retry) {
     if (response.rc == 404) {
-      showLoader();
       retry();
     } else if (response.rc == 410) {
-      hideLoader();
+      this.hideLoadingProgress();
       this.model = null;
     } else if (response.rc == 200) {
-      hideLoader();
+      this.hideLoadingProgress();
       var travelView = null;      
       if (this.travelType == 'previous') {
         travelView = this.previousTravelView;
@@ -199,10 +198,10 @@ App.Views.TravelsView = Backbone.View.extend({
   // If it was created successfully, show travel nodes selector view
   generateTrip: function(event){
     event.preventDefault();
-    showLoader();    
     gadgets.window.adjustHeight();        
     var from = null;
     var to = null;
+    var self = this;
     if (this.travelType == 'previous') {
       from = this.previousEventView;
       to = this.currentEventView;
@@ -211,16 +210,16 @@ App.Views.TravelsView = Backbone.View.extend({
       to = this.nextEventView;
     }    
     if (this.sanityCheck(from, to) != true) {      
-      hideLoader();
       alert("The address in your events is not valid.\n\
 Please use 'else where' button to choose proper location");
       return;
     }    
     if (this.duplicationCheck(from, to) == true) {
-      hideLoader();
       alert("The departure address and arrival address are same");
       return;
-    }
+    }    
+    this.showLoadingProgress();
+    
     // TODO : use Event model and bind callback on created event
     GoogleRequest.post({
       url: App.config.api_url + "/events",
@@ -251,13 +250,39 @@ Please use 'else where' button to choose proper location");
       },
       success: this.waitForTravels,
       error: function(response) { 
-        hideLoader();
+        self.hideLoadingProgress();
         if (response.rc == 401) {
           alert("You must authorize Timejust to access your calendar. Please go to " + App.config.web_url);
         } 
       }
     });
-  },    
+  },  
+  showLoadingProgress: function() {
+    var loading = null;
+    var btn = null;
+    if (this.travelType == 'previous') {
+      loading = this.previousLoading;
+      btn = $('#previous_travel_btn').parent('div')[0];
+    } else {
+      loading = this.nextLoading;
+      btn = $('#next_travel_btn').parent('div')[0];
+    }
+    loading.style.display = "inline-block";        
+    btn.style.display = "none";
+  }, 
+  hideLoadingProgress: function() {
+    var loading = null;
+    var btn = null;
+    if (this.travelType == 'previous') {
+      loading = this.previousLoading;
+      btn = $('#previous_travel_btn').parent('div')[0];
+    } else {
+      loading = this.nextLoading;
+      btn = $('#next_travel_btn').parent('div')[0];
+    }
+    loading.style.display = "none";
+    btn.style.display = "inline-block"
+  },
   renderButton: function() {
     if (this.previousTravelView.rendered == true) {
       $('#previous_travel_btn').html('RELOAD TRIP');  
@@ -269,6 +294,8 @@ Please use 'else where' button to choose proper location");
     } else {
       $('#next_travel_btn').html('PLAN TRIP');      
     }    
+    $('#previous_travel_btn')[0].style = "display: inline-block";
+    $('#next_travel_btn')[0].style = "display: inline-block";
   },
   default_layout: _.template('\
     <div id="event_polling" style="display:none"></div>\
@@ -276,8 +303,7 @@ Please use 'else where' button to choose proper location");
     <div id="previous_event"></div>\
     <div id="previous_travel"></div>\
     <a class="load_previous_travel" href="#">\
-      <div class="loading">\
-      </div>\
+      <div id="previous_loading" class="loading" />\
       <div class="green_btn">\
         <div id="previous_travel_btn" class="button_name"></div>\
       </div>\
@@ -285,8 +311,7 @@ Please use 'else where' button to choose proper location");
     <div id="current_event"></div>\
     <div id="next_travel"></div>\
     <a class="load_next_travel" href="#">\
-      <div class="loading">\
-      </div>\    
+      <div id="next_loading" class="loading" />\
       <div class="green_btn">\
         <div id="next_travel_btn" class="button_name"></div>\
       </div>\
@@ -304,6 +329,8 @@ Please use 'else where' button to choose proper location");
     this.nextEventView.summary = this.summaries[2];
     this.previousTravelView.el = $('#previous_travel').get(0);
     this.nextTravelView.el = $('#next_travel').get(0);
+    this.previousLoading = $('#previous_loading').get(0);
+    this.nextLoading = $('#next_loading').get(0);
     
     this.renderButton();
     

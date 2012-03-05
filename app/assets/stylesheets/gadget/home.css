@@ -1,6 +1,10 @@
 .loading {
-  display: block;
-  background: transparent url(/icons/wait.gif);
+  display: none;
+  background: url(/icons/wait.gif);
+  background-repeat: no-repeat;
+  width: 120px;
+  height: 20px;
+  margin: 5px 0px 5px 10%;
 }
 .tooltip {
   display:none;
@@ -15,6 +19,7 @@
   z-index: 5;
   background-repeat: no-repeat;
   margin-left: -30px;
+  text-align: center;
 }
 .loader { 
   margin-top: 20px; 
