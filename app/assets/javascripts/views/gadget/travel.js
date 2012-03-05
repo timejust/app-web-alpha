@@ -17,6 +17,8 @@ App.Views.TravelView = Backbone.View.extend({
     var self = this; 
     var empty = false;
     var availables = new Array();
+    var estimated_time = 0;
+    var hour_format = false;
     if (travels == null) {
       // display error
     }
@@ -40,13 +42,28 @@ App.Views.TravelView = Backbone.View.extend({
       if (travel.travel_mode == 'train') {
         travel.travel_mode = 'rail'
       }
+      estimated_time = step.estimated_time + "'";
+      hour_format = false;
+      if (step.estimated_time > 90) {
+        estimated_time = parseInt(step.estimated_time / 60) + "h";
+        if ((step.estimated_time % 60) <= 10) {
+          estimated_time += "0" + (step.estimated_time % 60);
+        } else {
+          estimated_time += (step.estimated_time % 60);
+        }
+        hour_format = true;
+      }
       html += '<div class="' + color + '"><div class="travel_container"><ul class="travel"><li><a class="';
       html += color + '_toggle off" href="#"></a></li>';
       html += '<li class="title">' + travel.travel_mode.toUpperCase() + '</li>';      
       html += '<a class="plus_container" href="#" id="' + travel._id + '"></a></ul>';
       html += '<div id="tooltip_' + travel._id + '" class="tooltip">copy to my calendar</div>';
-      html += '<ul><li class="' + color +'_estimate">' + step.estimated_time + '\'</li>';
-      html += '<div class="transportation_symbol">';
+      html += '<ul><li class="' + color +'_estimate">' + estimated_time + '</li>';
+      html += '<div class="transportation_symbol"';
+      if (hour_format) {
+        html += ' style="margin-left: 2px;"';
+      }  
+      html += '>';
       if (travel.travel_mode == 'car') {
         html += '<li class="walk" style="';
         var margin = 0;
@@ -55,8 +72,7 @@ App.Views.TravelView = Backbone.View.extend({
         }
         if (step.estimated_time > 100) {
           margin = 5;
-        }
-        
+        }        
         var num_icons = 3;
         var step_width = 34;
         if (step.distance > 10 && step.distance < 100) {
@@ -126,8 +142,13 @@ App.Views.TravelView = Backbone.View.extend({
         var z = 0;   
         // We need to calcuate overlaid margin if too many icons 
         // exist in the strip.
-        var margin_left = Math.round(self.calculateOverlay(num_icons, num_transport_icons));
-        var width = (105 - (num_icons * 19 + num_transport_icons * 16)) / ((num_icons) - 1);
+        var transportation_strip_width = 105;
+        if (hour_format)
+          transportation_strip_width -= 6;
+        var margin_left = Math.round(self.calculateOverlay(
+          transportation_strip_width, num_icons, num_transport_icons));
+        var width = (transportation_strip_width - (num_icons * 19 + num_transport_icons * 16)) / 
+          ((num_icons) - 1);
         
         $.each(step.steps, function(i, s) {
           var mode = current_mode;
@@ -278,10 +299,10 @@ App.Views.TravelView = Backbone.View.extend({
       */
     $(this.el).find('.steps').hide();      
   },
-  calculateOverlay: function(icons, transport_icons) {
-    if ((icons * 19 + transport_icons * 16) <= 105)
+  calculateOverlay: function(width, icons, transport_icons) {
+    if ((icons * 19 + transport_icons * 16) <= width)
       return 0;
-    return ((icons * 19 + transport_icons * 16) - 105) / (icons + transport_icons - 1);
+    return ((icons * 19 + transport_icons * 16) - width) / (icons + transport_icons - 1);
   },
   convertTimeformat: function(d) {
     var tok = d.split('T');
