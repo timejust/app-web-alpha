@@ -163,7 +163,7 @@ a.top:hover {
 .top_title_container {
   display: inline-block;
   text-align: left;
-  width: 90%;
+  width: 89%;
 }
 .top_toggle_container {
   display: inline-block;
@@ -190,6 +190,7 @@ li.alias_address {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  vertical-align: top;
 }
 li.alias {
   display: inline-block;
