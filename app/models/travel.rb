@@ -93,7 +93,10 @@ class Travel
   
   def create_travel_step(travel, mode, direction=:forward, departure, arrival)  
     self.update_attributes(transports: [mode])
-      
+    if mode == "train"
+      mode = "rail"
+    end
+    
     # if return status is not ok, we cannot create a step.
     if travel["status"] == "ok"
       trip = travel["trip"]

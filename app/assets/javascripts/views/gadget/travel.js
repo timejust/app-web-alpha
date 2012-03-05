@@ -35,6 +35,11 @@ App.Views.TravelView = Backbone.View.extend({
         return;
       }      
       availables.push(travel)
+      // We don't want to display train as a title. If travel mode is 'train', let's change
+      // to 'rail' instead
+      if (travel.travel_mode == 'train') {
+        travel.travel_mode = 'rail'
+      }
       html += '<div class="' + color + '"><div class="travel_container"><ul class="travel"><li><a class="';
       html += color + '_toggle off" href="#"></a></li>';
       html += '<li class="title">' + travel.travel_mode.toUpperCase() + '</li>';      
