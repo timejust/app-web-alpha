@@ -284,6 +284,7 @@ Please use 'else where' button to choose proper location");
     btn.style.display = "inline-block"
   },
   renderButton: function() {
+    /*
     if (this.previousTravelView.rendered == true) {
       $('#previous_travel_btn').html('RELOAD TRIP');  
     } else {
@@ -293,9 +294,10 @@ Please use 'else where' button to choose proper location");
       $('#next_travel_btn').html('RELOAD TRIP');      
     } else {
       $('#next_travel_btn').html('PLAN TRIP');      
-    }    
-    $('#previous_travel_btn')[0].style = "display: inline-block";
-    $('#next_travel_btn')[0].style = "display: inline-block";
+    } 
+    */   
+    $('#previous_travel_btn').html('PLAN TRIP');  
+    $('#next_travel_btn').html('PLAN TRIP');      
   },
   default_layout: _.template('\
     <div id="event_polling" style="display:none"></div>\
