@@ -1,3 +1,7 @@
+.loading {
+  display: block;
+  background: transparent url(/icons/wait.gif);
+}
 .tooltip {
   display:none;
   background: transparent url(/icons/tooltip.png);

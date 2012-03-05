@@ -276,6 +276,8 @@ Please use 'else where' button to choose proper location");
     <div id="previous_event"></div>\
     <div id="previous_travel"></div>\
     <a class="load_previous_travel" href="#">\
+      <div class="loading">\
+      </div>\
       <div class="green_btn">\
         <div id="previous_travel_btn" class="button_name"></div>\
       </div>\
@@ -283,6 +285,8 @@ Please use 'else where' button to choose proper location");
     <div id="current_event"></div>\
     <div id="next_travel"></div>\
     <a class="load_next_travel" href="#">\
+      <div class="loading">\
+      </div>\    
       <div class="green_btn">\
         <div id="next_travel_btn" class="button_name"></div>\
       </div>\
