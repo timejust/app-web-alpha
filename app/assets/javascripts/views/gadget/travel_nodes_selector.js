@@ -90,33 +90,31 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   },
   getGeoAutocomplete: function(node) {
     var self = this;
-    $('#' + node).geo_autocomplete(new google.maps.Geocoder, {
-      mapkey: 'ABQIAAAAbnvDoAoYOSW2iqoXiGTpYBTIx7cuHpcaq3fYV4NM0BaZl8OxDxS9pQpgJkMv0RxjVl6cDGhDNERjaQ', 
-  		selectFirst: false,
-  		minChars: 3,
-  		cacheLength: 50,
-  		width: 384,
-  		scroll: true,
-  		scrollHeight: 300,
-  		autoFill: true
-  	}).result(function(_event, _data) {
-  	  if (_data) {
-  	    this.value = _data.formatted_address;
-  	    // self.map.fitBounds(_data.geometry.viewport);
-        // Initialize result array.
-        self.results = [];
-        var a = {};
-        a.address = _data.formatted_address;
-        a.location = {};
-        var location = _data.geometry.location
-        a.location.lat = (location.Oa != null ? location.Oa : location.Sa);        
-        a.location.lng = (location.Pa != null ? location.Pa : location.Ta);        
-        self.results.push(a);     
-        self.showAliasResult = false;     
-        self.showGoogleResult(null, true);
-        self.showFreqAddress(null);
-	    }
-	  });
+    var autocomplete = new google.maps.places.Autocomplete($('#' + node)[0]);
+    autocomplete.setTypes([]);
+    // autocomplete.bindTo('bounds', this.map);
+    
+    google.maps.event.addListener(autocomplete, 'place_changed', function() {
+      var place = autocomplete.getPlace();
+      this.value = place.formatted_address;
+      if (place.geometry.viewport) {
+        self.map.fitBounds(place.geometry.viewport);
+      } else {
+        self.map.setCenter(place.geometry.location);
+      }      
+      // Initialize result array.
+      self.results = [];
+      var a = {};
+      a.address = place.formatted_address;
+      a.location = {};
+      var location = place.geometry.location
+      a.location.lat = (location.Ua != null ? location.Ua : location.Sa);        
+      a.location.lng = (location.Va != null ? location.Va : location.Ta);              
+      self.results.push(a);     
+      self.showAliasResult = false;     
+      self.showGoogleResult(null, true);
+      self.showFreqAddress(null);                
+    });    
   }, 
   hitToSearch: function(node) {
     var self = this;
@@ -203,7 +201,6 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var style = "height: " + map_height + "px; width: " + map_width + "px;"
     var right = $(this.el).find('.right');
     right.attr("style", style);    
-    
     gadgets.window.adjustHeight();
   },
   // render the form for all travel nodes
@@ -443,8 +440,10 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         self.bounds.union(bounds); 
       }  
     });    
-    if (self.bounds != null)
+    if (self.bounds != null) {
       this.map.fitBounds(self.bounds);
+      this.map.setZoom(17);  // Why 17? Because it looks good.
+    }
   },
   hideGoogleResult: function() {
     var left = $(this.el).find('.left');

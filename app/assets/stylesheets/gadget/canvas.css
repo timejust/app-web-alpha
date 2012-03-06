@@ -253,6 +253,15 @@ div.control_block {
   display: block;
   margin-left: 1px;
 }
+.pac-item {
+  display: block;
+  font: menu;
+	font-size: 12px;
+	line-height: 16px;
+	padding: 0px;
+	overflow: hidden;
+	z-index: 99999;
+}
 #google_result.control_block {
   margin-top: 5px;
   cursor: pointer;

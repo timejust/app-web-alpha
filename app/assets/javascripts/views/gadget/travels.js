@@ -492,6 +492,7 @@ Please use 'else where' button to choose proper location");
       */
       event.selected = el.attr('id');
       event.render();
+      this.renderButton();
     }    
   },  
   // Show travel nodes selector view to confirm each travel nodes addresses
