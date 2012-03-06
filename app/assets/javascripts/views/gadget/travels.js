@@ -294,10 +294,16 @@ Please use 'else where' button to choose proper location");
       btn.attr("style", "margin-top: 1px");
       btn.parent('div').find('.button_text').html(
         view.summary.original_address);      
-      // Set attribute leading to address selection page
-      btn.attr("stage", view.stage);
-      btn.attr("planable", "false");
-    }
+    } else {
+      if (view.stage == "previous")
+        btn.html("WHERE DO YOU WANT TO LEAVE FROM");     
+      else 
+        btn.html("WHERE DO YOU WANT TO GO TO");     
+      btn.parent('div').find('.button_text').html("");
+    }        
+    // Set attribute leading to address selection page    
+    btn.attr("stage", view.stage);
+    btn.attr("planable", "false");    
   },  
   renderPlanableButton: function(view, btn) {
     if (view.normalized) {   

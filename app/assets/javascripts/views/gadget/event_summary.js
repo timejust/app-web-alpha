@@ -188,7 +188,8 @@ App.Views.EventSummaryView = Backbone.View.extend({
           </div>\
         <% id += 1;}); %>\
         <div class="alias_container">\
-          <li class="alias"><a href="#" selector="true" class="value">else where</a></li>\
+          <li class="alias"><a href="#" selector="true" class="value">\
+          <% if (alias.length > 0 || addressBook.length > 0) { %>else where<% } else {%>tell us where<%}%></a></li>\
         </div>\
       </div>\
     </ul>\

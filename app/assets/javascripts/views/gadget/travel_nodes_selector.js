@@ -209,7 +209,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var top = $(this.el).find('.top');
     top.html(this.top_template);
     this.getGeoAutocomplete('maininput');    
-    this.hitToSearch('maininput');
+    // this.hitToSearch('maininput');
     if (this.original_address != "") {
       $(this.el).find('#maininput')[0].value = this.original_address;      
     }        
@@ -442,7 +442,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     });    
     if (self.bounds != null) {
       this.map.fitBounds(self.bounds);
-      this.map.setZoom(17);  // Why 17? Because it looks good.
+      // this.map.setZoom(17);  // Why 17? Because it looks good.
     }
   },
   hideGoogleResult: function() {
