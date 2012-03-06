@@ -76,37 +76,24 @@ App.Views.TravelsView = Backbone.View.extend({
     this.nextEventView.render();        
   },
   onAddressSelected: function(params) {
-    var eventView = null;
-    if (params.stage == 'previous') {
-      eventView = this.previousEventView;
-    } else if (params.stage == 'current') {
-      eventView = this.currentEventView;
-    } else if (params.stage == 'next') {
-      eventView = this.nextEventView;
-    }
-    if (eventView != null) {
+    var e = this.getEventWithStage(params.stage);    
+    if (e != null) {
       var self = this;    
-      var id = eventView.appendAddressBook(params.address, params.lat, params.lng, true);
-      eventView.selected = id;      
-
+      var id = e.appendAddressBook(params.address, params.lat, params.lng, true);
+      e.selected = id;      
       this.previousEventView.render();
       this.currentEventView.render();
       this.nextEventView.render();
+      this.renderButton();
     }
   },
   onAliasSelected: function(params) {
-    var eventView = null;
-    if (params.stage == 'previous') {
-      eventView = this.previousEventView;
-    } else if (params.stage == 'current') {
-      eventView = this.currentEventView;
-    } else if (params.stage == 'next') {
-      eventView = this.nextEventView;
-    }
-    if (eventView != null) {
+    var e = this.getEventWithStage(params.stage);    
+    if (e != null) {
       var self = this;  
-      eventView.selectAliasItem(params.title);
-      eventView.render();    
+      e.selectAliasItem(params.title);
+      e.render();    
+      this.renderButton();
     }
   },
   waitForTravels: function(response) {
@@ -180,15 +167,27 @@ App.Views.TravelsView = Backbone.View.extend({
       alert("You must authorize Timejust to access your calendar. Please go to " + App.config.web_url);
     }
   },
-  generatePreviousTravel: function(event) {
-    this.travelType = 'previous';
-    this.base = 'arrival';
-    this.generateTrip(event);
+  generatePreviousTravel: function(e) {
+    var el = $(e.currentTarget).find(".button_name");      
+    if (el.attr("planable") == "true") {
+      this.travelType = 'previous';
+      this.base = 'arrival';
+      this.generateTrip(e);  
+    } else {
+      var stage = el.attr("stage");
+      this.showAddressSelector(this.getEventWithStage(stage).summary, stage);
+    }    
   },
-  generateNextTravel: function(event) {
-    this.travelType = 'next';
-    this.base = 'departure';
-    this.generateTrip(event);
+  generateNextTravel: function(e) {
+    var el = $(e.currentTarget).find(".button_name");   
+    if (el.attr("planable") == "true") {
+      this.travelType = 'next';
+      this.base = 'departure';
+      this.generateTrip(event);
+    } else {
+      var stage = el.attr("stage");
+      this.showAddressSelector(this.getEventWithStage(stage).summary, stage);
+    }
   },
   sanityCheck: function(from, to) {
     return (from.normalized == true && to.normalized == true);
@@ -228,10 +227,7 @@ Please use 'else where' button to choose proper location");
       params: {
         event: JSON.stringify($.extend(
           this.selectedEvent,
-          {
-            before_start_time: 0,
-            after_end_time: 0,            
-          }          
+          { before_start_time: 0, after_end_time: 0 }          
         )),
         current_ip: this.ip,        
         base: this.base,
@@ -285,21 +281,45 @@ Please use 'else where' button to choose proper location");
     loading.style.display = "none";
     btn.style.display = "inline"
   },
-  renderButton: function() {
-    /*
-    if (this.previousTravelView.rendered == true) {
-      $('#previous_travel_btn').html('RELOAD TRIP');  
+  setPlanableButton: function(btn) {
+    btn.attr("style", "margin-top: 9px");
+    btn.attr("planable", "true");
+    btn.parent('div').find('.button_text').html("");
+    btn.html('PLAN TRIP');
+  },
+  setUnplanableButton: function(view, btn) {
+    if (view.summary.original_address) {
+      // Set information text
+      btn.html('Please clarify ');
+      btn.attr("style", "margin-top: 1px");
+      btn.parent('div').find('.button_text').html(
+        view.summary.original_address);      
+      // Set attribute leading to address selection page
+      btn.attr("stage", view.stage);
+      btn.attr("planable", "false");
+    }
+  },  
+  renderPlanableButton: function(view, btn) {
+    if (view.normalized) {   
+      this.setPlanableButton(btn);
     } else {
-      $('#previous_travel_btn').html('PLAN TRIP');  
+      this.setUnplanableButton(view, btn);      
+    }
+  },
+  renderButton: function() {   
+    var previous = $('#previous_travel_btn');
+    var next = $('#next_travel_btn');
+    // If current event has normalized address, buttons are rendered depend on 
+    // previous and next events.
+    if (this.currentEventView.normalized) {
+      this.renderPlanableButton(this.previousEventView, previous);
+      this.renderPlanableButton(this.nextEventView, next);
+    } else {
+      // If current event has non-normalized address, even if we have both 
+      // previous and next events have normalized address, render with 
+      this.setUnplanableButton(this.currentEventView, previous);      
+      this.setUnplanableButton(this.currentEventView, next);      
     }    
-    if (this.nextTravelView.rendered == true) {
-      $('#next_travel_btn').html('RELOAD TRIP');      
-    } else {
-      $('#next_travel_btn').html('PLAN TRIP');      
-    } 
-    */   
-    $('#previous_travel_btn').html('PLAN TRIP');  
-    $('#next_travel_btn').html('PLAN TRIP');      
   },
   default_layout: _.template('\
     <div id="event_polling" style="display:none"></div>\
@@ -310,6 +330,7 @@ Please use 'else where' button to choose proper location");
     <a class="load_previous_travel" href="#">\
       <div class="green_btn">\
         <div id="previous_travel_btn" class="button_name"></div>\
+        <div class="button_text"></div>\
       </div>\
     </a>\
     <div id="current_event"></div>\
@@ -318,6 +339,7 @@ Please use 'else where' button to choose proper location");
     <a class="load_next_travel" href="#">\
       <div class="green_btn">\
         <div id="next_travel_btn" class="button_name"></div>\
+        <div class="button_text"></div>\
       </div>\
     </a>\
     <div id="next_event"></div>\
@@ -335,12 +357,11 @@ Please use 'else where' button to choose proper location");
     this.nextTravelView.el = $('#next_travel').get(0);
     this.previousLoading = $('#previous_loading').get(0);
     this.nextLoading = $('#next_loading').get(0);
-    
-    this.renderButton();
-    
+        
     this.previousEventView.render();
     this.currentEventView.render();
     this.nextEventView.render();    
+    this.renderButton();
     
     $(this.el).html();    
     gadgets.window.adjustHeight();
@@ -420,15 +441,27 @@ Please use 'else where' button to choose proper location");
     container.toggle();
     gadgets.window.adjustHeight();
   },
-  currentEvent: function(root) {
-    if (root[0].id == 'previous_event') {
-      event = this.previousEventView;
-    } else if (root[0].id == 'current_event') {
-      event = this.currentEventView;
-    } else if (root[0].id == 'next_event') {
-      event = this.nextEventView;
+  getEventWithStage: function(stage) {
+    var e = null;
+    if (stage == "previous") {
+      e = this.previousEventView;
+    } else if (stage == "current") {
+      e = this.currentEventView;
+    } else if (stage == "next") {
+      e = this.nextEventView;
     }
-    return event;
+    return e;
+  },
+  currentEvent: function(root) {
+    var e = null;
+    if (root[0].id == 'previous_event') {
+      e = this.previousEventView;
+    } else if (root[0].id == 'current_event') {
+      e = this.currentEventView;
+    } else if (root[0].id == 'next_event') {
+      e = this.nextEventView;
+    }
+    return e;
   },
   grayToggleSteps: function(e) {
     e.preventDefault();    

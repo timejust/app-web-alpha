@@ -61,7 +61,7 @@ App.Views.TravelView = Backbone.View.extend({
       html += '<ul><li class="' + color +'_estimate">' + estimated_time + '</li>';
       html += '<div class="transportation_symbol"';
       if (hour_format) {
-        html += ' style="margin-left: 2px;"';
+        html += ' style="margin-left: 1px;"';
       }  
       html += '>';
       if (travel.travel_mode == 'car') {

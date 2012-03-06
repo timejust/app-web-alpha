@@ -386,9 +386,9 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     });
   },
   bookmarkDelete: function(e) {
-    var star = $(e.currentTarget);
-    var tok = star[0].className.split(' ');
-    var title = star.parent('div').find('.title')[0].textContent;
+    // var star = $(e.currentTarget);
+    // var tok = star[0].className.split(' ');
+    var title = $(e.currentTarget).parent('div').find('.title')[0].textContent;
     // star.toggleClass('on');
     // star.toggleClass('off');           
 
@@ -399,7 +399,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   showGoogleMap: function() {
     var latlng = new google.maps.LatLng(48.843, 2.275);
     var myOptions = {
-      zoom: 8,
+      zoom: 13,
       center: latlng,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
