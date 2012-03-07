@@ -1,8 +1,8 @@
 App.Views.TravelNodesSelectorView = Backbone.View.extend({
   events: {
     'click .search_button'  : 'search',
-    'click .freq_address'   : 'freqAddressClickHandler',
-    'click .google_result'  : 'googleResultClickHandler',
+    'click #nav-two'   : 'freqAddressClickHandler',
+    'click #nav-one'  : 'googleResultClickHandler',
     'click #google_result.control_block' : 'bookmarkAddress',
     'click #alias_result.alias_delete' : 'bookmarkDelete',
     'click #result.address' : 'selectAddress',
@@ -22,11 +22,10 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     timejust.setCookie('original_address', null);
     timejust.setCookie('ip', null);
     timejust.setCookie('stage', null);    
-    this.showAliasResult = false;    
+    // this.showAliasResult = false;    
     this.viewPortWidth = 0;
     this.viewPortHeight = 0;
     this.bounds = null;        
-    $("#left-middle").organicTabs({"speed": 200});
     
     var doNormalize = true;
     // If the given address is alias, get location information from
@@ -46,24 +45,46 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     if (doNormalize) {
       if (this.original_address != null && this.original_address != '') {
         this.normalizeAddress(this.original_address);
+        this.selectTab(0);
       } else {
-        this.showAliasResult = true;        
+        this.selectTab(1);        
       }  
     } else {
       this.showGoogleResult(null, true);
+      this.selectTab(0);
     }    
   },
+  selectTab: function(tab) {
+    var panel0 = $("#left-middle").find('.nav').find('.nav-one').find('a');
+    var panel1 = $("#left-middle").find('.nav').find('.nav-two').find('a');
+    if (tab == 0) {
+      panel0.addClass("current");
+      panel1.removeClass("current");
+    } else {
+      panel0.removeClass("current");
+      panel1.addClass("current");
+    }
+  },
+  getCurrentStage: function() {
+    var google_result_container = $('#google_result_container');
+    // var alias_result_container = $('#alias_result_container');
+    if (google_result_container[0].style.display == 'none') {
+      return "alias_container";
+    } else {
+      return "google_container";
+    }
+  },
   freqAddressClickHandler: function() {
-    this.showAliasResult = true;
+    // this.showAliasResult = true;
     // Switch current left panel to alias result container        
     this.showFreqAddress(null);
-    this.hideGoogleResult();
+    // this.hideGoogleResult();
   },
   googleResultClickHandler: function() {
-    this.showAliasResult = false;
-    // Switch current left panel to google result container
+    // this.showAliasResult = false;
+    // Switch current left panel to google result container    
     this.showGoogleResult(null);
-    this.hideAliasResult();
+    // this.hideAliasResult();
   },
   setResizeEventHandler: function() {
     var self = this;
@@ -108,9 +129,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         a.location.lat = (location.Ua != null ? location.Ua : location.Sa);        
         a.location.lng = (location.Va != null ? location.Va : location.Ta);              
         self.results.push(a);             
-        self.showAliasResult = false;     
+        self.selectTab(0);    
         self.showGoogleResult(null, true);
-        self.showFreqAddress(null);                        
       } else {
         self.search(null);
       }
@@ -148,17 +168,15 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     </div>\
   '),
   left_template: _.template('\
-    <div class="left-top">\
-      <div class="google_result">Search Results</div>\
-      <div class="freq_address">Frequent Addresses</div>\
-    </div>\
     <div class="left-middle" id="left-middle">\
       <ul class="nav">\
-        <li class="nav-one"><a href="#google_result" class="current">Search Results</a></li>\
-        <li class="nav-two last"><a href="#alias_result">Frequent Addresses</a></li>\
+        <li class="nav-one"><a id="nav-one" href="#google_result_container" class="current">Search Results</a></li>\
+        <li class="nav-two last"><a id="nav-two" href="#alias_result_container">Frequent Addresses</a></li>\
       </ul>\
-      <div class="alias_result_container"></div>\
-      <div class="google_result_container"></div>\
+      <div class="list-wrap">\
+        <ul id="google_result_container" class="google_result_container"></ul>\
+        <ul id="alias_result_container" class="alias_result_container hide"></ul>\
+      </div>\
     </div>\
     <div class="left-bottom">- (c) 2012 Timejust - </div>\
   '),    
@@ -214,12 +232,15 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var top = $(this.el).find('.top');
     top.html(this.top_template);
     this.getGeoAutocomplete('maininput');    
+    
     // this.hitToSearch('maininput');
     if (this.original_address != "") {
       $(this.el).find('#maininput')[0].value = this.original_address;      
     }        
-    var left = $(this.el).find('.main').find('.left');
+    var left = $(this.el).find('.main').find('.left');    
     left.html(this.left_template);    
+    $("#left-middle").organicTabs({"speed":0});
+    
     this.resize();
     this.showGoogleMap();
   },
@@ -229,9 +250,9 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var location = $('#maininput')[0].value;
     if (location != "") {
       this.results = [];
-      this.showAliasResult = false;
+      this.selectTab(0);
       this.normalizeAddress(location);
-      this.showFreqAddress(null);
+      // this.showFreqAddress(null);
     }    
   },
   toRecognizer: function(location, id, ip) {
@@ -453,12 +474,12 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   hideGoogleResult: function() {
     var left = $(this.el).find('.left');
     var container = left.find('.left-middle').find('.google_result_container');
-    container[0].style.display = "none";
+    // container[0].style.display = "none";
   },
   hideAliasResult: function() {
     var left = $(this.el).find('.left');
     var container = left.find('.left-middle').find('.alias_result_container');
-    container[0].style.display = "none";
+    // container[0].style.display = "none";
   },
   showGoogleResult: function(e, reload) {
     if (e != null)
@@ -468,7 +489,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var container = left.find('.left-middle').find('.google_result_container');
     var results = '<div class="results_block">';
     var kMaxPins = 10;    
-    if (this.showAliasResult == false && this.results != null) {
+    if (this.results != null) {
       $.each(this.markerList, function(i, marker) {
         marker.setVisible(false);
       });
@@ -502,14 +523,19 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     // We only reload when the given reload param is true.
     if (reload == true) {
       container.html(results);  
-    }
-      
+    }    
+    
+    if (this.getCurrentStage() == "google_container")
+      self.adjustGoogleMap(); 
+    
+      /*
     if (this.showAliasResult == false) {
       self.adjustGoogleMap(); 
       container[0].style.display = 'block';  
     } else {
       container[0].style.display = 'none';    
     }
+    */
   },
   showFreqAddress: function(e) {
     if (e != null)
@@ -519,7 +545,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var container = left.find('.left-middle').find('.alias_result_container');
     var results = '<div class="results_block">';
     var kMaxPins = 10;    
-    if (this.showAliasResult == true && this.alias != null) {
+    if (/*this.showAliasResult == true && */this.alias != null) {
       $.each(this.markerList, function(i, marker) {
         marker.setVisible(false);
       });
@@ -554,12 +580,17 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     }
     results += '</div>';
     container.html(results);
+    
+    if (this.getCurrentStage() == "alias_container")
+      self.adjustGoogleMap();
+    /*
     if (this.showAliasResult == true) {
       self.adjustGoogleMap(); 
       container[0].style.display = 'block';  
     } else {
       container[0].style.display = 'none';  
     }
+    */
   },
   selectAlias: function(e) {
     e.preventDefault();

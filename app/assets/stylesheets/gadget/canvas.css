@@ -1,4 +1,4 @@
-div.alias_result_container, div.google_result_container {
+ul.alias_result_container, ul.google_result_container {
   display: block;
 }
 #travelNodesSelector {
@@ -47,7 +47,7 @@ div.left-top {
 div.left-middle {
   overflow-y: scroll;
   width: 100%;
-  top: 58px;
+  top: 5px;
   left: 0;
   bottom: 15px;
   position: absolute;
@@ -362,9 +362,9 @@ div.google_result {
   vertical-align: middle;
 }
 #left-middle .list-wrap { 
-  background: #eee; 
-  padding: 10px; 
-  margin: 0 0 15px 0; 
+  padding: 2%;
+  margin: 0 0 15px 0;
+  width: 96%;
 }
 #left-middle ul { 
   list-style: none; 
@@ -423,3 +423,4 @@ div.google_result {
 #left-middle .nav li a:hover, #left-middle .nav li a:focus { 
   background: #999;
 }
+.hide { position: absolute; top: -9999px; left: -9999px; }
