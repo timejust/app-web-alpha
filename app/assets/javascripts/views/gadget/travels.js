@@ -183,7 +183,7 @@ App.Views.TravelsView = Backbone.View.extend({
     if (el.attr("planable") == "true") {
       this.travelType = 'next';
       this.base = 'departure';
-      this.generateTrip(event);
+      this.generateTrip(e);
     } else {
       var stage = el.attr("stage");
       this.showAddressSelector(this.getEventWithStage(stage).summary, stage);
