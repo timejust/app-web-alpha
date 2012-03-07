@@ -107,7 +107,7 @@ App.Views.EventView = Backbone.View.extend({
         endDate.second = 0;
       }
     } else {
-      if (cutoff) {        
+      if (cutoff && currentTime.hour > 0) {        
         startDate = this.copyTimeObject(currentTime);
         startDate.hour = 0;
         startDate.minute = 0;
