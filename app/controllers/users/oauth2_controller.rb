@@ -4,7 +4,7 @@ class Users::Oauth2Controller < ApplicationController
   def callback
     # If there is an error accespting Timejust app, return to failure
     redirect_to oauth2_failure_path and return if params[:error]
-
+    
     # get access token
     @access_token = OAuthHelper.client.web_server.get_access_token(
       params[:code],
@@ -18,9 +18,13 @@ class Users::Oauth2Controller < ApplicationController
     
     # Create/Update user informations
     user = User.find_or_initialize_by(:email => email)
+    refresh_token = user.refresh_token
+    if @access_token.refresh_token != ''
+      refresh_token = @access_token.refresh_token
+    end
     user.update_attributes(
       :token => @access_token.token,
-      :refresh_token => @access_token.refresh_token,
+      :refresh_token => refresh_token,
       :token_expires_at => @access_token.expires_at,
       :expired => 0
     )

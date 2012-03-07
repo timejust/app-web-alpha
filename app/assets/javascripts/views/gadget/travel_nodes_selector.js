@@ -96,19 +96,22 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
       var place = autocomplete.getPlace();
-      this.value = place.formatted_address;
       // Initialize result array.
       self.results = [];
-      var a = {};
-      a.address = place.formatted_address;
-      a.location = {};
-      var location = place.geometry.location
-      a.location.lat = (location.Ua != null ? location.Ua : location.Sa);        
-      a.location.lng = (location.Va != null ? location.Va : location.Ta);              
-      self.results.push(a);     
-      self.showAliasResult = false;     
-      self.showGoogleResult(null, true);
-      self.showFreqAddress(null);                
+      if (place != null && place.geometry != null && place.geometry.location != null) {
+        var a = {};
+        a.address = place.formatted_address;
+        a.location = {};
+        var location = place.geometry.location;
+        a.location.lat = (location.Ua != null ? location.Ua : location.Sa);        
+        a.location.lng = (location.Va != null ? location.Va : location.Ta);              
+        self.results.push(a);             
+        self.showAliasResult = false;     
+        self.showGoogleResult(null, true);
+        self.showFreqAddress(null);                        
+      } else {
+        self.search(null);
+      }
     });    
   }, 
   hitToSearch: function(node) {
@@ -116,7 +119,9 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     $('#' + node).keypress(function(e) {
       code = (e.keyCode ? e.keyCode : e.which);
       if (code == 13) {
-        self.search(e);
+        var pac = $('#travelNodesSelector').parent('body').find('.pac-container');
+        if (pac == null || pac.length == 0 || pac[0].style.display == 'none') 
+          self.search(e);
       }    
     });
   },
@@ -203,7 +208,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var top = $(this.el).find('.top');
     top.html(this.top_template);
     this.getGeoAutocomplete('maininput');    
-    this.hitToSearch('maininput');
+    // this.hitToSearch('maininput');
     if (this.original_address != "") {
       $(this.el).find('#maininput')[0].value = this.original_address;      
     }        
@@ -213,7 +218,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     this.showGoogleMap();
   },
   search: function(e) {
-    e.preventDefault();        
+    if (e != null)
+      e.preventDefault();        
     var location = $('#maininput')[0].value;
     if (location != "") {
       this.results = [];
