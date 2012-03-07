@@ -290,7 +290,7 @@ Please use 'else where' button to choose proper location");
   setUnplanableButton: function(view, btn) {
     if (view.summary.original_address) {
       // Set information text
-      btn.html('Please clarify ');
+      btn.html('PLEASE CLARIFY ');
       btn.attr("style", "margin-top: 1px");
       btn.parent('div').find('.button_text').html(
         view.summary.original_address);      
