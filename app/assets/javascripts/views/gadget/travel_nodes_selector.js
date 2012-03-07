@@ -456,18 +456,17 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   },
   showGoogleResult: function(e, reload) {
     if (e != null)
-      e.preventDefault();
-    $.each(this.markerList, function(i, marker) {
-      marker.setVisible(false);
-    });
-    this.markerList = [];
-        
+      e.preventDefault();        
     var self = this;
     var left = $(this.el).find('.left');
     var container = left.find('.left-middle').find('.google_result_container');
     var results = '<div class="results_block">';
     var kMaxPins = 10;    
     if (this.showAliasResult == false && this.results != null) {
+      $.each(this.markerList, function(i, marker) {
+        marker.setVisible(false);
+      });
+      this.markerList = [];      
       $.each(this.results, function(i, a) {
         var tok = a.address.split(',');
         var city = "";
@@ -508,18 +507,17 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   },
   showFreqAddress: function(e) {
     if (e != null)
-      e.preventDefault();
-    $.each(this.markerList, function(i, marker) {
-      marker.setVisible(false);
-    });
-    this.markerList = [];
-    
+      e.preventDefault();    
     var self = this;
     var left = $(this.el).find('.left');
     var container = left.find('.left-middle').find('.alias_result_container');
     var results = '<div class="results_block">';
     var kMaxPins = 10;    
     if (this.showAliasResult == true && this.alias != null) {
+      $.each(this.markerList, function(i, marker) {
+        marker.setVisible(false);
+      });
+      this.markerList = [];      
       $.each(this.alias, function(i, a) {
         var tok = a.address.split(',');
         var city = "";
