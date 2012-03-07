@@ -140,6 +140,7 @@ App.Views.EventSummaryView = Backbone.View.extend({
     }     
     var title = this.title;
     var address = this.address;        
+    var toggle_on = (this.summary.alias.length > 0 || this.summary.addressBook.length > 0);
     var id = 0;    
     $(this.el).html(this.layout({
       class_name: class_name, 
@@ -150,16 +151,18 @@ App.Views.EventSummaryView = Backbone.View.extend({
       selected: this.selected,
       id: id,
       alias: this.summary.alias,
-      borderColor: border_color
+      borderColor: border_color,
+      toggleOn: toggle_on
       }));
-    $(this.el).find('.aliases').hide();    
+    if (toggle_on)
+      $(this.el).find('.aliases').hide();    
   },
   layout: _.template('\
   <div class="<%=class_name%>" style="border-color:<%=borderColor%>;<%if (color != null) { %>background-color:<%=color%> <%}%>">\
     <ul class="event">\
       <div class="top_toggle_container">\
         <li class="toggle">\
-          <a class="gray_toggle off" href="#"></a>\
+          <a class="gray_toggle <% if (toggleOn == false) { %>on<% } else { %>off<% } %>" href="#"></a>\
           </li>\
       </div>\
       <div class="top_title_container">\
