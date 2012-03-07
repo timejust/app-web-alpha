@@ -61,7 +61,8 @@ App.Views.EventView = Backbone.View.extend({
             eventView: this });
         }        
         // Load previous and next events within 1 day from google calendar
-        this.getCalendarEvent(this.user.email, calendarEvent.startTime, -1, false, this.onEventCallback);        
+        this.getCalendarEvent(this.user.email, calendarEvent.startTime, -1, false, 
+          this.onEventCallback, true);        
       }
     }
     this.render();
@@ -84,14 +85,36 @@ App.Views.EventView = Backbone.View.extend({
   getTimeWithMinuteDiff: function(time, diff) {
     return this.getTimeWithDiff(time, (diff * 60));
   },
-  getCalendarEvent: function(email, currentTime, dayDiff, next, callback) {
-    var startDate = "";
-    var endDate = "";
+  copyTimeObject: function(o) {
+    var n = {};
+    n.year = o.year;
+    n.month = o.month;
+    n.date = o.date;
+    n.hour = o.hour;
+    n.minute = o.minute;
+    n.second = o.second;
+    return n;
+  },
+  getCalendarEvent: function(email, currentTime, dayDiff, next, callback, cutoff) {
+    var startDate = {};
+    var endDate = {};
     if (dayDiff > 0) {
       startDate = this.getTimeWithMinuteDiff(currentTime, 1);
       endDate = this.getTimeWithDayDiff(currentTime, dayDiff);
+      if (cutoff) {
+        endDate.hour = 0;
+        endDate.minute = 0;
+        endDate.second = 0;
+      }
     } else {
-      startDate = this.getTimeWithDayDiff(currentTime, dayDiff);
+      if (cutoff) {        
+        startDate = this.copyTimeObject(currentTime);
+        startDate.hour = 0;
+        startDate.minute = 0;
+        startDate.second = 0;
+      } else {
+        startDate = this.getTimeWithDayDiff(currentTime, dayDiff);  
+      }      
       endDate = this.getTimeWithMinuteDiff(currentTime, -1);
     }
     this.nextEventRequest = next;
@@ -139,7 +162,8 @@ App.Views.EventView = Backbone.View.extend({
         }                    
       }              
       this.previousEvent = e;               
-      this.getCalendarEvent(this.user.email, this.selectedEvent.endTime, 1, true, this.onEventCallback);  
+      this.getCalendarEvent(this.user.email, this.selectedEvent.endTime, 
+        1, true, this.onEventCallback, true);  
     } else {
       for (var i = 0; i < events.length; i++) {
         // Get latest event from the list    
