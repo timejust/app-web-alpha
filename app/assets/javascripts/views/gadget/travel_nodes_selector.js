@@ -97,11 +97,6 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
       var place = autocomplete.getPlace();
       this.value = place.formatted_address;
-      if (place.geometry.viewport) {
-        self.map.fitBounds(place.geometry.viewport);
-      } else {
-        self.map.setCenter(place.geometry.location);
-      }      
       // Initialize result array.
       self.results = [];
       var a = {};
@@ -122,8 +117,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       code = (e.keyCode ? e.keyCode : e.which);
       if (code == 13) {
         self.search(e);
-      }
-      // e.preventDefault();
+      }    
     });
   },
   default_layout: _.template('\
@@ -209,7 +203,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var top = $(this.el).find('.top');
     top.html(this.top_template);
     this.getGeoAutocomplete('maininput');    
-    // this.hitToSearch('maininput');
+    this.hitToSearch('maininput');
     if (this.original_address != "") {
       $(this.el).find('#maininput')[0].value = this.original_address;      
     }        
@@ -442,7 +436,6 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     });    
     if (self.bounds != null) {
       this.map.fitBounds(self.bounds);
-      // this.map.setZoom(17);  // Why 17? Because it looks good.
     }
   },
   hideGoogleResult: function() {
