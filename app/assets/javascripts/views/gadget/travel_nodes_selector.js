@@ -25,7 +25,9 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     this.showAliasResult = false;    
     this.viewPortWidth = 0;
     this.viewPortHeight = 0;
-    this.bounds = null;    
+    this.bounds = null;        
+    $("#left-middle").organicTabs({"speed": 200});
+    
     var doNormalize = true;
     // If the given address is alias, get location information from
     // alias list and set it to result list.
@@ -150,7 +152,11 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       <div class="google_result">Search Results</div>\
       <div class="freq_address">Frequent Addresses</div>\
     </div>\
-    <div class="left-middle">\
+    <div class="left-middle" id="left-middle">\
+      <ul class="nav">\
+        <li class="nav-one"><a href="#google_result" class="current">Search Results</a></li>\
+        <li class="nav-two last"><a href="#alias_result">Frequent Addresses</a></li>\
+      </ul>\
       <div class="alias_result_container"></div>\
       <div class="google_result_container"></div>\
     </div>\

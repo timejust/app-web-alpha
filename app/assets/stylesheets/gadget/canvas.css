@@ -361,3 +361,65 @@ div.google_result {
   max-width: 50%;
   vertical-align: middle;
 }
+#left-middle .list-wrap { 
+  background: #eee; 
+  padding: 10px; 
+  margin: 0 0 15px 0; 
+}
+#left-middle ul { 
+  list-style: none; 
+}
+#left-middle ul li a { 
+  display: block; 
+  border-bottom: 1px solid #666; 
+  padding: 4px; 
+  color: #666; 
+}
+#left-middle ul li a:hover { 
+  background: #333; 
+  color: white; 
+}
+#left-middle ul li:last-child a { 
+  border: none; 
+}
+#left-middle .nav { 
+  overflow: hidden; 
+  width: 100%;
+}
+#left-middle .nav li { 
+  border-top-width: 1px;
+  border-right-width: 1px;
+  border-left-width: 1px;
+  border-top-style: solid;
+  border-right-style: solid;
+  border-left-style: solid;
+  border-top-color: #CCC;
+  border-right-color: #CCC;
+  border-left-color: #CCC;
+  width: 48%;
+  vertical-align: middle;
+  float: left;
+  margin: 0 1% 0 1%;
+  font-size: 11px;
+  font-weight: bold;
+  height: 30px;
+  line-height: 27px;
+}
+#left-middle .nav li.last { 
+  margin-right: 0; 
+}
+#left-middle .nav li a { 
+  display: block; 
+  padding: 2px 5px 5px 5px;  
+  background: #666; 
+  color: white; 
+  text-align: center; 
+  text-decoration: none;
+}
+#left-middle li a.current,#left-middle li a.current:hover { 
+  background-color: #ffffff; 
+  color: black; 
+}
+#left-middle .nav li a:hover, #left-middle .nav li a:focus { 
+  background: #999;
+}

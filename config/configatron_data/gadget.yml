@@ -38,3 +38,4 @@
         - jquery.autocomplete_geomod.js
         - geo_autocomplete.js
         - views/gadget/travel_nodes_selector.js
+        - organictabs.jquery.js

@@ -287,7 +287,7 @@ Please use 'else where' button to choose proper location");
     btn.parent('div').find('.button_text').html("");
     btn.html('PLAN TRIP');
   },
-  setUnplanableButton: function(view, btn) {
+  setUnplanableButton: function(view, btn, btnStage) {
     if (view.summary.original_address) {
       // Set information text
       btn.html('PLEASE CLARIFY ');
@@ -296,7 +296,7 @@ Please use 'else where' button to choose proper location");
         view.summary.original_address);      
     } else {
       btn.attr("style", "margin-top: 1px");
-      if (view.stage == "previous")
+      if (btnStage == "previous")
         btn.html("WHERE DO YOU WANT TO LEAVE FROM");     
       else 
         btn.html("WHERE DO YOU WANT TO GO TO");     
@@ -310,7 +310,7 @@ Please use 'else where' button to choose proper location");
     if (view.normalized) {   
       this.setPlanableButton(btn);
     } else {
-      this.setUnplanableButton(view, btn);      
+      this.setUnplanableButton(view, btn, view.stage);      
     }
   },
   renderButton: function() {   
@@ -324,8 +324,8 @@ Please use 'else where' button to choose proper location");
     } else {
       // If current event has non-normalized address, even if we have both 
       // previous and next events have normalized address, render with 
-      this.setUnplanableButton(this.currentEventView, previous);      
-      this.setUnplanableButton(this.currentEventView, next);      
+      this.setUnplanableButton(this.currentEventView, previous, "previous");      
+      this.setUnplanableButton(this.currentEventView, next, "next");      
     }    
   },
   default_layout: _.template('\
