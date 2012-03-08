@@ -1,8 +1,6 @@
 App.Views.TravelNodesSelectorView = Backbone.View.extend({
   events: {
     'click .search_button'  : 'search',
-    'click #nav-two'   : 'freqAddressClickHandler',
-    'click #nav-one'  : 'googleResultClickHandler',
     'click #google_result.control_block' : 'bookmarkAddress',
     'click #alias_result.alias_delete' : 'bookmarkDelete',
     'click #result.address' : 'selectAddress',
@@ -10,6 +8,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   },
   initialize: function(){
     _.bindAll(this, 'onNormalizedAddress');
+    _.bindAll(this, 'handleTabChanged');
     this.results = new Array();
     this.markerList = new Array();    
     this.ab = eval('(' + $.cookie('ab') + ')');
@@ -21,12 +20,12 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     timejust.setCookie('alias', null);
     timejust.setCookie('original_address', null);
     timejust.setCookie('ip', null);
-    timejust.setCookie('stage', null);    
-    // this.showAliasResult = false;    
+    timejust.setCookie('stage', null);      
     this.viewPortWidth = 0;
     this.viewPortHeight = 0;
     this.bounds = null;        
-    
+    this.kResultContainer = "google_result_container";
+    this.kAliasContainer = "alias_result_container"    
     var doNormalize = true;
     // If the given address is alias, get location information from
     // alias list and set it to result list.
@@ -41,7 +40,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     } 
     this.setResizeEventHandler();    
     this.render();                  
-    this.showFreqAddress(null); 
+    this.showAliasResult(null, true); 
     if (doNormalize) {
       if (this.original_address != null && this.original_address != '') {
         this.normalizeAddress(this.original_address);
@@ -58,33 +57,21 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var panel0 = $("#left-middle").find('.nav').find('.nav-one').find('a');
     var panel1 = $("#left-middle").find('.nav').find('.nav-two').find('a');
     if (tab == 0) {
-      panel0.addClass("current");
-      panel1.removeClass("current");
+      $("#left-middle").showTab(panel0[0], {
+        "speed":10, "delegate":this.handleTabChanged});
     } else {
-      panel0.removeClass("current");
-      panel1.addClass("current");
+      $("#left-middle").showTab(panel1[0], {
+        "speed":10, "delegate":this.handleTabChanged});
     }
   },
   getCurrentStage: function() {
-    var google_result_container = $('#google_result_container');
-    // var alias_result_container = $('#alias_result_container');
+    var google_result_container = $('#' + this.kResultContainer);
+    // var alias_result_container = $('#' + this.kAliasContainer);
     if (google_result_container[0].style.display == 'none') {
-      return "alias_container";
+      return this.kAliasContainer;
     } else {
-      return "google_container";
+      return this.kResultContainer;
     }
-  },
-  freqAddressClickHandler: function() {
-    // this.showAliasResult = true;
-    // Switch current left panel to alias result container        
-    this.showFreqAddress(null);
-    // this.hideGoogleResult();
-  },
-  googleResultClickHandler: function() {
-    // this.showAliasResult = false;
-    // Switch current left panel to google result container    
-    this.showGoogleResult(null);
-    // this.hideAliasResult();
   },
   setResizeEventHandler: function() {
     var self = this;
@@ -226,6 +213,13 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     right.attr("style", style);    
     gadgets.window.adjustHeight();
   },
+  handleTabChanged: function(e, id) {
+    if (id == this.kResultContainer) {
+      this.showGoogleResult(null, false);
+    } else if (id == this.kAliasContainer) {
+      this.showAliasResult(null, false);
+    }  
+  },
   // render the form for all travel nodes
   render: function(){
     $(this.el).html(this.default_layout);
@@ -239,7 +233,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     }        
     var left = $(this.el).find('.main').find('.left');    
     left.html(this.left_template);    
-    $("#left-middle").organicTabs({"speed":0});
+    $("#left-middle").organicTabs({
+      "speed":10, "delegate":this.handleTabChanged});
     
     this.resize();
     this.showGoogleMap();
@@ -252,7 +247,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       this.results = [];
       this.selectTab(0);
       this.normalizeAddress(location);
-      // this.showFreqAddress(null);
+      // this.showAliasResult(null);
     }    
   },
   toRecognizer: function(location, id, ip) {
@@ -288,6 +283,66 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       }      
       this.showGoogleResult(null, true);
     }    
+  },
+  handleAliasDeleted: function(title) {
+    if (this.alias != null) {   
+      var a = null;
+      for (var i = 0; i < this.alias.length; ++i) {
+        a = this.alias[i];
+        if (this.cleanupAliasTitle(a.title) == title) {
+          this.alias.splice(i, 1);
+          break;
+        }
+      }        
+    }                        
+    var ev = {
+      type: 'EVENT_ALIAS_DELETED',
+      params: {
+        title: '@' + title,
+        stage: self.stage
+      }
+    };           
+    var json = JSON.stringify(ev, self.replacer);
+    timejust.setCookie('event', json);            
+    
+    // Refresh alias result view
+    this.showAliasResult(null, true);    
+  },
+  handleAliasAdded: function(el, loader, o) {
+    if (this.alias != null & o != null) {   
+      var replaced = false;
+      var a = null;
+      for (var i = 0; i < this.alias.length; ++i) {
+        a = this.alias[i];
+        if (a.title == o.title) {
+          this.alias.splice(i, 1, o);
+          replaced = true;
+          break;
+        }
+      }                            
+      if (replaced != true)
+        this.alias.push(o);
+    }                        
+    var ev = {
+      type: 'EVENT_ALIAS_ADDED',
+      params: {
+        title: o.title,
+        address: o.address,
+        lat: o.lat,
+        lng: o.lng,
+        stage: self.stage
+      }
+    };                   
+    var json = JSON.stringify(ev, self.replacer);
+    timejust.setCookie('event', json);
+    
+    // Display alias add completion message.    
+    var title = this.cleanupAliasTitle(o.title);
+    el.html('<div class="alias" alias="' + title + '">alias @' + title + ' added</div>');
+    loader[0].style.display = "none";
+    
+    // Refresh alias result view
+    this.showAliasResult(null, true);    
   },
   saveAlias: function(node) {
     var self = this;
@@ -327,36 +382,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
             loader[0].style.display = "none"
           },
           success: function() {                    
-            if (self.alias != null & o != null) {   
-              var replaced = false;
-              var a = null;
-              for (var i = 0; i < self.alias.length; ++i) {
-                a = self.alias[i];
-                if (a.title == o.title) {
-                  self.alias.splice(i, 1, o);
-                  replaced = true;
-                  break;
-                }
-              }                            
-              if (replaced != true)
-                self.alias.push(o);
-            }                        
-            var ev = {
-              type: 'EVENT_ALIAS_ADDED',
-              params: {
-                title: o.title,
-                address: o.address,
-                lat: o.lat,
-                lng: o.lng,
-                stage: self.stage
-              }
-            };                   
-            var json = JSON.stringify(ev, self.replacer);
-            timejust.setCookie('event', json);
-            
-            alias.html('<div class="alias" alias="' + title + '">alias @' + title + ' added</div>');
-            loader[0].style.display = "none"
-          }
+            self.handleAliasAdded(alias, loader, o);            
+          }          
         });     
       }
     });
@@ -384,28 +411,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       },
       error: function() {
       },
-      success: function() {                    
-        if (self.alias != null) {   
-          var a = null;
-          for (var i = 0; i < self.alias.length; ++i) {
-            a = self.alias[i];
-            if (self.cleanupAliasTitle(a.title) == title) {
-              self.alias.splice(i, 1);
-              break;
-            }
-          }        
-        }                        
-        var ev = {
-          type: 'EVENT_ALIAS_DELETED',
-          params: {
-            title: '@' + title,
-            stage: self.stage
-          }
-        };           
-        var json = JSON.stringify(ev, self.replacer);
-        timejust.setCookie('event', json);            
-        
-        self.showFreqAddress(null);
+      success: function() {    
+        self.handleAliasDeleted(title);                
       }
     });
   },
@@ -481,6 +488,24 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var container = left.find('.left-middle').find('.alias_result_container');
     // container[0].style.display = "none";
   },
+  deletePins: function() {
+    $.each(this.markerList, function(i, marker) {
+      marker.setVisible(false);
+    });
+    this.markerList = [];      
+  },
+  tokenizeAddress: function(address) {
+    var tok = address.split(',');
+    var city = "";
+    $.each(tok, function(i, c) {
+      if (i > 0) {
+        city += c;
+        if (i + 1 < tok.length)
+          city += ",";
+      }          
+    });
+    return [tok[0], city];
+  },
   showGoogleResult: function(e, reload) {
     if (e != null)
       e.preventDefault();        
@@ -490,54 +515,34 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var results = '<div class="results_block">';
     var kMaxPins = 10;    
     if (this.results != null) {
-      $.each(this.markerList, function(i, marker) {
-        marker.setVisible(false);
-      });
-      this.markerList = [];      
+      self.deletePins();      
       $.each(this.results, function(i, a) {
-        var tok = a.address.split(',');
-        var city = "";
-        $.each(tok, function(i, c) {
-          if (i > 0) {
-            city += c;
-            if (i + 1 < tok.length)
-              city += ",";
-          }          
-        });
-        var generalPin = (kMaxPins < i ? true : false);
-        // First token is address, and rest of them are city + country normally.
-        results += self.google_result({
-          index: generalPin ? 10 : i,
-          address: tok[0],
-          original_address: a.address,
-          city: city,
-          lat: a.location.lat,
-          lng: a.location.lng,
-          asset_server: App.config.web_url
-        });     
+        if (reload == true) {
+          var tok = self.tokenizeAddress(a.address);
+          var generalPin = (kMaxPins < i ? true : false);
+          // First token is address, and rest of them are city + country normally.
+          results += self.google_result({
+            index: generalPin ? 10 : i,
+            address: tok[0],
+            original_address: a.address,
+            city: tok[1],
+            lat: a.location.lat,
+            lng: a.location.lng,
+            asset_server: App.config.web_url
+          });     
+        }
         self.createPin(a.location.lat, a.location.lng, i);      
       });  
-    }    
-    results += '</div>';
-    
+    }            
     // We only reload when the given reload param is true.
     if (reload == true) {
+      results += '</div>';
       container.html(results);  
-    }    
-    
-    if (this.getCurrentStage() == "google_container")
-      self.adjustGoogleMap(); 
-    
-      /*
-    if (this.showAliasResult == false) {
-      self.adjustGoogleMap(); 
-      container[0].style.display = 'block';  
-    } else {
-      container[0].style.display = 'none';    
-    }
-    */
+    }        
+    if (this.getCurrentStage() == this.kResultContainer)
+      self.adjustGoogleMap();   
   },
-  showFreqAddress: function(e) {
+  showAliasResult: function(e, reload) {
     if (e != null)
       e.preventDefault();    
     var self = this;
@@ -545,52 +550,33 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var container = left.find('.left-middle').find('.alias_result_container');
     var results = '<div class="results_block">';
     var kMaxPins = 10;    
-    if (/*this.showAliasResult == true && */this.alias != null) {
-      $.each(this.markerList, function(i, marker) {
-        marker.setVisible(false);
-      });
-      this.markerList = [];      
+    if (this.alias != null) {
+      self.deletePins();     
       $.each(this.alias, function(i, a) {
-        var tok = a.address.split(',');
-        var city = "";
-        $.each(tok, function(i, c) {
-          if (i > 0) {
-            city += c;
-            if (i + 1 < tok.length)
-              city += ",";
-          }          
-        });
-        // Check the deletingQueue, if exists in the list,
-        // we delete the alias with empty star symbol
-        var generalPin = (kMaxPins < i ? true : false);
-       // First token is address, and rest of them are city + country normally.
-        results += self.alias_result({
-          index: generalPin ? 10 : i,
-          title: a.title,
-          address: tok[0],
-          original_address: a.address,
-          city: city,
-          lat: a.lat,
-          lng: a.lng,
-          // star: inDeleting == true ? "off" : "on"
-          star: "on"
-        });
+        if (reload == true) {
+          var tok = self.tokenizeAddress(a.address);
+          var generalPin = (kMaxPins < i ? true : false);
+         // First token is address, and rest of them are city + country normally.
+          results += self.alias_result({
+            index: generalPin ? 10 : i,
+            title: a.title,
+            address: tok[0],
+            original_address: a.address,
+            city: tok[1],
+            lat: a.lat,
+            lng: a.lng,
+            star: "on"
+          });
+        }        
         self.createPin(a.lat, a.lng, i);      
       });
     }
-    results += '</div>';
-    container.html(results);
-    
-    if (this.getCurrentStage() == "alias_container")
+    if (reload == true) {
+      results += '</div>';
+      container.html(results);
+    }    
+    if (this.getCurrentStage() == this.kAliasContainer)
       self.adjustGoogleMap();
-    /*
-    if (this.showAliasResult == true) {
-      self.adjustGoogleMap(); 
-      container[0].style.display = 'block';  
-    } else {
-      container[0].style.display = 'none';  
-    }
-    */
   },
   selectAlias: function(e) {
     e.preventDefault();
