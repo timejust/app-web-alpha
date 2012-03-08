@@ -180,7 +180,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         <div id="alias_result" class="alias_delete" />\
         <div class="title"<% if (star == "off") { %> style="color: gray;font-style: italic;"<%} %>><%=title%></div>\
         <div class="accessory_container">\
-          <div id="use_alias_result" class="accessory_button base_button accessory">U</div>\
+          <div id="use_alias_result" class="accessory_button base_button accessory">Go!</div>\
           <% if (accessLevel == "owner") { %><div class="accessory_button base_button accessory">C</div><% } %>\
         </div>\
       </div>\
@@ -199,7 +199,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     <div class="result_block">\
       <div class="address_block" data-address=\"<%=original_address%>\" data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\">\
         <div class="accessory_container">\
-          <div id="use_google_result" class="accessory_button base_button accessory">U</div>\
+          <div id="use_google_result" class="accessory_button base_button accessory">Go!</div>\
           <% if (accessLevel == "owner") { %><div class="accessory_button base_button accessory">C</div><% } %>\
         </div>\
         <div class="marker_container">\

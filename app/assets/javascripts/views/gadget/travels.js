@@ -297,16 +297,16 @@ Please use 'else where' button to choose proper location");
       btn.parent('div').find('.button_text').html(
         view.summary.original_address);      
     } else {
-      btn.attr("style", "margin-top: 1px");
+      // btn.attr("style", "margin-top: 1px");
       if (view.stage == "previous")
-        btn.html("WHERE DO YOU WANT TO LEAVE FROM");     
+        btn.html("LEAVING FROM?");     
       else if (view.stage == "next")
-        btn.html("WHERE DO YOU WANT TO GO TO");     
+        btn.html("GOING TO?");     
       else {
         if (btnStage == "previous")
-          btn.html("WHERE DO YOU WANT TO GO TO");     
+          btn.html("GOING TO?");     
         else 
-          btn.html("WHERE DO YOU WANT TO LEAVE FROM");     
+          btn.html("LEAVING FROM?");     
       }
       btn.parent('div').find('.button_text').html("");
     }        
