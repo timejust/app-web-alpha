@@ -1,10 +1,12 @@
 App.Views.TravelNodesSelectorView = Backbone.View.extend({
   events: {
-    'click .search_button'  : 'search',
+    'click .search_button'               : 'search',
     'click #google_result.control_block' : 'bookmarkAddress',
-    'click #alias_result.alias_delete' : 'bookmarkDelete',
-    'click #result.address' : 'selectAddress',
-    'click .title'          : 'selectAlias'
+    'click #alias_result.alias_delete'   : 'bookmarkDelete',
+    'click #use_google_result'           : 'selectAddress',
+    'click #result.address'              : 'focusMapWithResult',    
+    'click #use_alias_result'            : 'selectAlias',
+    'click .title'                       : 'focusMapWithAlias'
   },
   initialize: function(){
     _.bindAll(this, 'onNormalizedAddress');
@@ -65,6 +67,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     }
   },
   getCurrentStage: function() {
+    return this.current_stage;
+    /*
     var google_result_container = $('#' + this.kResultContainer);
     // var alias_result_container = $('#' + this.kAliasContainer);
     if (google_result_container[0].style.display == 'none') {
@@ -72,6 +76,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     } else {
       return this.kResultContainer;
     }
+    */
   },
   setResizeEventHandler: function() {
     var self = this;
@@ -172,6 +177,10 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       <div class="control_block">\
         <div id="alias_result" class="alias_delete" />\
         <div class="title"<% if (star == "off") { %> style="color: gray;font-style: italic;"<%} %>><%=title%></div>\
+        <div class="accessory_container">\
+          <div id="use_alias_result" class="accessory_button base_button accessory">U</div>\
+          <div class="accessory_button base_button accessory">C</div>\
+        </div>\
       </div>\
       <div class="address_block" data-address=\"<%=original_address%>\" data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\">\
         <div id="alias_marker" class="marker_container">\
@@ -187,6 +196,10 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   google_result: _.template('\
     <div class="result_block">\
       <div class="address_block" data-address=\"<%=original_address%>\" data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\">\
+        <div class="accessory_container">\
+          <div id="use_google_result" class="accessory_button base_button accessory">U</div>\
+          <div class="accessory_button base_button accessory">C</div>\
+        </div>\
         <div class="marker_container">\
           <div class="marker_<%=index%>"></div>\
         </div>\
@@ -214,6 +227,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     gadgets.window.adjustHeight();
   },
   handleTabChanged: function(e, id) {
+    this.current_stage = id;
     if (id == this.kResultContainer) {
       this.showGoogleResult(null, false);
     } else if (id == this.kAliasContainer) {
@@ -417,15 +431,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     });
   },
   bookmarkDelete: function(e) {
-    // var star = $(e.currentTarget);
-    // var tok = star[0].className.split(' ');
     var title = $(e.currentTarget).parent('div').find('.title')[0].textContent;
-    // star.toggleClass('on');
-    // star.toggleClass('off');           
-
-    // if (tok[1] != 'off') {
     this.deleteAlias(title);
-    // }   
   },
   showGoogleMap: function() {
     var latlng = new google.maps.LatLng(48.843, 2.275);
@@ -437,6 +444,25 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var container = $(this.el).find('.main').find('.right').find('.map_view');
     this.map = new google.maps.Map(container[0], myOptions);    
   },
+  adjustGoogleMap: function() {
+    var kRange = 0.05;
+    var self = this;
+    self.bounds = null;
+    $.each(this.markerList, function(i, marker) {
+      var latlng = marker.getPosition();      
+      var bounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(latlng.lat() - kRange, latlng.lng() - kRange), 
+        new google.maps.LatLng(latlng.lat() + kRange, latlng.lng() + kRange));
+      if (self.bounds == null) {
+        self.bounds = bounds;
+      } else {
+        self.bounds.union(bounds); 
+      }  
+    });    
+    if (self.bounds != null) {
+      this.map.fitBounds(self.bounds);
+    }
+  },  
   createPin: function(lat, lng, index) {
     if (index == null || index > 10) {
       index = 10;
@@ -458,35 +484,6 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         ),    
     });
     this.markerList.push(marker);
-  },
-  adjustGoogleMap: function() {
-    var kRange = 0.05;
-    var self = this;
-    self.bounds = null;
-    $.each(this.markerList, function(i, marker) {
-      var latlng = marker.getPosition();      
-      var bounds = new google.maps.LatLngBounds(
-        new google.maps.LatLng(latlng.lat() - kRange, latlng.lng() - kRange), 
-        new google.maps.LatLng(latlng.lat() + kRange, latlng.lng() + kRange));
-      if (self.bounds == null) {
-        self.bounds = bounds;
-      } else {
-        self.bounds.union(bounds); 
-      }  
-    });    
-    if (self.bounds != null) {
-      this.map.fitBounds(self.bounds);
-    }
-  },
-  hideGoogleResult: function() {
-    var left = $(this.el).find('.left');
-    var container = left.find('.left-middle').find('.google_result_container');
-    // container[0].style.display = "none";
-  },
-  hideAliasResult: function() {
-    var left = $(this.el).find('.left');
-    var container = left.find('.left-middle').find('.alias_result_container');
-    // container[0].style.display = "none";
   },
   deletePins: function() {
     $.each(this.markerList, function(i, marker) {
@@ -577,28 +574,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     }    
     if (this.getCurrentStage() == this.kAliasContainer)
       self.adjustGoogleMap();
-  },
-  selectAlias: function(e) {
-    e.preventDefault();
-    var el = $(e.currentTarget);
-    var address_block = el.parent('div').parent('div').find('.address_block');
-
-    // Let's go back to home canvas
-    gadgets.views.requestNavigateTo('home');
-        
-    var ev = {
-      type: 'EVENT_ALIAS_SELECTED',
-      params: {
-        title: el[0].textContent,
-        // address: address_block.attr('data-address'),
-        // lat: address_block.attr('data-lat'),
-        // lng: address_block.attr('data-lng'),
-        stage: this.stage
-      }
-    };
-    var json = JSON.stringify(ev, this.replacer);
-    timejust.setCookie('event', json);
-  },
+  },  
   cleanupAliasTitle: function(title) {
     var newTitle = title;
     while (newTitle.indexOf('@') != -1) {
@@ -609,6 +585,23 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       }
     }
     return newTitle;
+  },
+  selectAlias: function(e) {
+    e.preventDefault();
+    var title = $(e.currentTarget).parent('div').parent('div').find('.title');
+
+    // Let's go back to home canvas
+    gadgets.views.requestNavigateTo('home');
+        
+    var ev = {
+      type: 'EVENT_ALIAS_SELECTED',
+      params: {
+        title: title[0].textContent,
+        stage: this.stage
+      }
+    };
+    var json = JSON.stringify(ev, this.replacer);
+    timejust.setCookie('event', json);
   },
   selectAddress: function(e) {
     e.preventDefault();
@@ -639,20 +632,33 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     }
     return value;
   },
-  // Return the confirmed address for a given travel node
-  getTravelNodeAddress: function(travel_node_type) {
-    text_value = this.$('form').find('input[name="' + travel_node_type + '\[address\]"]').val();
-    select_value = this.$('form').find('select[name="' + travel_node_type + '\[address\]"]').val();
-    if (text_value == "") {
-      if (select_value){
-        return select_value;
+  focusMapWithAlias: function(e) {
+    var title = $(e.currentTarget)[0].textContent;
+    var latlng = null;
+    $.each(this.alias, function(i, a) {
+      if (a.title == title) {
+        latlng = new google.maps.LatLng(a.lat, a.lng);
+        return false;
       }
-      else {
-        return '';
+    });
+    if (latlng != null) {
+      this.map.setCenter(latlng);
+      this.map.setZoom(17);  
+    }    
+  },
+  focusMapWithResult: function(e) {
+    var ab = $(e.currentTarget).parent('div').parent('div');
+    var address = ab.attr("data-address");
+    var latlng = null;
+    $.each(this.results, function(i, a) {
+      if (a.address == address) {
+        latlng = new google.maps.LatLng(a.location.lat, a.location.lng);
+        return false;
       }
-    }
-    else {
-      return text_value;
+    });
+    if (latlng != null) {
+      this.map.setCenter(latlng);
+      this.map.setZoom(17);
     }
   },
   // Close travel node selector view and show home view

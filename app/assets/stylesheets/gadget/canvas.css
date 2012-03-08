@@ -45,7 +45,6 @@ div.left-top {
   position: absolute;
 }
 div.left-middle {
-  overflow-y: scroll;
   width: 100%;
   top: 5px;
   left: 0;
@@ -218,7 +217,7 @@ div.logo {
 }
 div.address_container {
   margin-left: 10px;
-  width: 86%;
+  width: 156px;
 }
 #alias.address {
   margin-top: 5px;
@@ -234,9 +233,10 @@ div.address_container {
   cursor: pointer;
 }
 div.marker_container {
-  float: left;
+  vertical-align: top;
 }
 #alias_marker.marker_container {
+  vertical-align: top;  
   margin-top: 5px;
 }
 #alias_input {
@@ -309,7 +309,7 @@ div.button-outer_block {
   overflow: visible;
   width: 16px;
 }
-div.google_result, div.freq_address, div.search_button {
+div.google_result, div.freq_address, div.search_button, .base_button {
   vertical-align: middle;
   display: inline-block; 
   border: 1px solid #3079ED;
@@ -336,7 +336,19 @@ div.google_result, div.freq_address, div.search_button {
   padding: 0 8px;
   text-align: center;
 }
-div.freq_address, div.google_result {
+.accessory_container {
+  display: inline;
+  float: right;
+}
+.accessory {
+  margin: 0px;
+  display: block;
+  color: #333;
+  background: whiteSmoke;
+  border: 1px solid #CCC;
+  padding: 0 2px;
+}
+.freq_address, .google_result {
   color: #333;
   background: #F5F5F5;
   border: 1px solid #CCCCCC;
@@ -365,6 +377,8 @@ div.google_result {
   padding: 2%;
   margin: 0 0 15px 0;
   width: 96%;
+  overflow-y: auto;
+  height: 90%;  
 }
 #left-middle ul { 
   list-style: none; 
