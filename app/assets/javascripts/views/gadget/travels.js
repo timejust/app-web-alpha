@@ -296,10 +296,16 @@ Please use 'else where' button to choose proper location");
         view.summary.original_address);      
     } else {
       btn.attr("style", "margin-top: 1px");
-      if (btnStage == "previous")
+      if (view.stage == "previous")
         btn.html("WHERE DO YOU WANT TO LEAVE FROM");     
-      else 
+      else if (view.stage == "next")
         btn.html("WHERE DO YOU WANT TO GO TO");     
+      else {
+        if (btnStage == "previous")
+          btn.html("WHERE DO YOU WANT TO GO TO");     
+        else 
+          btn.html("WHERE DO YOU WANT TO LEAVE FROM");     
+      }
       btn.parent('div').find('.button_text').html("");
     }        
     // Set attribute leading to address selection page    
