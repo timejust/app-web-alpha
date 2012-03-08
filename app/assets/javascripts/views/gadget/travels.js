@@ -175,7 +175,8 @@ App.Views.TravelsView = Backbone.View.extend({
       this.generateTrip(e);  
     } else {
       var stage = el.attr("stage");
-      this.showAddressSelector(this.getEventWithStage(stage).summary, stage);
+      var event = this.getEventWithStage(stage);
+      this.showAddressSelector(event.summary, stage);
     }    
   },
   generateNextTravel: function(e) {
@@ -186,7 +187,8 @@ App.Views.TravelsView = Backbone.View.extend({
       this.generateTrip(e);
     } else {
       var stage = el.attr("stage");
-      this.showAddressSelector(this.getEventWithStage(stage).summary, stage);
+      var event = this.getEventWithStage(stage);
+      this.showAddressSelector(event.summary, stage);
     }
   },
   sanityCheck: function(from, to) {
@@ -521,6 +523,7 @@ Please use 'else where' button to choose proper location");
     timejust.setCookie('original_address', summary.original_address);
     timejust.setCookie('ip', this.ip);
     timejust.setCookie('stage', stage);
+    timejust.setCookie('accessLevel', summary.accessLevel);
     this.runEventPoller();
     gadgets.views.requestNavigateTo('canvas', { ip: this.ip });
   },

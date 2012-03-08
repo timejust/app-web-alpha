@@ -6,6 +6,7 @@ App.Models.EventSummary = Backbone.Model.extend({
     this.googleEventId = '';
     this.addressBook = new Array();
     this.selected = -1;
+    this.accessLevel = '';
   },
   appendAddressBook: function(address, lat, lng, normalized) {
     var id = this.addressBook.length;

@@ -336,6 +336,9 @@ div.google_result, div.freq_address, div.search_button, .base_button {
   padding: 0 8px;
   text-align: center;
 }
+.accessory_button:hover {
+  background: #999;
+}
 .accessory_container {
   display: inline;
   float: right;

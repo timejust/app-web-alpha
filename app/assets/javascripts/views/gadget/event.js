@@ -1,7 +1,3 @@
-/*
-<p class="gt_button"><a href="#" class="get_there">GET THERE !</a></p>\
-<p class="gt_button"><a href="#" class="leave_from">LEAVE FROM !</a></p>\
-*/
 App.Views.EventView = Backbone.View.extend({
   initialize: function(){
     _.bindAll(this, 'calendarEventOccured');
@@ -124,7 +120,7 @@ App.Views.EventView = Backbone.View.extend({
       this.previousEvent = null;
     }
     var optionalParms = {'requestedFields': ['details']};
-    google.calendar.read.getEvents(callback, [email], startDate, endDate, optionalParms);
+    google.calendar.read.getEvents(callback, [email], startDate, endDate, optionalParms);    
   },
   timeToUnix: function(time) {
     var date = new Date();
@@ -260,6 +256,7 @@ App.Views.EventView = Backbone.View.extend({
         }  
         summary.googleEventId = ev.id;
         summary.original_address = ev.location;
+        // summary.accessLevel = ev.accessLevel;
       } else {
         summary.original_address = "";
       }

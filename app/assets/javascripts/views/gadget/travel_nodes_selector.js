@@ -18,11 +18,13 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     this.original_address = $.cookie('original_address');
     this.ip = $.cookie('ip');
     this.stage = $.cookie('stage');  
+    this.accessLevel = $.cookie('accessLevel');  
     timejust.setCookie('ab', null);
     timejust.setCookie('alias', null);
     timejust.setCookie('original_address', null);
     timejust.setCookie('ip', null);
-    timejust.setCookie('stage', null);      
+    timejust.setCookie('stage', null); 
+    timejust.setCookie('accessLevel', null); 
     this.viewPortWidth = 0;
     this.viewPortHeight = 0;
     this.bounds = null;        
@@ -179,7 +181,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         <div class="title"<% if (star == "off") { %> style="color: gray;font-style: italic;"<%} %>><%=title%></div>\
         <div class="accessory_container">\
           <div id="use_alias_result" class="accessory_button base_button accessory">U</div>\
-          <div class="accessory_button base_button accessory">C</div>\
+          <% if (accessLevel == "owner") { %><div class="accessory_button base_button accessory">C</div><% } %>\
         </div>\
       </div>\
       <div class="address_block" data-address=\"<%=original_address%>\" data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\">\
@@ -198,7 +200,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       <div class="address_block" data-address=\"<%=original_address%>\" data-lat=\"<%=lat%>\" data-lng=\"<%=lng%>\">\
         <div class="accessory_container">\
           <div id="use_google_result" class="accessory_button base_button accessory">U</div>\
-          <div class="accessory_button base_button accessory">C</div>\
+          <% if (accessLevel == "owner") { %><div class="accessory_button base_button accessory">C</div><% } %>\
         </div>\
         <div class="marker_container">\
           <div class="marker_<%=index%>"></div>\
@@ -239,8 +241,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     $(this.el).html(this.default_layout);
     var top = $(this.el).find('.top');
     top.html(this.top_template);
-    this.getGeoAutocomplete('maininput');    
-    
+    this.getGeoAutocomplete('maininput');        
     // this.hitToSearch('maininput');
     if (this.original_address != "") {
       $(this.el).find('#maininput')[0].value = this.original_address;      
@@ -248,8 +249,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var left = $(this.el).find('.main').find('.left');    
     left.html(this.left_template);    
     $("#left-middle").organicTabs({
-      "speed":10, "delegate":this.handleTabChanged});
-    
+      "speed":10, "delegate":this.handleTabChanged
+    });    
     this.resize();
     this.showGoogleMap();
   },
@@ -519,6 +520,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
           var generalPin = (kMaxPins < i ? true : false);
           // First token is address, and rest of them are city + country normally.
           results += self.google_result({
+            accessLevel: self.accessLevel,
             index: generalPin ? 10 : i,
             address: tok[0],
             original_address: a.address,
@@ -555,6 +557,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
           var generalPin = (kMaxPins < i ? true : false);
          // First token is address, and rest of them are city + country normally.
           results += self.alias_result({
+            accessLevel: self.accessLevel,
             index: generalPin ? 10 : i,
             title: a.title,
             address: tok[0],
