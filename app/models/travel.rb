@@ -52,7 +52,7 @@ class Travel
       # Before create something, delete if already exists
       #travel_step.destroy_google_event_when(calendar.google_event_id, )
       if calendar == nil
-        travel_step.create_google_event(user.email) unless travel_step.error?
+        travel_step.create_google_event(user.email, user.email) unless travel_step.error?
       else
         travel_step.create_google_event(calendar.google_short_id, calendar.name) unless travel_step.error?
       end

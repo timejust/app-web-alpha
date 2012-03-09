@@ -81,9 +81,7 @@ class TravelStep
 
   # Create event(s) from travel
   def create_google_event(calendar_id, calendar_name = nil)
-    tz = TZInfo::Timezone.get(event['timezone'])
-    
-    Rails.logger.info "create_google_event - calendar_id: #{calendar_id}, calendar_name: #{calendar_name}"    
+    tz = TZInfo::Timezone.get(event['timezone'])    
     google_event = Google::Event.create(self.event.user.access_token, calendar_id,
       {
         title: self.summary.join('-'),
@@ -99,13 +97,15 @@ class TravelStep
         ]
       }
     )
-    Rails.logger.info(google_event.inspect)
-    Rails.logger.info(calendar_id)
+    Rails.logger.info "create_google_event - calendar_id: #{calendar_id}, calendar_name: #{calendar_name}"        
+    #Rails.logger.info(google_event.inspect)
     if !google_event['error'] && google_event['data']
       # If we wrote something on primary calendar, don't save it because,
       # we delete later what we've written on google's but we don't want
       # to delete the events on primary one.
-      if calendar_id != event.google_calendar_id
+      #Rails.logger.info "create_google_event - calendar_id: #{calendar_id}, event.google_calendar_id: #{event.google_calendar_id}, google_event['data']['id']: #{google_event['data']['id']}"        
+      #if calendar_id != event.google_calendar_id
+      if calendar_id != calendar_name
         self.google_event_id = google_event['data']['id']
         self.google_calendar_id = calendar_id
         self.calendar = calendar_name
@@ -247,7 +247,7 @@ class TravelStep
 
   def destroy_google_event_when(google_event_id, google_calendar_id)
     if google_event_id && google_calendar_id
-      #Rails.logger.info "destroy_google_event_when - google_calendar_id: #{google_calendar_id}, google_event_id: #{google_event_id}"
+      Rails.logger.info "destroy_google_event_when - google_calendar_id: #{google_calendar_id}, google_event_id: #{google_event_id}"
       Google::Event.destroy(
         self.event.user.access_token,
         google_calendar_id,
