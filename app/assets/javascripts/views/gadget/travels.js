@@ -12,14 +12,13 @@ App.Views.TravelsView = Backbone.View.extend({
     'click .value'                : 'changeTitle',
     'click .top'                  : 'toggleEvent',
     'click .travel_title'         : 'toggleSteps',
-    'poll #event_polling'         : 'handleEvent',
+    'poll #event_polling'         : 'handleEvent'
     'click .plus_container'       : 'addToCalendar'
   },
   initialize: function(){
-    showLoader();
-    _.bindAll(this, 'waitForTravels');
-    _.bindAll(this, 'waitForCalendars');
+    showLoader();    
     _.bindAll(this, 'handleEvent'); 
+    _.bindAll(this, 'handleTravel');
     gadgets.window.adjustHeight();
     this.ip = this.options.ip;    
     this.eventView = this.options.eventView;
@@ -30,8 +29,8 @@ App.Views.TravelsView = Backbone.View.extend({
     this.nextEventView = new App.Views.EventSummaryView({prefix: "to", stage: 'next'});  
     this.previousTravelView = new App.Views.TravelView();
     this.nextTravelView = new App.Views.TravelView();
-    this.travelType = 'previous';          
     this.pollerRunning = false;
+    this.travelQueue = new Array();    
   },
   appendEventSummary: function(i, summary) {
     this.summaries[i] = summary;
@@ -96,83 +95,10 @@ App.Views.TravelsView = Backbone.View.extend({
       this.renderButton();
     }
   },
-  waitForTravels: function(response) {
-    google.calendar.refreshEvents();
-    this.apiEventId = response.data._id;
-    var self = this;    
-    // Start polling for Travel proposals
-    $.poll(function(retry){
-      GoogleRequest.get({
-        url: App.config.api_url + "/events/" + self.apiEventId + "/travels?nocache=" + new Date().getTime(),
-        // TODO spec
-        success: function(response){
-          self.handleTravelResponse(response, retry);
-        },
-        // TODO spec
-        error: function(response){
-          self.handleTravelResponse(response, retry);
-        }
-      });
-    });
-  },
-  waitForCalendars: function() {    
-    var self = this;    
-    $.poll(function(retry){
-      GoogleRequest.get({
-        url: App.config.api_url + "/events/" + self.apiEventId + "/calendars?nocache=" + new Date().getTime(),
-        // TODO spec
-        success: function(response) {
-          if (response.rc == 200) {
-            google.calendar.refreshEvents();        
-          } else {
-            alert("It seems normal but not really...");
-          }
-        },
-        // TODO spec
-        error: function(response){
-          if (response.rc == 404) {
-            retry();
-          } else {
-            alert("Something's gone bad...");
-          }
-        }
-      });
-    });
-  },
-  // handle travel proposals response
-  // if status is a 404, continue
-  // if 410, stop, event was canceled
-  // if 200, show travel proposals
-  handleTravelResponse: function(response, retry) {
-    if (response.rc == 404) {
-      retry();
-    } else if (response.rc == 410) {
-      this.hideLoadingProgress();
-      this.model = null;
-    } else if (response.rc == 200) {
-      this.hideLoadingProgress();
-      var travelView = null;      
-      if (this.travelType == 'previous') {
-        travelView = this.previousTravelView;
-      } else {
-        travelView = this.nextTravelView;
-      }      
-      travelView.model = response.data;
-      travelView.render();  
-      this.renderButton();      
-      gadgets.window.adjustHeight();  
-      google.calendar.refreshEvents();       
-      this.waitForCalendars();      
-    } else if (response.rc == 401) {
-      alert("You must authorize Timejust to access your calendar. Please go to " + App.config.web_url);
-    }
-  },
   generatePreviousTravel: function(e) {
     var el = $(e.currentTarget).find(".button_name");      
     if (el.attr("planable") == "true") {
-      this.travelType = 'previous';
-      this.base = 'arrival';
-      this.generateTrip(e);  
+      this.generateTrip(e, 'arrival', 'previous');  
     } else {
       var stage = el.attr("stage");
       var event = this.getEventWithStage(stage);
@@ -182,9 +108,7 @@ App.Views.TravelsView = Backbone.View.extend({
   generateNextTravel: function(e) {
     var el = $(e.currentTarget).find(".button_name");   
     if (el.attr("planable") == "true") {
-      this.travelType = 'next';
-      this.base = 'departure';
-      this.generateTrip(e);
+      this.generateTrip(e, 'departure', 'next');
     } else {
       var stage = el.attr("stage");
       var event = this.getEventWithStage(stage);
@@ -197,15 +121,46 @@ App.Views.TravelsView = Backbone.View.extend({
   duplicationCheck: function(from, to) {
     return (from.address == to.address);
   },
+  handleEventCreated: function() {
+    google.calendar.refreshEvents();    
+  },
+  handleTravel: function(travel) {
+    this.hideLoadingProgress(travel.type);
+    if (travel != null) {
+      // Render trave view
+      var travelView = null;      
+      if (travel.type == 'previous') {
+        travelView = this.previousTravelView;
+      } else {
+        travelView = this.nextTravelView;
+      }      
+      travelView.model = travel.data;
+      travelView.render();  
+      this.renderButton();      
+      gadgets.window.adjustHeight();  
+      
+      // Remove the first item from travel queue.
+      this.travelQueue.splice(0, 1);      
+      
+      // We have to request another travel item from the queue until 
+      // queue is empty.      
+      if (this.travelQueue.length > 0) {
+        App.Models.Travel.getTravel(this.travelQueue[0], 
+          this.handleTravel);        
+      }
+      
+      travel.handleEventCreated(this.handleEventCreated);
+    } else {
+      // Something has gone wrong.
+    }
+  },  
   // Launch request to API to create event in database
   // If it was created successfully, show travel nodes selector view
-  generateTrip: function(event){
+  generateTrip: function(event, base, type){
     event.preventDefault();
-    gadgets.window.adjustHeight();        
     var from = null;
     var to = null;
-    var self = this;
-    if (this.travelType == 'previous') {
+    if (type == 'previous') {
       from = this.previousEventView;
       to = this.currentEventView;
     } else {
@@ -220,47 +175,22 @@ Please use 'else where' button to choose proper location");
     if (this.duplicationCheck(from, to) == true) {
       alert("The departure address and arrival address are same");
       return;
-    }    
-    this.showLoadingProgress();
-    
-    // TODO : use Event model and bind callback on created event
-    GoogleRequest.post({
-      url: App.config.api_url + "/events",
-      params: {
-        event: JSON.stringify($.extend(
-          this.selectedEvent,
-          { before_start_time: 0, after_end_time: 0 }          
-        )),
-        current_ip: this.ip,        
-        base: this.base,
-        'previous_travel_node[address]': from.address,
-        'previous_travel_node[title]': from.title,
-        'previous_travel_node[state]': 'confirmed',
-        'previous_travel_node[event_google_id]': from.summary.googleEventId,
-        'previous_travel_node[lat]' : from.lat,
-        'previous_travel_node[lng]' : from.lng,
-        'previous_travel_node[has_normalized]' : '1',
-        'current_travel_node[address]': to.address,
-        'current_travel_node[title]': to.title,
-        'current_travel_node[state]': 'confirmed',
-        'current_travel_node[event_google_id]': to.summary.googleEventId,
-        'current_travel_node[lat]' : to.lat,
-        'current_travel_node[lng]' : to.lng,
-        'current_travel_node[has_normalized]' : '1',
-      },
-      success: this.waitForTravels,
-      error: function(response) { 
-        self.hideLoadingProgress();
-        if (response.rc == 401) {
-          alert("You must authorize Timejust to access your calendar. Please go to " + App.config.web_url);
-        } 
-      }
-    });
+    } 
+
+    // Soon as we push travel request, show loading progress bar.
+    this.travelQueue.push({current: this.selectedEvent, 
+      from: from, to: to, ip: this.ip, base: base, type: type});
+    this.showLoadingProgress(type);          
+    if (this.travelQueue.length == 1) {
+      // We only do job when the queue has only one item
+      App.Models.Travel.getTravel(this.travelQueue[0], 
+        this.handleTravel);
+    }     
   },  
-  showLoadingProgress: function() {
+  showLoadingProgress: function(type) {
     var loading = null;
     var btn = null;
-    if (this.travelType == 'previous') {
+    if (type == 'previous') {
       loading = this.previousLoading;
       btn = $('#previous_travel_btn').parent('div').parent('a')[0];
     } else {
@@ -270,10 +200,10 @@ Please use 'else where' button to choose proper location");
     loading.style.display = "inline-block";        
     btn.style.display = "none";
   }, 
-  hideLoadingProgress: function() {
+  hideLoadingProgress: function(type) {
     var loading = null;
     var btn = null;
-    if (this.travelType == 'previous') {
+    if (type == 'previous') {
       loading = this.previousLoading;
       btn = $('#previous_travel_btn').parent('div').parent('a')[0];
     } else {

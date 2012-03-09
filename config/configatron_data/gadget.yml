@@ -25,14 +25,12 @@
         - models/user.js
         - models/event.js
         - models/travel.js
-        - models/travel_step.js
         - controllers/gadget.js
       :home:        
         - views/gadget/event.js
         - views/gadget/event_summary.js
         - views/gadget/travels.js
         - views/gadget/travel.js
-        - views/gadget/travel_step.js
         - models/event_summary.js
       :canvas:
         - jquery.autocomplete_geomod.js
