@@ -12,7 +12,7 @@ App.Views.TravelsView = Backbone.View.extend({
     'click .value'                : 'changeTitle',
     'click .top'                  : 'toggleEvent',
     'click .travel_title'         : 'toggleSteps',
-    'poll #event_polling'         : 'handleEvent'
+    'poll #event_polling'         : 'handleEvent',
     'click .plus_container'       : 'addToCalendar'
   },
   initialize: function(){
