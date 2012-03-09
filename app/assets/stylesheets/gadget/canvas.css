@@ -217,7 +217,7 @@ div.logo {
 }
 div.address_container {
   margin-left: 10px;
-  width: 156px;
+  width: 142px;
 }
 #alias.address {
   margin-top: 5px;
@@ -437,7 +437,7 @@ div.google_result {
   background-color: #ffffff; 
   color: black; 
 }
-#left-middle .nav li a:hover, #left-middle .nav li a:focus { 
+#left-middle .nav li a:hover { 
   background: #999;
 }
 .hide { position: absolute; top: -9999px; left: -9999px; }
