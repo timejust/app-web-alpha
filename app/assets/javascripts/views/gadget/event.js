@@ -9,7 +9,6 @@ App.Views.EventView = Backbone.View.extend({
     this.user = this.options.user      
     // Bind event on calendar event click
     google.calendar.read.subscribeToEvents(this.calendarEventOccured);
-    timejust.setCookie('email', this.user.email);
     this.getAlias(this.user.email, this.onAlias);    
     this.previousEvent = null;
     this.nextEvent = null;
@@ -22,14 +21,14 @@ App.Views.EventView = Backbone.View.extend({
     this.events = new Array();
   },
   template: _.template('\
-    <p class="title"><%= title %></p>\
-    <p class="location"><%= location %></p>\
-    <ul class="schedule">\
+    <div class="title"><%= title %></div>\
+    <div class="location"><%= location %></div>\
+    <div class="schedule">\
       <li class="event_date"></li>\
       <li><%= $.format.date(google.calendar.utils.toDate(startTime), App.config.dateOnly) %></li>\
       <li class="event_time"></li>\
       <li><%if(startTime.hour < 10){%>0<%}%><%=startTime.hour%>:<%if(startTime.minute < 10){%>0<%}%><%= startTime.minute %></li>\
-    </ul>\
+    </div>\
   '),
   // Calendar event was clicked, store and display it
   calendarEventOccured: function(calendarEvent){
@@ -287,10 +286,14 @@ App.Views.EventView = Backbone.View.extend({
   },
   // Render the selected Event in gadget sidebar
   render: function(){
-    if (this.selectedEvent){
-      $(this.el).html(this.template(this.selectedEvent));
+    if (this.selectedEvent) {
+      var title = new App.Views.TitleView({el: this.el});
+      title.title = this.selectedEvent.title;
+      title.location = this.selectedEvent.location;
+      title.time = this.selectedEvent.startTime;
+      title.render();
     } else{
-      $(this.el).html("<p class=\"title\">Select an event</p>");
+      $(this.el).html("<div class=\"title\">Select an event</div>");
     }
     gadgets.window.adjustHeight();
   },

@@ -30,7 +30,9 @@ App.Views.TravelsView = Backbone.View.extend({
     this.previousTravelView = new App.Views.TravelView();
     this.nextTravelView = new App.Views.TravelView();
     this.pollerRunning = false;
-    this.travelQueue = new Array();    
+    this.travelQueue = new Array();   
+    // this.eventLoop = new EventLoop();
+    // this.eventLoop.initialize(this.handleEvent); 
   },
   appendEventSummary: function(i, summary) {
     this.summaries[i] = summary;
@@ -302,6 +304,7 @@ Please use 'else where' button to choose proper location");
     this.nextTravelView.el = $('#next_travel').get(0);
     this.previousLoading = $('#previous_loading').get(0);
     this.nextLoading = $('#next_loading').get(0);
+    // this.eventLoop.el = $('#event_polling');
         
     this.previousEventView.render();
     this.currentEventView.render();
@@ -442,20 +445,20 @@ Please use 'else where' button to choose proper location");
   },  
   // Show travel nodes selector view to confirm each travel nodes addresses
   // Also start polling from API to get travels proposals
-  showAddressSelector: function(summary, stage) {
-    // Set current address proposals and aliases to cookie
-    // $.cookie('ab', summary.addressBook, { expires: 1 });
+  showAddressSelector: function(summary, stage) {    
     var ab = JSON.stringify(summary.addressBook, this.replacer);
     var alias = JSON.stringify(summary.alias, this.replacer);
-
+    var time = JSON.stringify(this.selectedEvent.startTime, this.replacer);    
+    // If you pass null parameter through gadgets.views.requestNavigateTo function, it 
+    // sometimes screw up parameters so let's make sure we don't pass any null values
+    var title = (summary.title == null ? "" : summary.title);
     timejust.setCookie('ab', ab);
     timejust.setCookie('alias', alias);
-    timejust.setCookie('original_address', summary.original_address);
-    timejust.setCookie('ip', this.ip);
-    timejust.setCookie('stage', stage);
-    timejust.setCookie('accessLevel', summary.accessLevel);
-    this.runEventPoller();
-    gadgets.views.requestNavigateTo('canvas', { ip: this.ip });
+    this.runEventPoller();    
+    // this.eventLoop.run();
+    gadgets.views.requestNavigateTo('canvas', { 
+      ip: this.ip, title: title, time: time, stage: stage, 
+      original_address: summary.original_address });
   },
   replacer: function(key, value) {
     if (typeof value === 'number' && !isFinite(value)) {

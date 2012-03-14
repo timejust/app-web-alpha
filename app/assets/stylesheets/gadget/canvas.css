@@ -7,6 +7,12 @@ ul.alias_result_container, ul.google_result_container {
 #gadgetContent-canvas {
   height: 100%;
 }
+#event_title {
+  vertical-align: middle;
+  margin-top: 1%;
+  width: 25em;
+  padding-left: 20px;
+}
 div {
   display: inline-block;
 }
@@ -213,7 +219,8 @@ div.logo {
   height: 59px;
   background-image:url(/icons/tj-logo.png);
   background-repeat: no-repeat;
-  margin: 10px 0px 10px 2%;
+  margin: 10px 30px 10px 2%;
+  float: right;
 }
 div.address_container {
   margin-left: 10px;
@@ -286,8 +293,9 @@ div.result_block {
   margin-bottom: 35px;
 }
 div.search_box {
-  vertical-align: 36px;
+  vertical-align: middle;
   margin-left: 1%;
+  margin-top: 1%;
   display: inline-block;
 }
 div.search_button_content {

@@ -26,6 +26,7 @@
         - models/event.js
         - models/travel.js
         - controllers/gadget.js
+        - views/gadget/title.js
       :home:        
         - views/gadget/event.js
         - views/gadget/event_summary.js
