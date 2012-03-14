@@ -21,6 +21,7 @@
         - lib/string.js
         - lib/cookie.js
         - lib/alias.js
+        - lib/event_loop.js
         - gadget_common.js
         - models/user.js
         - models/event.js

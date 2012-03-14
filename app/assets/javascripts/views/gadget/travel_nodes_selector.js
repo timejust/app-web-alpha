@@ -12,29 +12,22 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     _.bindAll(this, 'onNormalizedAddress');
     _.bindAll(this, 'handleTabChanged');
     this.results = new Array();
-    this.markerList = new Array();    
-    this.ab = eval('(' + $.cookie('ab') + ')');
-    this.alias = eval('(' + $.cookie('alias') + ')');
-    // this.original_address = $.cookie('original_address');
-    // this.ip = $.cookie('ip');
-    // this.stage = $.cookie('stage');  
-    // this.accessLevel = $.cookie('accessLevel');  
-    timejust.setCookie('ab', null);
-    timejust.setCookie('alias', null);
-    // timejust.setCookie('original_address', null);
-    // timejust.setCookie('ip', null);
-    // timejust.setCookie('stage', null); 
-    // timejust.setCookie('accessLevel', null); 
+    this.markerList = new Array();
+    this.seed = this.options.seed;        
+    this.ab = eval('(' + $.cookie(this.seed + '_ab') + ')');
+    this.alias = eval('(' + $.cookie(this.seed + '_alias') + ')');
+    this.email = $.cookie(this.seed + '_email');
+    timejust.setCookie(this.seed + '_ab', null);
+    timejust.setCookie(this.seed + '_alias', null);
     this.viewPortWidth = 0;
     this.viewPortHeight = 0;
     this.bounds = null;        
     this.kResultContainer = "google_result_container";
     this.kAliasContainer = "alias_result_container";
-    // this.title = this.options.title;
+    this.eventKey = this.options.eventKey;
     this.ip = this.options.ip;
     this.stage = this.options.stage;
     this.original_address = this.options.original_address;
-    // this.time = eval('(' + this.options.time + ')');    
     var doNormalize = true;
     // If the given address is alias, get location information from
     // alias list and set it to result list.
@@ -329,9 +322,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         title: '@' + title,
         stage: self.stage
       }
-    };           
-    var json = JSON.stringify(ev, self.replacer);
-    timejust.setCookie('event', json);            
+    };               
+    EventLoop.sendEvent(ev, this.eventKey);
     
     // Refresh alias result view
     this.showAliasResult(null, true);    
@@ -361,8 +353,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         stage: self.stage
       }
     };                   
-    var json = JSON.stringify(ev, self.replacer);
-    timejust.setCookie('event', json);
+    EventLoop.sendEvent(ev, this.eventKey);
     
     // Display alias add completion message.    
     var title = this.cleanupAliasTitle(o.title);
@@ -397,7 +388,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         GoogleRequest.post({
           url: App.config.api_url + "/users/add_alias",
           params: { 
-            'email' : $.cookie('email'),
+            'email' : self.email,
             'address': o.address,
             'title': o.title,
             'lat': o.lat,
@@ -434,7 +425,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     GoogleRequest.post({
       url: App.config.api_url + "/users/delete_alias",
       params: { 
-        'email' : $.cookie('email'),
+        'email' : self.email,
         'title': '@' + title
       },
       error: function() {
@@ -620,8 +611,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var title = $(e.currentTarget).parent('div').parent('div').find('.title');
 
     // Let's go back to home canvas
-    gadgets.views.requestNavigateTo('home');
-        
+    gadgets.views.requestNavigateTo('home');      
     var ev = {
       type: 'EVENT_ALIAS_SELECTED',
       params: {
@@ -629,8 +619,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         stage: this.stage
       }
     };
-    var json = JSON.stringify(ev, this.replacer);
-    timejust.setCookie('event', json);
+    EventLoop.sendEvent(ev, this.eventKey);
   },
   selectAddress: function(e) {
     e.preventDefault();
@@ -642,25 +631,20 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     // Let's go back to home canvas
     gadgets.views.requestNavigateTo('home');
         
-    var ev = {};
-    ev.type = 'EVENT_ADDRESS_SELECTED';
-    ev.params = {};
+    var ev = {
+      type: 'EVENT_ADDRESS_SELECTED',
+      params: {
+        address: address_block.attr('data-address'),
+        lat: address_block.attr('data-lat'),
+        lng: address_block.attr('data-lng'),
+        stage: this.stage
+      }
+    };
     if (alias != null) {
       ev.params.title = '@' + this.cleanupAliasTitle(alias);
     }    
-    ev.params.address = address_block.attr('data-address');
-    ev.params.lat = address_block.attr('data-lat');
-    ev.params.lng = address_block.attr('data-lng');
-    ev.params.stage = this.stage;
-    var json = JSON.stringify(ev, this.replacer);
-    timejust.setCookie('event', json);
+    EventLoop.sendEvent(ev, this.eventKey);
   },    
-  replacer: function(key, value) {
-    if (typeof value === 'number' && !isFinite(value)) {
-        return String(value);
-    }
-    return value;
-  },
   focusMapWithAlias: function(e) {
     var title = $(e.currentTarget)[0].textContent;
     var latlng = null;

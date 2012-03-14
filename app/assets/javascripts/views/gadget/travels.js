@@ -12,16 +12,16 @@ App.Views.TravelsView = Backbone.View.extend({
     'click .value'                : 'changeTitle',
     'click .top'                  : 'toggleEvent',
     'click .travel_title'         : 'toggleSteps',
-    'poll #event_polling'         : 'handleEvent',
     'click .plus_container'       : 'addToCalendar'
   },
   initialize: function(){
     showLoader();    
-    // _.bindAll(this, 'handleEvent'); 
+    _.bindAll(this, 'handleEvent'); 
     _.bindAll(this, 'handleTravel');
     gadgets.window.adjustHeight();
     this.ip = this.options.ip;    
     this.eventView = this.options.eventView;
+    this.seed = this.eventView.seed;
     this.summaries = new Array();    
     this.previousEventView = new App.Views.EventSummaryView({prefix: "from", stage: 'previous'});
     this.currentEventView = new App.Views.EventSummaryView({stage: 'current'});
@@ -31,34 +31,23 @@ App.Views.TravelsView = Backbone.View.extend({
     this.nextTravelView = new App.Views.TravelView();
     this.pollerRunning = false;
     this.travelQueue = new Array();   
-    // this.eventLoop = new EventLoop();
-    // this.eventLoop.initialize(this.handleEvent); 
+    this.eventLoop = EventLoop.getInstance();
+    this.eventLoop.callback = this.handleEvent;
   },
   appendEventSummary: function(i, summary) {
     this.summaries[i] = summary;
   },
-  handleEvent: function(e) {
+  handleEvent: function(type, params) {
     var self = this;
-    $.poll(200, function(retry) {
-      var ev = $.cookie('event');    
-      if (ev == null || ev == "") {
-        retry();
-      } else {  
-        ev = eval('(' + ev + ')');      
-        if (ev.type == 'EVENT_ADDRESS_SELECTED') {
-          self.onAddressSelected(ev.params);
-        } else if (ev.type == 'EVENT_ALIAS_SELECTED') {
-          self.onAliasSelected(ev.params);
-        } else if (ev.type == 'EVENT_ALIAS_ADDED') {
-          self.onAliasAdded(ev.params);
-        } else if (ev.type == 'EVENT_ALIAS_DELETED') {
-          self.onAliasDeleted(ev.params);
-        }
-        // Clear event cookie
-        timejust.setCookie('event', null);
-        retry();
-      }  
-    });                 
+    if (type == 'EVENT_ADDRESS_SELECTED') {
+      self.onAddressSelected(params);
+    } else if (type == 'EVENT_ALIAS_SELECTED') {
+      self.onAliasSelected(params);
+    } else if (type == 'EVENT_ALIAS_ADDED') {
+      self.onAliasAdded(params);
+    } else if (type == 'EVENT_ALIAS_DELETED') {
+      self.onAliasDeleted(params);
+    }
   },  
   onAliasAdded: function(params) {
     this.previousEventView.appendAlias(params.title, params.address, params.lat, params.lng);
@@ -304,7 +293,7 @@ Please use 'else where' button to choose proper location");
     this.nextTravelView.el = $('#next_travel').get(0);
     this.previousLoading = $('#previous_loading').get(0);
     this.nextLoading = $('#next_loading').get(0);
-    // this.eventLoop.el = $('#event_polling');
+    this.eventLoop.el = $('#event_polling');
         
     this.previousEventView.render();
     this.currentEventView.render();
@@ -448,22 +437,12 @@ Please use 'else where' button to choose proper location");
   showAddressSelector: function(summary, stage) {    
     var ab = JSON.stringify(summary.addressBook, this.replacer);
     var alias = JSON.stringify(summary.alias, this.replacer);
-    // var time = JSON.stringify(this.selectedEvent.startTime, this.replacer);    
-    // If you pass null parameter through gadgets.views.requestNavigateTo function, it 
-    // sometimes screw up parameters so let's make sure we don't pass any null values
-    // var title = (summary.title == null ? "" : summary.title);
-    timejust.setCookie('ab', ab);
-    timejust.setCookie('alias', alias);
-    this.runEventPoller();    
-    // this.eventLoop.run();
+    timejust.setCookie(this.seed + '_ab', ab);
+    timejust.setCookie(this.seed + '_alias', alias);
+    this.eventLoop.run();
     gadgets.views.requestNavigateTo('canvas', { 
-      ip: this.ip, stage: stage, 
-      original_address: summary.original_address });
-    /*
-    gadgets.views.requestNavigateTo('canvas', { 
-      ip: this.ip, title: title, time: time, stage: stage, 
-      original_address: summary.original_address });
-      */
+      ip: this.ip, stage: stage, eventKey: this.eventLoop.eventKey,
+      original_address: summary.original_address, seed: this.seed });
   },
   replacer: function(key, value) {
     if (typeof value === 'number' && !isFinite(value)) {
@@ -471,15 +450,6 @@ Please use 'else where' button to choose proper location");
     }
     return value;
   },
-  runEventPoller: function() {
-    if (this.pollerRunning != true) {
-      var e = $(this.el).find('#event_polling');
-      // Before starting event poller, clear event cookie
-      timejust.setCookie('event', null);
-      e.trigger('poll');         
-      this.pollerRunning = true;
-    }
-  },  
   clear: function() {
     this.previousEventView.clear();
     this.currentEventView.clear();
