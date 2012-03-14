@@ -31,8 +31,8 @@ App.Views.TravelsView = Backbone.View.extend({
     this.nextTravelView = new App.Views.TravelView();
     this.pollerRunning = false;
     this.travelQueue = new Array();   
-    this.eventLoop = new EventLoop();
-    this.eventLoop.initialize(this.handleEvent); 
+    // this.eventLoop = new EventLoop();
+    // this.eventLoop.initialize(this.handleEvent); 
   },
   appendEventSummary: function(i, summary) {
     this.summaries[i] = summary;
@@ -304,7 +304,7 @@ Please use 'else where' button to choose proper location");
     this.nextTravelView.el = $('#next_travel').get(0);
     this.previousLoading = $('#previous_loading').get(0);
     this.nextLoading = $('#next_loading').get(0);
-    this.eventLoop.el = $('#event_polling');
+    // this.eventLoop.el = $('#event_polling');
         
     this.previousEventView.render();
     this.currentEventView.render();
@@ -454,8 +454,8 @@ Please use 'else where' button to choose proper location");
     var title = (summary.title == null ? "" : summary.title);
     timejust.setCookie('ab', ab);
     timejust.setCookie('alias', alias);
-    // this.runEventPoller();    
-    this.eventLoop.run();
+    this.runEventPoller();    
+    // this.eventLoop.run();
     gadgets.views.requestNavigateTo('canvas', { 
       ip: this.ip, title: title, time: time, stage: stage, 
       original_address: summary.original_address });
@@ -467,7 +467,6 @@ Please use 'else where' button to choose proper location");
     return value;
   },
   runEventPoller: function() {
-    /*
     if (this.pollerRunning != true) {
       var e = $(this.el).find('#event_polling');
       // Before starting event poller, clear event cookie
@@ -475,7 +474,6 @@ Please use 'else where' button to choose proper location");
       e.trigger('poll');         
       this.pollerRunning = true;
     }
-    */
   },  
   clear: function() {
     this.previousEventView.clear();
