@@ -220,14 +220,14 @@ Please use 'else where' button to choose proper location");
     } else {
       // btn.attr("style", "margin-top: 1px");
       if (view.stage == "previous")
-        btn.html("LEAVING FROM?");     
+        btn.html("WHERE ARE YOU LEAVING FROM?");     
       else if (view.stage == "next")
-        btn.html("GOING TO?");     
+        btn.html("WHERE ARE YOU GOING TO?");     
       else {
         if (btnStage == "previous")
-          btn.html("GOING TO?");     
+          btn.html("WHERE ARE YOU GOING TO?");     
         else 
-          btn.html("LEAVING FROM?");     
+          btn.html("WHERE ARE YOU LEAVING FROM?");     
       }
       btn.parent('div').find('.button_text').html("");
     }        
