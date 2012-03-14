@@ -30,7 +30,9 @@ App.Views.TravelsView = Backbone.View.extend({
     this.previousTravelView = new App.Views.TravelView();
     this.nextTravelView = new App.Views.TravelView();
     this.pollerRunning = false;
-    this.travelQueue = new Array();    
+    this.travelQueue = new Array();   
+    this.eventLoop = new EventLoop();
+    this.eventLoop.initialize(this.handleEvent); 
   },
   appendEventSummary: function(i, summary) {
     this.summaries[i] = summary;
@@ -302,6 +304,7 @@ Please use 'else where' button to choose proper location");
     this.nextTravelView.el = $('#next_travel').get(0);
     this.previousLoading = $('#previous_loading').get(0);
     this.nextLoading = $('#next_loading').get(0);
+    this.eventLoop.el = $('#event_polling');
         
     this.previousEventView.render();
     this.currentEventView.render();
@@ -442,14 +445,7 @@ Please use 'else where' button to choose proper location");
   },  
   // Show travel nodes selector view to confirm each travel nodes addresses
   // Also start polling from API to get travels proposals
-  showAddressSelector: function(summary, stage) {
-    // Set current address proposals and aliases to cookie
-    // $.cookie('ab', summary.addressBook, { expires: 1 });
-    // timejust.setCookie('original_address', summary.original_address);
-    // timejust.setCookie('ip', this.ip);
-    // timejust.setCookie('stage', stage);
-    // timejust.setCookie('accessLevel', summary.accessLevel);
-    
+  showAddressSelector: function(summary, stage) {    
     var ab = JSON.stringify(summary.addressBook, this.replacer);
     var alias = JSON.stringify(summary.alias, this.replacer);
     var time = JSON.stringify(this.selectedEvent.startTime, this.replacer);    
@@ -458,7 +454,8 @@ Please use 'else where' button to choose proper location");
     var title = (summary.title == null ? "" : summary.title);
     timejust.setCookie('ab', ab);
     timejust.setCookie('alias', alias);
-    this.runEventPoller();    
+    // this.runEventPoller();    
+    this.eventLoop.run();
     gadgets.views.requestNavigateTo('canvas', { 
       ip: this.ip, title: title, time: time, stage: stage, 
       original_address: summary.original_address });
@@ -470,6 +467,7 @@ Please use 'else where' button to choose proper location");
     return value;
   },
   runEventPoller: function() {
+    /*
     if (this.pollerRunning != true) {
       var e = $(this.el).find('#event_polling');
       // Before starting event poller, clear event cookie
@@ -477,6 +475,7 @@ Please use 'else where' button to choose proper location");
       e.trigger('poll');         
       this.pollerRunning = true;
     }
+    */
   },  
   clear: function() {
     this.previousEventView.clear();

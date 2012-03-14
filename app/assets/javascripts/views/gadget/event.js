@@ -9,7 +9,6 @@ App.Views.EventView = Backbone.View.extend({
     this.user = this.options.user      
     // Bind event on calendar event click
     google.calendar.read.subscribeToEvents(this.calendarEventOccured);
-    timejust.setCookie('email', this.user.email);
     this.getAlias(this.user.email, this.onAlias);    
     this.previousEvent = null;
     this.nextEvent = null;
