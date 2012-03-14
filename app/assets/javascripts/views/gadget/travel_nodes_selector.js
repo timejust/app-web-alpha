@@ -15,21 +15,26 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     this.markerList = new Array();    
     this.ab = eval('(' + $.cookie('ab') + ')');
     this.alias = eval('(' + $.cookie('alias') + ')');
-    this.original_address = $.cookie('original_address');
-    this.ip = $.cookie('ip');
-    this.stage = $.cookie('stage');  
-    this.accessLevel = $.cookie('accessLevel');  
+    // this.original_address = $.cookie('original_address');
+    // this.ip = $.cookie('ip');
+    // this.stage = $.cookie('stage');  
+    // this.accessLevel = $.cookie('accessLevel');  
     timejust.setCookie('ab', null);
     timejust.setCookie('alias', null);
-    timejust.setCookie('original_address', null);
-    timejust.setCookie('ip', null);
-    timejust.setCookie('stage', null); 
-    timejust.setCookie('accessLevel', null); 
+    // timejust.setCookie('original_address', null);
+    // timejust.setCookie('ip', null);
+    // timejust.setCookie('stage', null); 
+    // timejust.setCookie('accessLevel', null); 
     this.viewPortWidth = 0;
     this.viewPortHeight = 0;
     this.bounds = null;        
     this.kResultContainer = "google_result_container";
-    this.kAliasContainer = "alias_result_container"    
+    this.kAliasContainer = "alias_result_container";
+    this.title = this.options.title;
+    this.ip = this.options.ip;
+    this.stage = this.options.stage;
+    this.original_address = this.options.original_address;
+    this.time = eval('(' + this.options.time + ')');    
     var doNormalize = true;
     // If the given address is alias, get location information from
     // alias list and set it to result list.
@@ -70,15 +75,6 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
   },
   getCurrentStage: function() {
     return this.current_stage;
-    /*
-    var google_result_container = $('#' + this.kResultContainer);
-    // var alias_result_container = $('#' + this.kAliasContainer);
-    if (google_result_container[0].style.display == 'none') {
-      return this.kAliasContainer;
-    } else {
-      return this.kResultContainer;
-    }
-    */
   },
   setResizeEventHandler: function() {
     var self = this;
@@ -140,7 +136,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
           self.search(e);
       }    
     });
-  },
+  },  
   default_layout: _.template('\
     <div class="top"></div>\
     <div class="main">\
@@ -149,7 +145,10 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     </div>\
   '),
   top_template: _.template('\
-    <div class="logo"></div>\
+    <div id="event_title">\
+      <div class="selected_event">\
+      </div>\
+    </div>\
     <div class="search_box">\
       <div class="search">\
         <input class="keyword" name="q" maxlength="2048" size="28" id="maininput" placeholder="Search Location" />\
@@ -160,6 +159,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         </div>\
       </div>\
     </div>\
+    <div class="logo"></div>\
   '),
   left_template: _.template('\
     <div class="left-middle" id="left-middle">\
@@ -241,6 +241,23 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     $(this.el).html(this.default_layout);
     var top = $(this.el).find('.top');
     top.html(this.top_template);
+    var title = new App.Views.TitleView({el: 
+      $(this.el).find('#event_title').find('.selected_event')});
+    
+    if (this.title != "") {
+      title.title = this.title;
+      title.location = this.original_address;
+      title.time = this.time;      
+    } else {
+      if (this.stage == "previous") 
+        title.title = "from";
+      else
+        title.title = "to"; 
+      title.location = null;
+      title.time = null;    
+    }
+    title.render();
+    
     this.getGeoAutocomplete('maininput');        
     // this.hitToSearch('maininput');
     if (this.original_address != "") {

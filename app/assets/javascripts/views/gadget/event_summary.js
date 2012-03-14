@@ -13,7 +13,7 @@ App.Views.EventSummaryView = Backbone.View.extend({
     this.lng = 0.0;
     this.normalized = false;
     this.kMaxLength = 21;
-    this.classType = "event";
+    this.classType = "event";    
   },
   setAliasClassType: function() {
     this.classType = "alias";

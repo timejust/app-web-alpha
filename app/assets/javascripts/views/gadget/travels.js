@@ -445,17 +445,23 @@ Please use 'else where' button to choose proper location");
   showAddressSelector: function(summary, stage) {
     // Set current address proposals and aliases to cookie
     // $.cookie('ab', summary.addressBook, { expires: 1 });
+    // timejust.setCookie('original_address', summary.original_address);
+    // timejust.setCookie('ip', this.ip);
+    // timejust.setCookie('stage', stage);
+    // timejust.setCookie('accessLevel', summary.accessLevel);
+    
     var ab = JSON.stringify(summary.addressBook, this.replacer);
     var alias = JSON.stringify(summary.alias, this.replacer);
-
+    var time = JSON.stringify(this.selectedEvent.startTime, this.replacer);    
+    // If you pass null parameter through gadgets.views.requestNavigateTo function, it 
+    // sometimes screw up parameters so let's make sure we don't pass any null values
+    var title = (summary.title == null ? "" : summary.title);
     timejust.setCookie('ab', ab);
     timejust.setCookie('alias', alias);
-    timejust.setCookie('original_address', summary.original_address);
-    timejust.setCookie('ip', this.ip);
-    timejust.setCookie('stage', stage);
-    timejust.setCookie('accessLevel', summary.accessLevel);
-    this.runEventPoller();
-    gadgets.views.requestNavigateTo('canvas', { ip: this.ip });
+    this.runEventPoller();    
+    gadgets.views.requestNavigateTo('canvas', { 
+      ip: this.ip, title: title, time: time, stage: stage, 
+      original_address: summary.original_address });
   },
   replacer: function(key, value) {
     if (typeof value === 'number' && !isFinite(value)) {
