@@ -30,11 +30,11 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     this.bounds = null;        
     this.kResultContainer = "google_result_container";
     this.kAliasContainer = "alias_result_container";
-    this.title = this.options.title;
+    // this.title = this.options.title;
     this.ip = this.options.ip;
     this.stage = this.options.stage;
     this.original_address = this.options.original_address;
-    this.time = eval('(' + this.options.time + ')');    
+    // this.time = eval('(' + this.options.time + ')');    
     var doNormalize = true;
     // If the given address is alias, get location information from
     // alias list and set it to result list.
@@ -145,10 +145,6 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     </div>\
   '),
   top_template: _.template('\
-    <div id="event_title">\
-      <div class="selected_event">\
-      </div>\
-    </div>\
     <div class="search_box">\
       <div class="search">\
         <input class="keyword" name="q" maxlength="2048" size="28" id="maininput" placeholder="Search Location" />\
@@ -241,9 +237,9 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     $(this.el).html(this.default_layout);
     var top = $(this.el).find('.top');
     top.html(this.top_template);
+    /*
     var title = new App.Views.TitleView({el: 
-      $(this.el).find('#event_title').find('.selected_event')});
-    
+      $(this.el).find('#event_title').find('.selected_event')});  
     if (this.title != "") {
       title.title = this.title;
       title.location = this.original_address;
@@ -257,7 +253,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       title.time = null;    
     }
     title.render();
-    
+  */  
     this.getGeoAutocomplete('maininput');        
     // this.hitToSearch('maininput');
     if (this.original_address != "") {
@@ -521,6 +517,17 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     });
     return [tok[0], city];
   },
+  getHeadLineText: function() {
+    var text = "";
+    if (this.stage == "previous") {
+      text = "You are leaving from";
+    } else if (this.stage == "next") {
+      text = "You are going to";
+    } else {
+      text = "Your appointment is at";
+    }
+    return text;
+  },
   showGoogleResult: function(e, reload) {
     if (e != null)
       e.preventDefault();        
@@ -531,6 +538,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var kMaxPins = 10;    
     if (this.results != null) {
       self.deletePins();      
+      results += '<div class="headline">' + self.getHeadLineText() + '</div>';
       $.each(this.results, function(i, a) {
         if (reload == true) {
           var tok = self.tokenizeAddress(a.address);
@@ -568,6 +576,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     var kMaxPins = 10;    
     if (this.alias != null) {
       self.deletePins();     
+      results += '<div class="headline">' + self.getHeadLineText() + '</div>';
       $.each(this.alias, function(i, a) {
         if (reload == true) {
           var tok = self.tokenizeAddress(a.address);
