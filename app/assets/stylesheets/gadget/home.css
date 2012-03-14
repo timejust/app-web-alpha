@@ -1,3 +1,9 @@
+.error {
+	color: red;
+	font-size: 10px;
+	border: #DDD 1px solid;
+	margin-bottom: 1px;
+}
 .loading {
   display: none;
   background: url(/icons/wait.gif);
