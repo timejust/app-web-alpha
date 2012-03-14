@@ -246,10 +246,11 @@ div.address_container {
 }
 div.marker_container {
   vertical-align: top;
+  cursor: pointer;
 }
 #alias_marker.marker_container {
   vertical-align: top;  
-  margin-top: 5px;
+  margin-top: 5px; 
 }
 #alias_input {
   margin-top: -2px;

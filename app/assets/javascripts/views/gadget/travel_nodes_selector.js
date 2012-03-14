@@ -1,12 +1,14 @@
 App.Views.TravelNodesSelectorView = Backbone.View.extend({
   events: {
-    'click .search_button'               : 'search',
-    'click #google_result.control_block' : 'bookmarkAddress',
-    'click #alias_result.alias_delete'   : 'bookmarkDelete',
-    'click #use_google_result'           : 'selectAddress',
-    'click #result.address'              : 'focusMapWithResult',    
-    'click #use_alias_result'            : 'selectAlias',
-    'click .title'                       : 'focusMapWithAlias'
+    'click .search_button'                      : 'search',
+    'click #google_result.control_block'        : 'bookmarkAddress',
+    'click #alias_result.alias_delete'          : 'bookmarkDelete',
+    'click #use_google_result'                  : 'selectAddress',
+    'click #result.address'                     : 'focusMapWithResult',    
+    'click #use_alias_result'                   : 'selectAlias',
+    'click .title'                              : 'focusMapWithAlias',
+    'click #alias_marker.marker_container'      : 'focusMapWithAliasMarker',
+    'click #google_marker_container.marker_container' : 'focusMapWithResultMarker',
   },
   initialize: function(){
     _.bindAll(this, 'onNormalizedAddress');
@@ -191,7 +193,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
           <div id="use_google_result" class="accessory_button base_button accessory">Go!</div>\
           <% if (accessLevel == "owner") { %><div class="accessory_button base_button accessory">C</div><% } %>\
         </div>\
-        <div class="marker_container">\
+        <div id="google_marker_container" class="marker_container">\
           <div class="marker_<%=index%>"></div>\
         </div>\
         <div class="address_container">\
@@ -230,23 +232,6 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     $(this.el).html(this.default_layout);
     var top = $(this.el).find('.top');
     top.html(this.top_template);
-    /*
-    var title = new App.Views.TitleView({el: 
-      $(this.el).find('#event_title').find('.selected_event')});  
-    if (this.title != "") {
-      title.title = this.title;
-      title.location = this.original_address;
-      title.time = this.time;      
-    } else {
-      if (this.stage == "previous") 
-        title.title = "from";
-      else
-        title.title = "to"; 
-      title.location = null;
-      title.time = null;    
-    }
-    title.render();
-  */  
     this.getGeoAutocomplete('maininput');        
     // this.hitToSearch('maininput');
     if (this.original_address != "") {
@@ -659,8 +644,38 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       this.map.setZoom(17);  
     }    
   },
+  focusMapWithAliasMarker: function(e) {
+    var el = $(e.currentTarget).parent('div').parent('div').find('.title');    
+    var title = el[0].textContent;
+    var latlng = null;
+    $.each(this.alias, function(i, a) {
+      if (a.title == title) {
+        latlng = new google.maps.LatLng(a.lat, a.lng);
+        return false;
+      }
+    });
+    if (latlng != null) {
+      this.map.setCenter(latlng);
+      this.map.setZoom(17);  
+    }    
+  },
   focusMapWithResult: function(e) {
     var ab = $(e.currentTarget).parent('div').parent('div');
+    var address = ab.attr("data-address");
+    var latlng = null;
+    $.each(this.results, function(i, a) {
+      if (a.address == address) {
+        latlng = new google.maps.LatLng(a.location.lat, a.location.lng);
+        return false;
+      }
+    });
+    if (latlng != null) {
+      this.map.setCenter(latlng);
+      this.map.setZoom(17);
+    }
+  },
+  focusMapWithResultMarker: function(e) {
+    var ab = $(e.currentTarget).parent('div');
     var address = ab.attr("data-address");
     var latlng = null;
     $.each(this.results, function(i, a) {
