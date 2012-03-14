@@ -31,8 +31,8 @@ App.Controllers.GadgetController = Backbone.Router.extend({
     new App.Views.TravelNodesSelectorView({
       el: $('#travelNodesSelector').get(0),
       ip: gadgets.views.getParams()['ip'],
-      title: gadgets.views.getParams()['title'],
-      time: gadgets.views.getParams()['time'],
+      // title: gadgets.views.getParams()['title'],
+      // time: gadgets.views.getParams()['time'],
       stage: gadgets.views.getParams()['stage'],
       original_address: gadgets.views.getParams()['original_address']
     });

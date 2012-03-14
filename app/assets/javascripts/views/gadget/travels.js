@@ -17,7 +17,7 @@ App.Views.TravelsView = Backbone.View.extend({
   },
   initialize: function(){
     showLoader();    
-    _.bindAll(this, 'handleEvent'); 
+    // _.bindAll(this, 'handleEvent'); 
     _.bindAll(this, 'handleTravel');
     gadgets.window.adjustHeight();
     this.ip = this.options.ip;    
@@ -448,17 +448,22 @@ Please use 'else where' button to choose proper location");
   showAddressSelector: function(summary, stage) {    
     var ab = JSON.stringify(summary.addressBook, this.replacer);
     var alias = JSON.stringify(summary.alias, this.replacer);
-    var time = JSON.stringify(this.selectedEvent.startTime, this.replacer);    
+    // var time = JSON.stringify(this.selectedEvent.startTime, this.replacer);    
     // If you pass null parameter through gadgets.views.requestNavigateTo function, it 
     // sometimes screw up parameters so let's make sure we don't pass any null values
-    var title = (summary.title == null ? "" : summary.title);
+    // var title = (summary.title == null ? "" : summary.title);
     timejust.setCookie('ab', ab);
     timejust.setCookie('alias', alias);
     this.runEventPoller();    
     // this.eventLoop.run();
     gadgets.views.requestNavigateTo('canvas', { 
+      ip: this.ip, stage: stage, 
+      original_address: summary.original_address });
+    /*
+    gadgets.views.requestNavigateTo('canvas', { 
       ip: this.ip, title: title, time: time, stage: stage, 
       original_address: summary.original_address });
+      */
   },
   replacer: function(key, value) {
     if (typeof value === 'number' && !isFinite(value)) {
