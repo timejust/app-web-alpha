@@ -1,6 +1,7 @@
 App.Views.EventView = Backbone.View.extend({
   initialize: function(){
     _.bindAll(this, 'calendarEventOccured');
+    _.bindAll(this, 'dataChangeCallback');
     _.bindAll(this, 'error');
     _.bindAll(this, 'onEventCallback');
     _.bindAll(this, 'onNormalizedAddress');
@@ -9,6 +10,7 @@ App.Views.EventView = Backbone.View.extend({
     this.user = this.options.user      
     // Bind event on calendar event click
     google.calendar.read.subscribeToEvents(this.calendarEventOccured);
+    google.calendar.subscribeToDataChange(this.dataChangeCallback);
     this.seed = Math.floor(Math.random() * 101);
     timejust.setCookie(this.seed + '_email', this.user.email);
     this.getAlias(this.user.email, this.onAlias);    
@@ -32,6 +34,16 @@ App.Views.EventView = Backbone.View.extend({
       <li><%if(startTime.hour < 10){%>0<%}%><%=startTime.hour%>:<%if(startTime.minute < 10){%>0<%}%><%= startTime.minute %></li>\
     </div>\
   '),
+  dataChangeCallback: function() {
+    /*
+    if (this.selectedEvent != null) {
+      this.clear();
+      if (this.travelsView) 
+        this.travelsView.clear();
+      this.render();
+    } 
+    */   
+  },
   // Calendar event was clicked, store and display it
   calendarEventOccured: function(calendarEvent){
     if (this.isInitialized != true) {

@@ -218,7 +218,7 @@ Please use 'else where' button to choose proper location");
       btn.parent('div').find('.button_text').html(
         view.summary.original_address);      
     } else {
-      // btn.attr("style", "margin-top: 1px");
+      btn.attr("style", "margin-top: 1px");
       if (view.stage == "previous")
         btn.html("WHERE ARE YOU LEAVING FROM?");     
       else if (view.stage == "next")
