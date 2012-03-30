@@ -364,6 +364,7 @@ div.google_result, div.freq_address, div.search_button, .base_button {
   background: whiteSmoke;
   border: 1px solid #CCC;
   padding: 0 2px;
+  filter: ;
 }
 .freq_address, .google_result {
   color: #333;
