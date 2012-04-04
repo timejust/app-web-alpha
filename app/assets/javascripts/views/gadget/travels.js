@@ -21,13 +21,23 @@ App.Views.TravelsView = Backbone.View.extend({
     gadgets.window.adjustHeight();
     this.ip = this.options.ip;    
     this.eventView = this.options.eventView;
+    this.email = this.eventView.user.email;
     this.seed = this.eventView.seed;
-    this.summaries = new Array();    
-    this.previousEventView = new App.Views.EventSummaryView({prefix: "from", stage: 'previous'});
-    this.currentEventView = new App.Views.EventSummaryView({stage: 'current'});
+    this.summaries = new Array();  
+      
+    // Initialize event views
+    this.previousEventView = new App.Views.EventSummaryView(
+      {prefix: "from", stage: 'previous', email: this.email});    
+    this.currentEventView = new App.Views.EventSummaryView(
+      {stage: 'current', email: this.email});
     this.currentEventView.setCurrentEvent();
-    this.nextEventView = new App.Views.EventSummaryView({prefix: "to", stage: 'next'});  
-    this.previousTravelView = new App.Views.TravelView();
+    this.nextEventView = new App.Views.EventSummaryView(
+      {prefix: "to", stage: 'next', email: this.email});  
+    this.previousEventView.registerEventChangeHandler();
+    this.nextEventView.registerEventChangeHandler();
+        
+    // Initialize travel views
+    this.previousTravelView = new App.Views.TravelView();            
     this.nextTravelView = new App.Views.TravelView();
     this.pollerRunning = false;
     this.travelQueue = new Array();   
@@ -284,11 +294,13 @@ Please use 'else where' button to choose proper location");
     var self = this;
     $(this.el).html(this.default_layout);
     this.previousEventView.el = $('#previous_event').get(0);
-    this.previousEventView.summary = this.summaries[0];
+    this.previousEventView.bind(this.summaries[0]);
+    this.previousEventView.selectedEvent = this.selectedEvent;
     this.currentEventView.el = $('#current_event').get(0);
-    this.currentEventView.summary = this.summaries[1];
+    this.currentEventView.bind(this.summaries[1]);
     this.nextEventView.el = $('#next_event').get(0);
-    this.nextEventView.summary = this.summaries[2];
+    this.nextEventView.bind(this.summaries[2]);
+    this.nextEventView.selectedEvent = this.selectedEvent;
     this.previousTravelView.el = $('#previous_travel').get(0);
     this.nextTravelView.el = $('#next_travel').get(0);
     this.previousLoading = $('#previous_loading').get(0);
@@ -299,6 +311,8 @@ Please use 'else where' button to choose proper location");
     this.currentEventView.render();
     this.nextEventView.render();    
     this.renderButton();
+    
+    // alert($('#previous_event').innerWidth());    
     
     $(this.el).html();    
     gadgets.window.adjustHeight();
@@ -376,6 +390,9 @@ Please use 'else where' button to choose proper location");
     this.toggleText(title);
     this.toggleText(address);
     container.toggle();
+    
+    // alert($('#previous_event').innerWidth());    
+    
     gadgets.window.adjustHeight();
   },
   getEventWithStage: function(stage) {

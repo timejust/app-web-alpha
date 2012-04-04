@@ -15,8 +15,8 @@ gem 'configatron'
 
 # User managment
 gem 'devise'
-gem 'omniauth'
-gem 'oauth2'
+gem 'omniauth', "0.3.2"
+gem 'oauth2', "~> 0.5.2"
 
 # Models
 gem 'state_machine'
@@ -39,7 +39,9 @@ gem 'jquery-rails'
 gem 'thin'
 
 # Deploy with Capistrano
-# gem 'capistrano'
+gem 'capistrano'
+
+gem "faraday", "~> 0.7.6"
 
 # Cron jobs in Ruby
 gem 'whenever',         '~>0.6.8', :require => false
@@ -60,10 +62,8 @@ gem 'sanitize', '~>2.0.3'
 # faster json
 gem 'yajl-ruby', '~>0.8.2', :require => 'yajl/json_gem'
 
-# google direction
-# gem 'google_directions',       '~>0.1.3',
-#  :git => 'git://github.com/spk/google-directions-ruby.git',
-#  :branch => 'ruby1.9_and_otherfix'
+# google calendar
+gem 'google-api-client', "~> 0.4.2"
 
 # gem 'ratp-api-ruby', '~>0.2.0'
 

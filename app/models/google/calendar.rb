@@ -10,7 +10,7 @@ class Google::Calendar
   def self.list(access_token)
     Google::Request.get(access_token, "https://www.google.com/calendar/feeds/default/allcalendars/full")
   end
-
+    
   # Create a Google calendar for user related to access_token
   #
   # @param [OAauth2::AccessToken]   access_token, of user who create calendar

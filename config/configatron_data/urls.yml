@@ -1,6 +1,6 @@
 :development:
   :api:
-    :url: "http://api-staging.timejust.com:50001/v1"
+    :url: "http://api.timejust.com:50001/v1"
     :basic_auth:
       :user: "timejust"
       :password: "t1m3ju$t" 
@@ -15,7 +15,7 @@
     :geo_recognition: "v1/geo/recognition"
     :geo_direction: "v1/geo/direction"
     :http:
-      :url: "http://service-staging.timejust.com"
+      :url: "http://service-staging.timejust.com"        
 :staging:
   :api:
     :url: "https://api-staging.timejust.com/v1"
@@ -33,7 +33,7 @@
     :geo_recognition: "v1/geo/recognition"
     :geo_direction: "v1/geo/direction"
     :http:
-      :url: "http://service-staging.timejust.com"    
+      :url: "http://service-staging.timejust.com"        
 :production:
   :api:
     :url: "https://api.timejust.com/v1"
@@ -51,4 +51,4 @@
     :geo_recognition: "v1/geo/recognition"
     :geo_direction: "v1/geo/direction"
     :http:
-      :url: "http://service.timejust.com"    
+      :url: "http://service-staging.timejust.com"        

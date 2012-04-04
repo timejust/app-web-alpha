@@ -3,12 +3,15 @@
     :bus:
       :name: 'GreenProposal'
       :color: '#0D7813'
+      :color_id: '13'
     :train:
       :name: 'PinkProposal'
       :color: '#B1365F'
+      :color_id: '22'
     :car:
       :name: 'YellowProposal'
       :color: '#AB8B00'
+      :color_id: '11'
       
 :development:
   :gapps:

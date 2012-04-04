@@ -1,11 +1,11 @@
-"event_initial,event_travel_node_selector,google_calendar_creator": 3
+"event_initial,event_travel_node_selector,google_calendar_creator,google_calendar_sync": 3
 "event_travel_type, event_api_provider,event_abstract_api_provider,event_travel_sorter,event_saver": 3
 
 staging:
-  "event_initial,event_travel_node_selector,google_calendar_creator": 3
+  "event_initial,event_travel_node_selector,google_calendar_creator,google_calendar_sync": 3
   "event_travel_type, event_api_provider,event_abstract_api_provider,event_travel_sorter,event_saver": 3
 
 production:
-  "event_initial,event_travel_node_selector,google_calendar_creator": 4
+  "event_initial,event_travel_node_selector,google_calendar_creator,google_calendar_sync": 4
   "event_travel_type, event_api_provider,event_abstract_api_provider,event_travel_sorter,event_saver": 4
   

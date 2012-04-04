@@ -1,3 +1,45 @@
+.navigation_arrow_container {
+  width: 10px;
+  height: 18px;
+  display: inline-block;
+  float: right;
+  margin-right: 5px;
+  margin-top: -2px;
+}
+.navigation_up {
+  background: url(/icons/bt_nav_event.png);
+  background-position: -11px 0px;
+  background-repeat: no-repeat;  
+  width: 10px;
+  height: 9px;  
+  display: block;
+  cursor: pointer;
+}
+.navigation_down {
+  background: url(/icons/bt_nav_event.png);
+  background-position: -11px -10px;
+  background-repeat: no-repeat;
+  width: 10px;
+  height: 9px;  
+  display: block;
+  cursor: pointer;
+}
+.navigation_up.off {
+  background: url(/icons/bt_nav_event.png);
+  background-position: -22px 0px;
+  background-repeat: no-repeat;  
+  width: 10px;
+  height: 9px;  
+  display: block;
+}
+.navigation_down.off {
+  background: url(/icons/bt_nav_event.png);
+  background-position: -22px -10px;
+  background-repeat: no-repeat;
+  width: 10px;
+  height: 9px;  
+  display: block;
+}
 .error {
 	color: red;
 	font-size: 10px;
@@ -186,7 +228,7 @@ a.top:hover {
 .top_title_container {
   display: inline-block;
   text-align: left;
-  width: 89%;
+  width: 79%;
 }
 .top_toggle_container {
   display: inline-block;

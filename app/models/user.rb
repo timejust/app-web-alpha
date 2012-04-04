@@ -1,4 +1,5 @@
 require Rails.root.join('app', 'models', 'o_auth_helper')
+require 'google/api_client'
 
 class User
   include Mongoid::Document
@@ -8,15 +9,18 @@ class User
   field :refresh_token, type: String
   field :token_expires_at, type: Time
   field :expired, type: Integer, default: 0
-  field :calendar_color, type: String
+  field :issued_at, type: Integer
+  field :calendar_color, type: String  
   
   embeds_many :shared_calendars, class_name: "Calendar"
   has_many :events
   has_many :favorite_locations
   index([[ :email, Mongo::ASCENDING ]])
   
-  attr :access_token_cache
-
+  attr :access_token_cache  
+  cattr_accessor :google_api_client
+  cattr_accessor :google_calendar
+  
   # Include default devise modules. Others available are:
   # :token_authenticatable, :encryptable, :confirmable, :lockable, :timeoutable, :omniauthable,
   # :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :validatable
@@ -24,6 +28,52 @@ class User
 
   after_create :reset_authentication_token!
 
+  def set_google_api_client(client)
+    self.google_api_client = client
+    self.token = self.google_api_client.authorization.access_token
+    self.refresh_token = self.google_api_client.authorization.refresh_token
+    self.expired = self.google_api_client.authorization.expires_in
+    self.issued_at = self.google_api_client.authorization.issued_at
+    self.save
+    
+    self.google_calendar = self.google_api_client.discovered_api('calendar', 'v3')
+    # Rails.logger.info "set attr accessory api client: #{self}, #{self.google_api_client}"
+  end
+  
+  def calendar
+    if self.google_calendar.nil?
+      self.google_calendar = self.google_api_client.discovered_api('calendar', 'v3')
+    end
+    self.google_calendar
+  end
+  
+  def google_client
+    raise UserException::HasNotAuthorizedApplication unless self.has_authorized?
+    # Rails.logger.info "google_client: api client: #{self}, #{self.google_api_client}"
+    
+    if self.google_api_client.nil?
+      client = Google::APIClient.new  
+      client.authorization.client_id = configatron.gapps.oauth.for_gmail.consumer_key
+      client.authorization.client_secret = configatron.gapps.oauth.for_gmail.consumer_secret      
+      client.authorization.update_token!({:refresh_token => self.refresh_token,
+                                          :access_token => self.token,
+                                          :expires_in => self.expired,
+                                          :issued_at => Time.at(self.issued_at)
+                                          })
+      self.google_api_client = client
+    end
+    if self.google_api_client.authorization.expired?
+      self.google_api_client.authorization.fetch_access_token!
+      self.token = self.google_api_client.authorization.access_token
+      self.refresh_token = self.google_api_client.authorization.refresh_token
+      self.expired = self.google_api_client.authorization.expires_in
+      self.issued_at = self.google_api_client.authorization.issued_at
+      self.save
+      self.google_calendar = self.google_api_client.discovered_api('calendar', 'v3')
+    end
+    self.google_api_client
+  end    
+  
   # Find or create user for openid authentication
   # Search for User with email equal to data["user_info"]["email"]
   #
@@ -54,6 +104,7 @@ class User
   #
   def access_token
     raise UserException::HasNotAuthorizedApplication unless self.has_authorized?
+    
     if access_token_cache.nil?
       access_token_cache = OAuth2::AccessToken.new(
         OAuthHelper.client,
@@ -83,17 +134,20 @@ class User
     lightened
   end
   
+  def google_calendar_sync
+    events = Google::Events.list(self.google_client, self.calendar, email)
+    Rails.logger.info("#{JSON.dump(events)}")    
+  end
+  
   # Create all needed calendars.
   #
   # Search for calendars with configured names.
   # If not found, create it.
   # If calendar found but has wrong color, update it
   #
-  # TODO
-  #  * refacto : split in methods
-  #
   def find_or_create_calendars
-    calendars = Google::Calendar.list(self.access_token)
+    calendars = Google::CalendarList.list(self.google_client, self.calendar)
+    # Rails.logger.debug(calendars.inspect)  
     
     # Iterate through calendar list and find out primary calendar.
     #calendars['data']['items'].each do |c|            
@@ -105,54 +159,45 @@ class User
     #    break              
     #  end
     #end
-            
-    if !calendars['error'] && calendars['data']['items']
-      calendars = calendars['data']['items']      
-      User.shared_calendars_properties.each do |properties|
-        # Rails.logger.info "Search for calendar named : #{properties[:name]}"
-        calendar = calendars.select{|calendar| calendar['title'] == properties[:name]}
+    #        
+    
+    # Check if the current user has required calendars in his calendar list.
+    User.shared_calendars_properties.each do |properties|
+      # Rails.logger.info "Search for calendar named : #{properties[:name]}"
+      if calendars != nil
+        calendar = calendars.select{|calendar| calendar.summary == properties[:name]}
         calendar = calendar.first
+        # Rails.logger.info(calendar.inspect)
+        # If not, create shared calendar for our travel information
         unless calendar
-          # Rails.logger.info "create calendar #{properties[:name]} with color #{properties[:color]}"
-          calendar = Google::Calendar.create(
-            self.access_token,
-            {
-              title: properties[:name],
-              description: "#{properties[:name]} Timejust Calendar for #{self.email}",
-              color: properties[:color],
-              selected: true
-            }
-          )
-          calendar = calendar['data']
-        else          
-          # Rails.logger.info "calendar found : #{calendar['title'].inspect}"
-          # Rails.logger.info "calendar must have color : #{properties[:color].inspect}"
-          # Rails.logger.info "calendar have color : #{calendar['color'].inspect}"
-          if calendar['color'] != properties[:color]
-            calendar_short_id = Google::Calendar.extract_google_id(calendar['id'])
-            # Rails.logger.info "calendar has wrong color, update it"
-            Google::Calendar.update(
-              self.access_token,
-              calendar_short_id,
-              {
-                selected: true,
-                color: properties[:color]
-              }
-            )
-          end
-        end
-        local_calendar = self.shared_calendars.find_or_create_by(
-          name: properties[:name],
-          color: properties[:color]
-        )
-        local_calendar.update_attributes(
-          google_short_id: Google::Calendar.extract_google_id(calendar['id']),
-          google_id: calendar['id']
-        )
-        # Rails.logger.info "local calendar : #{local_calendar.inspect}"
+          Rails.logger.info "create calendar #{properties[:name]}"  
+          calendar = {
+            'timeZone' => 'Europe/Paris',
+            'location' => 'Paris',
+            'summary' => properties[:name],
+            'description' => "#{properties[:name]} Timejust Calendar for #{self.email}",
+          }
+          calendar = Google::Calendars.insert(self.google_client, self.calendar, calendar)        
+        end      
       end
-    else
-      JSON.parse(calendars)
+            
+      # Rails.logger.info "calendar => #{calendar.inspect}"
+      # Rails.logger.info "calendar found : #{calendar['summary'].inspect}"
+      # Rails.logger.info "calendar has color : #{calendar['colorId'].inspect}"
+      if calendar['colorId'] == nil or calendar['colorId'] != properties[:color_id]
+        Rails.logger.info "calendar has wrong color, update it with #{properties[:color_id]}"
+        calendar['colorId'] = properties[:color_id]
+        calendar['selected'] = true
+        calendar = Google::CalendarList.update(self.google_client, self.calendar, calendar)
+      end
+      
+      # Rails.logger.info "calendar => #{calendar}"
+      local_calendar = self.shared_calendars.find_or_create_by(name: properties[:name],
+                                                               color: properties[:color])
+      local_calendar.update_attributes(google_short_id: Google::Calendar.extract_google_id(calendar['id']),
+                                       google_id: calendar['id'],
+                                       color_id: properties[:color_id])
+      # Rails.logger.info "local calendar : #{local_calendar.inspect}"
     end
   end
 

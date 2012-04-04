@@ -1,9 +1,13 @@
 App.Views.EventSummaryView = Backbone.View.extend({
   initialize: function() {
-    this.summary = this.options.summary;
+    _.bindAll(this, 'handleNavigateUp'); 
+    _.bindAll(this, 'handleNavigateDown'); 
+    _.bindAll(this, 'handlePreviousEventCallback');
+    _.bindAll(this, 'handleNextEventCallback');
     this.prefix = this.options.prefix;
     this.stage = this.options.stage;
     this.el = this.options.el;
+    this.email = this.options.email;        
     this.selected = -1;
     this.summarized = true;
     this.color = null;
@@ -13,7 +17,20 @@ App.Views.EventSummaryView = Backbone.View.extend({
     this.lng = 0.0;
     this.normalized = false;
     this.kMaxLength = 21;
-    this.classType = "event";    
+    this.classType = "event";  
+    this.previousEvent = null;
+    this.nextEvent = null;
+    this.selectedEvent = null;
+    this.startTime = null;
+    this.endTime = null;
+    this.summary = null;
+  },
+  bind: function(summary) {
+    this.summary = summary;
+    if (this.summary.calendarEvent != null) {
+      this.startTime = this.summary.calendarEvent.startTime;
+      this.endTime = this.summary.calendarEvent.endTime;  
+    }    
   },
   setAliasClassType: function() {
     this.classType = "alias";
@@ -51,6 +68,9 @@ App.Views.EventSummaryView = Backbone.View.extend({
     this.normalized = false;
     this.selected = -1;
     this.summary = null;
+    this.startTime = null;
+    this.endTime = null;
+    this.summary = null;    
   },
   render: function() {
     var self = this;
@@ -152,10 +172,74 @@ App.Views.EventSummaryView = Backbone.View.extend({
       id: id,
       alias: this.summary.alias,
       borderColor: border_color,
-      toggleOn: toggle_on
+      toggleOn: toggle_on,
+      stage: this.stage
       }));
     if (toggle_on)
-      $(this.el).find('.aliases').hide();    
+      $(this.el).find('.aliases').hide();   
+    
+    // Set up click event handler for arrows.
+    $(this.el).find('.navigation_up').click(this.handleNavigateUp);     
+    $(this.el).find('.navigation_down').click(this.handleNavigateDown);
+    
+    if (this.stage == "previous") {
+      // If the stage is previous: try to find an event from beginning of day 
+      // before until right before current event begins
+      if (this.startTime != null) {
+        GoogleEventReader.getInstance().read(
+          this.email, this.startTime, -2, 
+          this.handlePreviousEventCallback, true);              
+      }
+      if (this.endTime != null) {
+        GoogleEventReader.getInstance().readEvent(
+          this.email, this.endTime, this.selectedEvent.startTime, 
+          this.handleNextEventCallback);    
+      }                            
+    } else if (this.stage == "next") {
+      // If the stage is next: try to find an event from right after the current
+      // event finishes until end of the next day.    
+      if (this.startTime != null) {
+        GoogleEventReader.getInstance().readEvent(
+          this.email, this.selectedEvent.endTime, this.startTime, 
+          this.handlePreviousEventCallback);                                        
+      }  
+      if (this.endTime != null) {
+        GoogleEventReader.getInstance().read(
+          this.email, this.endTime, 2, 
+          this.handleNextEventCallback, true);  
+      }      
+    }        
+  },
+  handlePreviousEventCallback: function(response, params) {
+    if (response != null && response[0] != null) {
+      var events = response[0]['events'];
+      if (events.length > 0) {
+        $(this.el).find('#navigation_arrow_up_container').toggleClass('on');
+        $(this.el).find('#navigation_arrow_up_container').toggleClass('off');         
+        this.previousEvent = events[0];
+      } 
+    }    
+  },
+  handleNextEventCallback: function(response, params) {
+    if (response != null && response[0] != null) {
+      var events = response[0]['events'];
+      if (events.length > 0) {
+        $(this.el).find('#navigation_arrow_down_container').toggleClass('on');
+        $(this.el).find('#navigation_arrow_down_container').toggleClass('off');
+        this.nextEvent = events[0];
+      } 
+    }    
+  },
+  registerEventChangeHandler: function(handler) {
+    this.eventChangeHandler = handler;
+  },
+  handleNavigateUp: function(e) {
+    alert(this.previousEvent.title);
+  // this.eventChangeHandler()
+  },
+  handleNavigateDown: function(e) {
+  //
+    alert(this.nextEvent.title); 
   },
   layout: _.template('\
   <div class="<%=class_name%>" style="border-color:<%=borderColor%>;<%if (color != null) { %>background-color:<%=color%> <%}%>">\
@@ -172,6 +256,10 @@ App.Views.EventSummaryView = Backbone.View.extend({
         <a class="top" href="#">\
           <li class="address" shorten="true"><%=address%></li>\
         </a>\
+      </div>\
+      <div class="navigation_arrow_container" id="navigation_arrow_container">\
+        <div class="navigation_up off" id="navigation_arrow_up_container" />\
+        <div class="navigation_down off" id="navigation_arrow_down_container" />\
       </div>\
       <div class="aliases">\
         <% $.each(addressBook, function(i, ab) { %>\

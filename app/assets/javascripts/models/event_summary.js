@@ -2,8 +2,14 @@ App.Models.EventSummary = Backbone.Model.extend({
   initialize: function() {
     this.alias = this.get("alias");
     this.title = this.get("title");
-    this.color = null;
-    this.googleEventId = '';
+    this.calendarEvent = this.get('calendarEvent');
+    if (this.calendarEvent != null) {
+      this.color = this.calendarEvent.palette.medium;
+      this.googleEventId = this.calendarEvent.id;      
+      this.original_address = this.calendarEvent.location;      
+    } else {
+      this.original_address = "";
+    }
     this.addressBook = new Array();
     this.selected = -1;
     this.accessLevel = '';

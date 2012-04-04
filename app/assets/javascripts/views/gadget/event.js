@@ -3,7 +3,8 @@ App.Views.EventView = Backbone.View.extend({
     _.bindAll(this, 'calendarEventOccured');
     _.bindAll(this, 'dataChangeCallback');
     _.bindAll(this, 'error');
-    _.bindAll(this, 'onEventCallback');
+    _.bindAll(this, 'handlePreviousEvent');
+    _.bindAll(this, 'handleNextEvent');
     _.bindAll(this, 'onNormalizedAddress');
     _.bindAll(this, 'onAlias');
     this.ip = this.options.ip
@@ -18,7 +19,6 @@ App.Views.EventView = Backbone.View.extend({
     this.nextEvent = null;
     this.alias = null;
     this.selectedEvent = null;
-    this.nextEventRequest = false;
     this.normalizedReq = new Array();
     this.isInitialized = false;
     // List of google events
@@ -35,14 +35,6 @@ App.Views.EventView = Backbone.View.extend({
     </div>\
   '),
   dataChangeCallback: function() {
-    /*
-    if (this.selectedEvent != null) {
-      this.clear();
-      if (this.travelsView) 
-        this.travelsView.clear();
-      this.render();
-    } 
-    */   
   },
   // Calendar event was clicked, store and display it
   calendarEventOccured: function(calendarEvent){
@@ -70,125 +62,48 @@ App.Views.EventView = Backbone.View.extend({
             eventView: this });
         }        
         // Load previous and next events within 1 day from google calendar
-        this.getCalendarEvent(this.user.email, calendarEvent.startTime, -1, false, 
-          this.onEventCallback, true);        
+        GoogleEventReader.getInstance().read(this.user.email, calendarEvent.startTime, 
+          -1, this.handlePreviousEvent, true);        
       }
     }
     this.render();
-  },
-  getTimeWithDiff: function(time, diff) {
-    // var date = new Date();
-    // date.setFullYear(time.year, time.month-1, time.date);
-    // date.setHours(time.hour, time.minute, time.second, 0);
-    var unixtime = this.timeToUnix(time);//parseInt(date / 1000);
-    unixtime += diff;
-    date = new Date(unixtime * 1000);
-    return {year: date.getFullYear(), month: date.getMonth() + 1, date: date.getDate(), 
-        hour: date.getHours(), minute: date.getMinutes(), second: date.getSeconds()};
-  },
-  // Recalculate date object with the given date difference
-  getTimeWithDayDiff: function(time, diff) {
-    return this.getTimeWithDiff(time, (diff * 60 * 60 * 24));
-  },
-  // Recalculate date object with the given date difference
-  getTimeWithMinuteDiff: function(time, diff) {
-    return this.getTimeWithDiff(time, (diff * 60));
-  },
-  copyTimeObject: function(o) {
-    var n = {};
-    n.year = o.year;
-    n.month = o.month;
-    n.date = o.date;
-    n.hour = o.hour;
-    n.minute = o.minute;
-    n.second = o.second;
-    return n;
-  },
-  getCalendarEvent: function(email, currentTime, dayDiff, next, callback, cutoff) {
-    var startDate = {};
-    var endDate = {};
-    if (dayDiff > 0) {
-      startDate = this.getTimeWithMinuteDiff(currentTime, 1);
-      endDate = this.getTimeWithDayDiff(currentTime, dayDiff);
-      if (cutoff) {
-        endDate.hour = 0;
-        endDate.minute = 0;
-        endDate.second = 0;
-      }
-    } else {
-      if (cutoff && currentTime.hour > 0) {        
-        startDate = this.copyTimeObject(currentTime);
-        startDate.hour = 0;
-        startDate.minute = 0;
-        startDate.second = 0;
-      } else {
-        startDate = this.getTimeWithDayDiff(currentTime, dayDiff);  
-      }      
-      endDate = this.getTimeWithMinuteDiff(currentTime, -1);
-    }
-    this.nextEventRequest = next;
-    if (next == true) {
-      this.nextEvent = null;
-    } else {
-      this.previousEvent = null;
-    }
-    var optionalParms = {'requestedFields': ['details']};
-    google.calendar.read.getEvents(callback, [email], startDate, endDate, optionalParms);    
-  },
-  timeToUnix: function(time) {
-    var date = new Date();
-    date.setFullYear(time.year, time.month-1, time.date);
-    date.setHours(time.hour, time.minute, time.second, 0);
-    return parseInt(date / 1000);
-  },
-  timeCompare: function(t1, t2) {
-    var rawTime1 = this.timeToUnix(t1);
-    var rawTime2 = this.timeToUnix(t2);    
-    if (rawTime1 > rawTime2) {
-      return 1;
-    } else if (rawTime1 == rawTime2) {
-      return 0;
-    } 
-    return -1;
-  },
-  onEventCallback: function(response) {
+  },  
+  handlePreviousEvent: function(response) {
     var res = response[0];
-    if ('error' in res) {
-      alert('Something went wrong');
-      return;
-    }    
     var events = res['events'];    
-    var e = null;    
-    if (this.nextEventRequest == false) {      
-      for (var i = events.length - 1; i >= 0; i--) {
-        // Get latest event from the list    
-        e = events[i];
-        // Make sure the given event is valid in the given time range
-        if (this.timeCompare(e.endTime, this.selectedEvent.startTime) <= 0) {
-          break;
-        } else {
-          e = null;
-        }                    
-      }              
-      this.previousEvent = e;               
-      this.getCalendarEvent(this.user.email, this.selectedEvent.endTime, 
-        1, true, this.onEventCallback, true);  
-    } else {
-      for (var i = 0; i < events.length; i++) {
-        // Get latest event from the list    
-        e = events[i];
-        // Make sure the given event is valid in the given time range
-        if (this.timeCompare(e.startTime, this.selectedEvent.endTime) >= 0) {
-          break;
-        } else {
-          e = null;
-        }          
-      }
-      this.nextEvent = e;     
-      // Even if we don't retrieve any of events, we need to call
-      // normalizeAddress function to process further events.
-      this.normalizeAddress();       
-    }    
+    var e = null;        
+    for (var i = events.length - 1; i >= 0; i--) {
+      // Get latest event from the list    
+      e = events[i];
+      // Make sure the given event is valid in the given time range
+      if (utils.timeCompare(e.endTime, this.selectedEvent.startTime) <= 0) {
+        break;
+      } else {
+        e = null;
+      }                    
+    }              
+    this.previousEvent = e;               
+    GoogleEventReader.getInstance().read(this.user.email, this.selectedEvent.endTime, 
+      1, this.handleNextEvent, true);        
+  },
+  handleNextEvent: function(response) {
+    var res = response[0];     
+    var events = res['events'];    
+    var e = null;        
+    for (var i = 0; i < events.length; i++) {
+      // Get latest event from the list    
+      e = events[i];
+      // Make sure the given event is valid in the given time range
+      if (utils.timeCompare(e.startTime, this.selectedEvent.endTime) >= 0) {
+        break;
+      } else {
+        e = null;
+      }          
+    }
+    this.nextEvent = e;     
+    // Even if we don't retrieve any of events, we need to call
+    // normalizeAddress function to process further events.
+    this.normalizeAddress();               
   },
   toRecognizer: function(event, id, ip) {
     return {"geo":encodeURIComponent(event.location), "id":id, "src":ip}
@@ -249,9 +164,9 @@ App.Views.EventView = Backbone.View.extend({
     var self = this;
     $.each(this.events, function(i, ev) {
       var title = (ev == null ? null : ev.title)
-      var summary = new App.Models.EventSummary({alias: self.alias, title: title});
+      var summary = new App.Models.EventSummary({alias: self.alias, 
+        title: title, calendarEvent: ev});
       if (ev != null) {
-        summary.color = ev.palette.medium;
         // Append all addresses either from normalization process or google calendar.
         if (ev.addresses == undefined) {
           if (ev.location != "") {
@@ -267,12 +182,7 @@ App.Views.EventView = Backbone.View.extend({
                 address.location.lat, address.location.lng, true);
           });             
         }  
-        summary.googleEventId = ev.id;
-        summary.original_address = ev.location;
-        // summary.accessLevel = ev.accessLevel;
-      } else {
-        summary.original_address = "";
-      }
+      } 
       // summary.dump();
       self.travelsView.selectedEvent = self.selectedEvent;
       // Append summaries for previous, current, and next travel

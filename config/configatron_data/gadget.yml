@@ -22,6 +22,8 @@
         - lib/cookie.js
         - lib/alias.js
         - lib/event_loop.js
+        - lib/utils.js
+        - lib/google_event_reader.js
         - gadget_common.js
         - models/user.js
         - models/event.js
