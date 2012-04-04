@@ -96,34 +96,6 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       this.viewPortHeight = document.getElementsByTagName('body')[0].clientHeight;
     }
   },
-  latitude: function(location) {
-    var lat = 0;
-    if (location.Ta != null) { 
-      lat = location.Ta; 
-      location.Ta = null;
-    } else if (location.Ua != null) { 
-      lat = location.Ua; 
-      location.Ua = null;
-    } else if (location.Sa != null) { 
-      lat = location.Sa; 
-      location.Sa = null;
-    }
-    return lat;
-  },
-  longitude: function(location) {
-    var lng = 0;
-    if (location.Ua != null) { 
-      lng = location.Ua; 
-      location.Ua = null;
-    } else if (location.Va != null) { 
-      lng = location.Va; 
-      location.Va = null;
-    } else if (location.Ta != null) { 
-      lng = location.Ta; 
-      location.Ta = null;
-    }
-    return lng;
-  },
   getGeoAutocomplete: function(node) {
     var self = this;
     var autocomplete = new google.maps.places.Autocomplete($('#' + node)[0]);
@@ -138,8 +110,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
         var a = {};
         a.address = place.formatted_address;
         a.location = {
-          'lat': self.latitude(place.geometry.location),
-          'lng': self.longitude(place.geometry.location)
+          'lat': place.geometry.location.lat(),
+          'lng': place.geometry.location.lng()
         };
         self.results.push(a);             
         self.selectTab(0);    
