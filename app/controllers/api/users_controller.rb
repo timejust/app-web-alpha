@@ -21,7 +21,7 @@ class Api::UsersController < Api::BaseController
       user = User.where(email: params[:email]).first
       return unauthorized! if current_user != user
       user.find_or_create_calendars
-      render :nothing => true, :status => :ok
+      render :json => user.to_json, :status => :ok
       
       #if user.has_pending_events?
       #  @event = user.last_pending_event
@@ -94,4 +94,28 @@ class Api::UsersController < Api::BaseController
       render :nothing => true, :status => :not_found
     end    
   end
+  
+  # POST /v1/users/sync_calendar
+  # 
+  # @param [String] email
+  # @param [Integer] min
+  # @param [Integer] max
+  #
+  def sync_calendar
+    if User.exists?(conditions: {email: params[:email]})
+      user = User.where(email: params[:email]).first
+      return unauthorized! if current_user != user
+      if params[:min].nil?
+        params[:min] = 0
+      end
+      if params[:max].nil?
+        params[:max] = 0
+      end
+      user.google_calendar_sync(params[:min], params[:max])
+      render :json => '{}', :status => :ok
+    else
+      render :nothing => true, :status => :not_found
+    end
+  end
+  
 end

@@ -1,12 +1,16 @@
 # encoding: utf-8
 
 require 'simplecov'
+
 SimpleCov.start 'rails'
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV["RAILS_ENV"] ||= 'test'
+
+require 'oauth2'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
+require 'webmock/rspec'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -14,6 +18,9 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
 # Requires mocks
 Dir["#{File.dirname(__FILE__)}/mocks/**/*.rb"].each {|f| require f}
+
+# Requires factories
+# Dir["#{File.dirname(__FILE__)}/factories/*.rb"].each {|f| require f}
 
 OmniAuth.config.test_mode = true
 
@@ -26,7 +33,7 @@ RSpec.configure do |config|
   # config.mock_with :flexmock
   # config.mock_with :rr
   config.mock_with :rspec
-  config.include Mongoid::Matchers
+  config.include Mongoid::Matchers  
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   # config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -35,8 +42,10 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   # config.use_transactional_fixtures = true
+  config.include WebMock::API
+  config.include FactoryGirl::Syntax::Methods
 
-  # email_spec config
+  # email_spec config  
   config.include(EmailSpec::Helpers)
   config.include(EmailSpec::Matchers)
 end

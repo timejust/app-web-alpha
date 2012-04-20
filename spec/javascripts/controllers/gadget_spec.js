@@ -49,11 +49,12 @@ describe("GadgetController", function(){
     it("should init EventView and purge events if user is registered and have no pendingEvent", function(){
       this.controller.user.state = 'registered';
       this.controller.user.pendingEvent = false;
+      this.controller.ip = "192.168.0.1";
       var user_spy = sinon.stub(this.controller.user, 'purgeTravels');
       var spy = sinon.stub(App.Views.EventView.prototype, 'initialize');
       this.controller.initSidebarViews();
       expect(user_spy).toHaveBeenCalledOnce();
-      expect(spy).toHaveBeenCalledWith({ el: $('#selectedEvent').get(0) });
+      expect(spy).toHaveBeenCalledWith({ el: $('#selectedEvent').get(0), ip: this.controller.ip, user: this.controller.user });
       spy.restore();
       user_spy.restore();
     });
@@ -78,12 +79,27 @@ describe("GadgetController", function(){
 
     it("should initialize TravelNodesSelectorView", function(){
       var gadgets_params = sinon.stub(window.gadgets.views, 'getParams');
-      gadgets_params.returns({apiEventId: 42});
+      var ip = "192.168.0.1";
+      var eventKey = "key";
+      var seed = "xxxx";
+      var stage = "current";
+      var address = "26 rue de longchamp";
+      gadgets_params.returns({
+        ip: ip,
+        eventKey: eventKey,
+        seed: seed,
+        stage: stage,
+        original_address: address
+        });
       var spy = sinon.stub(App.Views.TravelNodesSelectorView.prototype, 'initialize');
       this.controller.travel_node_selector();
       expect(spy).toHaveBeenCalledWith({
         el: $('#travelNodesSelector').get(0),
-        apiEventId: 42
+        ip: ip,
+        eventKey: eventKey,
+        seed: seed,
+        stage: stage,
+        original_address: address
       });
       spy.restore();
       gadgets_params.restore();

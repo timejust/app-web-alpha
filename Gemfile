@@ -95,4 +95,5 @@ group :test do
   gem 'jasmine-headless-webkit'
   gem 'email_spec'
   gem 'simplecov'
+  gem 'webmock',              '1.6.2'
 end

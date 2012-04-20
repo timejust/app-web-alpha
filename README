@@ -43,6 +43,6 @@ Start `bundle exec rails c`:
 
 This will publish to the event on workers
 
-We can continue with changing the state manualy:
+We can continue with changing the state manually:
 
     Event.last.travels_waiting

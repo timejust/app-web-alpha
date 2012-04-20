@@ -20,15 +20,18 @@ describe("EventView", function() {
     // Insert selectedEvent div needed for EventView
     $('#jasmine_content').html('<div id="selectedEvent"></div>');
 
+    var ip = "192.168.0.1";
+    var user = new User();
+    user.email = "test@test.com";
+    
     // Init EventView
-    this.view = new App.Views.EventView({ el: $('#selectedEvent').get(0) });
+    this.view = new App.Views.EventView({ 
+      el: $('#selectedEvent').get(0), 
+      ip: ip,  
+      user: user });
   });
 
   describe("Initialize", function() {
-
-    it("should render an empty event", function() {
-      expect($(this.view.el).html()).toEqual("No event selected");
-    });
 
     it("should initialize variables", function() {
       expect(this.view.selectedEvent).toEqual(undefined);
@@ -37,8 +40,8 @@ describe("EventView", function() {
 
     it("should call render", function() {
       var spy = sinon.spy(this.view, 'render');
-
       this.view.initialize();
+      this.view.onAlias({rc: 200, data: "ok"})
 
       expect(spy).toHaveBeenCalledOnce();
       this.view.render.restore();
@@ -61,12 +64,16 @@ describe("EventView", function() {
   describe("calendarEventOccured", function() {
 
     it("should set current event if not null", function() {
-      this.view.calendarEventOccured(undefined);
-      expect(this.view.selectedEvent).toBe(undefined);
+      this.view.isInitialized = true;
+      this.view.calendarEventOccured(null);
+      expect(this.view.selectedEvent).toBe(null);
 
-      this.view.calendarEventOccured({'id': undefined});
-      expect(this.view.selectedEvent).toBe(undefined);
+      this.view.calendarEventOccured({'id': null});
+      expect(this.view.selectedEvent).toBe(null);
 
+      window.google.calendar.read: {
+        getEvents: function(a, b, c, d, e) {}
+      };  
       this.view.calendarEventOccured(this.google_event);
       expect(this.view.selectedEvent).toBe(this.google_event);
     });

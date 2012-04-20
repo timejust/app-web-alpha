@@ -181,7 +181,7 @@ App.Views.EventSummaryView = Backbone.View.extend({
     // Set up click event handler for arrows.
     $(this.el).find('.navigation_up').click(this.handleNavigateUp);     
     $(this.el).find('.navigation_down').click(this.handleNavigateDown);
-    
+    /*
     if (this.stage == "previous") {
       // If the stage is previous: try to find an event from beginning of day 
       // before until right before current event begins
@@ -208,7 +208,8 @@ App.Views.EventSummaryView = Backbone.View.extend({
           this.email, this.endTime, 2, 
           this.handleNextEventCallback, true);  
       }      
-    }        
+    }  
+    */      
   },
   handlePreviousEventCallback: function(response, params) {
     if (response != null && response[0] != null) {

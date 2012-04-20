@@ -15,10 +15,12 @@ var utils = {
     } 
     return -1;
   },
+  rfc3389ToTimeObject: function(r) {    
+    date = new Date(Date.parse(r));
+    return {year: date.getFullYear(), month: date.getMonth() + 1, date: date.getDate(), 
+        hour: date.getHours(), minute: date.getMinutes(), second: date.getSeconds()};
+  },
   getTimeWithDiff: function(time, diff) {
-    // var date = new Date();
-    // date.setFullYear(time.year, time.month-1, time.date);
-    // date.setHours(time.hour, time.minute, time.second, 0);
     var unixtime = utils.timeToUnix(time);//parseInt(date / 1000);
     unixtime += diff;
     date = new Date(unixtime * 1000);

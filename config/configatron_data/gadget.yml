@@ -24,6 +24,8 @@
         - lib/event_loop.js
         - lib/utils.js
         - lib/google_event_reader.js
+        - lib/calendar_reader.js
+        - iso8601.js
         - gadget_common.js
         - models/user.js
         - models/event.js

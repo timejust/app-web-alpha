@@ -1,5 +1,5 @@
 class Api::BaseController < ActionController::Base
-  rescue_from OAuth2::AccessDenied, :with => :unauthorized!
+  rescue_from OAuth2::Error, :with => :unauthorized!
   # before_filter :read_geo_ip_headers
   
   def read_geo_ip_headers

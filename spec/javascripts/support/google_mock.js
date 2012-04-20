@@ -2,13 +2,32 @@
 window.google = {
   calendar: {
     read: {
-      subscribeToEvents: function(callback){}
+      subscribeToEvents: function(callback) {},
+      getEvents: function(a, b, c, d, e) {}
     },
     utils: {
       toDate: function(date) {return date;}
     },
-    getPreferences: function(callback){},
-    refreshEvents: function(callback){}
+    subscribeToDataChange: function(callback) {},
+    getPreferences: function(callback) {},
+    refreshEvents: function(callback) {},
+  },
+  maps: {
+    places: {
+      Autocomplete: function(a) {
+        return {
+          setTypes: function(b) {}
+        }
+      }
+    },
+    event: {
+      addListener: function(a, b, c) {}
+    },
+    LatLng: function(a, b) {},
+    Map: function(a, b) {},
+    MapTypeId: {
+      ROADMAP: "roadmap",
+    }    
   }
 }
 window.gadgets = {

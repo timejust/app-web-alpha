@@ -1,15 +1,15 @@
 App.Controllers.GadgetController = Backbone.Router.extend({
   // Gadget home view
-  sidebar: function(){
+  sidebar: function() {
     this.user = new User();
     _.bindAll(this, 'initSidebarViews');
     this.user.bind('status:loaded', this.initSidebarViews);
   },
-  getip: function(json){
+  getip: function(json) {
     this.ip = json.ip;
   },
   // Initialize Views from user status and pending events
-  initSidebarViews: function(){
+  initSidebarViews: function() {
     if (this.user.state == "not_registered") {
       $('#notifications').html("<p>You must register on <a href='" + App.config.web_url + "' target='blank'>Timejust website</a></p>");
       gadgets.window.adjustHeight();
@@ -19,7 +19,7 @@ App.Controllers.GadgetController = Backbone.Router.extend({
       gadgets.window.adjustHeight();
     } else {
       this.user.purgeTravels({
-        success: function(){
+        success: function() {
           google.calendar.refreshEvents();
         }
       });

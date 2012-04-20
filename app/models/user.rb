@@ -134,9 +134,13 @@ class User
     lightened
   end
   
-  def google_calendar_sync
-    events = Google::Events.list(self.google_client, self.calendar, email)
-    Rails.logger.info("#{JSON.dump(events)}")    
+  def google_calendar_sync(min = 0, max = 0)
+    calendar = Timejust::Calendars.new(email, refresh_token)
+    res = calendar.sync(Timejust::Calendars::GOOGLE_CALENDAR, min, max)  
+    if res.status != Timejust::Service::OK
+      Rails.logger.error(
+        "Google Calendar synchronization failed: status=>#{res.status}, message=>#{res.message}")
+    end      
   end
   
   # Create all needed calendars.

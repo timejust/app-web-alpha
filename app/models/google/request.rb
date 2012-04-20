@@ -78,7 +78,7 @@ class Google::Request
         params,
         headers
       )
-    rescue OAuth2::HTTPError => e
+    rescue OAuth2::Error => e
       Rails.logger.error '========== Error making Google request =========='
       Rails.logger.error 'Request :'
       Rails.logger.error method

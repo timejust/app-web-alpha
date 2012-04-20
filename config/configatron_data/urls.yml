@@ -1,6 +1,6 @@
-:development:
+:test:
   :api:
-    :url: "http://api.timejust.com:50001/v1"
+    :url: "http://api-staging.timejust.com:50001/v1"
     :basic_auth:
       :user: "timejust"
       :password: "t1m3ju$t" 
@@ -14,6 +14,26 @@
     :url: "https://service-staging.timejust.com"
     :geo_recognition: "v1/geo/recognition"
     :geo_direction: "v1/geo/direction"
+    :calendar: "v1/calendar"
+    :http:
+      :url: "http://service-staging.timejust.com"        
+:development:
+  :api:
+    :url: "http://api-staging.timejust.com:50001/v1"
+    :basic_auth:
+      :user: "timejust"
+      :password: "t1m3ju$t" 
+  :gadget:
+    :url: "http://staging.timejust.com:50001/gadget/timejust.xml"
+  :web:
+    :url: "http://staging.timejust.com:50001"
+  :ratp_proxy:
+    :url: "http://proxy.timejust.com:80"
+  :service:
+    :url: "https://service-staging.timejust.com"
+    :geo_recognition: "v1/geo/recognition"
+    :geo_direction: "v1/geo/direction"
+    :calendar: "v1/calendar"
     :http:
       :url: "http://service-staging.timejust.com"        
 :staging:
@@ -32,6 +52,7 @@
     :url: "https://service-staging.timejust.com"
     :geo_recognition: "v1/geo/recognition"
     :geo_direction: "v1/geo/direction"
+    :calendar: "v1/calendar"
     :http:
       :url: "http://service-staging.timejust.com"        
 :production:
@@ -50,5 +71,6 @@
     :url: "https://service.timejust.com"
     :geo_recognition: "v1/geo/recognition"
     :geo_direction: "v1/geo/direction"
+    :calendar: "v1/calendar"
     :http:
       :url: "http://service-staging.timejust.com"        

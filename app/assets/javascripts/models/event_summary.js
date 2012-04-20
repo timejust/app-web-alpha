@@ -1,10 +1,12 @@
 App.Models.EventSummary = Backbone.Model.extend({
   initialize: function() {
     this.alias = this.get("alias");
-    this.title = this.get("title");
     this.calendarEvent = this.get('calendarEvent');
+    this.title = (this.calendarEvent == null ? 
+      null : (this.calendarEvent.title == null ? 
+        this.calendarEvent.summary : this.calendarEvent.title));
     if (this.calendarEvent != null) {
-      this.color = this.calendarEvent.palette.medium;
+      // this.color = this.calendarEvent.palette.medium;
       this.googleEventId = this.calendarEvent.id;      
       this.original_address = this.calendarEvent.location;      
     } else {

@@ -42,8 +42,8 @@ var User = Backbone.Model.extend({
     }
     else{
       this.state = 'registered';
-      if (response.rc == 200){
-        // this.pendingEvent = response.data;
+      if (response.rc == 200) {
+        this.pendingEvent = response.data;
       }
     }
     this.trigger('status:loaded');
@@ -60,5 +60,20 @@ var User = Backbone.Model.extend({
         if (options.error) {options.error();}
       }
     });
+  },
+  
+  syncCalendar: function(min, max) {
+    var self = this
+    GoogleRequest.post({
+      url: App.config.api_url + "/users/sync_calendar",
+      params: { 
+        'email' : self.email,
+        'min': min,
+        'max': max
+      },
+      error: function() {
+      },
+      success: function() {        
+      }});    
   }
 });

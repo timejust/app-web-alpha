@@ -1,7 +1,50 @@
 App.Models.Event = Backbone.Model.extend({
-  url : function() {
-    var base = App.config.api_url + '/events';
-    if (this.isNew()) return base;
-    return base + (base.charAt(base.length - 1) == '/' ? '' : '/') + this.id;
+  initialize: function(options) {
+    this.base = App.config.service_url + '/v1/calendar/';
+    this.email = options.calendarId
+    this.eId = options.eId
+  },
+  url: function() {
+    var base = this.base + this.email + '/events/'    
+    return this._id != null ? base + this._id : base
+  },
+  urlWithEid: function() {
+    var base = this.base + this.email + '/events/eid/'    
+    return this.eId != null ? base + this.eId : base
+  },
+  fetch: function() {
+    
+  },
+  fetchWithEid: function(callback) {
+    var self = this;
+    GoogleRequest.get({
+      url: this.urlWithEid() + "?nocache=" + new Date().getTime(),
+      error: function() {  
+        callback(null);
+      },
+      success: function(resp) {
+        if (resp.rc == 200 && resp.data.status == 'ok') {
+          var e = resp.data.event;
+          self.set({_id: e.id, 
+                    calendarId: e.calendarId, 
+                    start: e.start, 
+                    end: e.end, 
+                    lat: e.position.lat, 
+                    lng: e.position.lng,
+                    location: e.location,
+                    summary: e.summary,
+                    description: e.description,
+                    eventType: e.eventType,
+                    eId: e.eid,
+                    created: e.created,
+                    updated: e.updated});  
+          if (callback != null) {
+            callback(self);
+          }             
+        } else {
+          callback(null);
+        }          
+      }          
+    });
   }
 });

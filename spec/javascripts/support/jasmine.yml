@@ -12,13 +12,15 @@
 #
 src_files:
   - vendor/assets/javascripts/jquery.js
+  - vendor/assets/javascripts/jquery.cookie.js
   - vendor/assets/javascripts/underscore.js
   - vendor/assets/javascripts/backbone.js
   - vendor/assets/javascripts/jquery.dateFormat.js
-  - spec/javascripts/support/vendor/*
-  - app/assets/javascripts/lib/*
+  - vendor/assets/javascripts/organictabs.jquery.js
+  - spec/javascripts/support/vendor/*.js
   - spec/javascripts/support/google_mock.js
   - app/assets/javascripts/gadget_common.js
+  - app/assets/javascripts/lib/*.js  
   - app/assets/javascripts/views/gadget/*.js
   - app/assets/javascripts/models/*.js
   - app/assets/javascripts/controllers/*.js

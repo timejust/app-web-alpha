@@ -82,36 +82,35 @@ class TravelStep
   # Create event(s) from travel
   def create_google_event(calendar_id, calendar_name = nil)
     tz = TZInfo::Timezone.get(event['timezone'])    
-    google_event = Google::Event.create(self.event.user.access_token, calendar_id,
-      {
-        title: self.summary.join('-'),
-        details: self.google_event_detail,
-        transparency: "opaque",
-        status: "confirmed",
-        location: self.invitation_location,
-        when: [
-          {
-            start: tz.local_to_utc(self.departure_time).iso8601,
-            end: tz.local_to_utc(self.arrival_time).iso8601
-          }
-        ]
-      }
-    )
-    Rails.logger.info "create_google_event - calendar_id: #{calendar_id}, calendar_name: #{calendar_name}"        
-    #Rails.logger.info(google_event.inspect)
-    if !google_event['error'] && google_event['data']
-      # If we wrote something on primary calendar, don't save it because,
-      # we delete later what we've written on google's but we don't want
-      # to delete the events on primary one.
-      #Rails.logger.info "create_google_event - calendar_id: #{calendar_id}, event.google_calendar_id: #{event.google_calendar_id}, google_event['data']['id']: #{google_event['data']['id']}"        
-      #if calendar_id != event.google_calendar_id
-      if calendar_id != calendar_name
-        self.google_event_id = google_event['data']['id']
-        self.google_calendar_id = calendar_id
-        self.calendar = calendar_name
-        self.save
-      end
-    end
+    calendar = Timejust::Calendars.new(user.email, user.refresh_token)
+    calendar.insert(Timejust::Calendars::GOOGLE_CALENDAR, {
+      "calendar_id" => calendar_id,
+      "start" => tz.local_to_utc(self.departure_time).to_time.to_i,
+      "end" => tz.local_to_utc(self.arrival_time).to_time.to_i,
+      "position" => {
+        "lat" => 0.0,
+        "lng" => 0.0
+      },
+      "location" => self.invitation_location,
+      "summary" => self.summary.join('-'),
+      "description" => self.summary.join('-'),
+      "eventType" => Timejust::Calendars::EVENT_TRAVEL
+    })
+    
+    # Rails.logger.info "create_google_event - calendar_id: #{calendar_id}, calendar_name: #{calendar_name}"            
+    # if !google_event['error'] && google_event['data']
+    #   # If we wrote something on primary calendar, don't save it because,
+    #   # we delete later what we've written on google's but we don't want
+    #   # to delete the events on primary one.
+    #   #Rails.logger.info "create_google_event - calendar_id: #{calendar_id}, event.google_calendar_id: #{event.google_calendar_id}, google_event['data']['id']: #{google_event['data']['id']}"        
+    #   #if calendar_id != event.google_calendar_id
+    #   if calendar_id != calendar_name
+    #     self.google_event_id = google_event['data']['id']
+    #     self.google_calendar_id = calendar_id
+    #     self.calendar = calendar_name
+    #     self.save
+    #   end
+    # end
   end
 
   def to_formatted_text(steps) 

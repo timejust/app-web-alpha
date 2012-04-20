@@ -34,7 +34,7 @@ class EventSaver
     timer.end()
     
     event.update_attribute(:state, 'travels_done')
-  rescue OAuth2::HTTPError => e
+  rescue OAuth2::Error => e
     @user.update_attributes(
       :expired => 1
     )    

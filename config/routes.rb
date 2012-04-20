@@ -95,6 +95,7 @@ TimejustApi::Application.routes.draw do
           get :alias
           post :add_alias
           post :delete_alias
+          post :sync_calendar
         end
       end
     end

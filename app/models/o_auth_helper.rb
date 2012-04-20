@@ -1,5 +1,4 @@
 # encoding: utf-8
-require 'google/api_client'
 
 class OAuthHelper
 
@@ -9,14 +8,14 @@ class OAuthHelper
   # @return [OAuth2:Client]
   #
   def self.client
-    # @@client ||= OAuth2::Client.new(
-    #   configatron.gapps.oauth.for_gmail.consumer_key,
-    #   configatron.gapps.oauth.for_gmail.consumer_secret,
-    #   site:             'https://accounts.google.com',
-    #   authorize_url:    '/o/oauth2/auth',
-    #   access_token_url: '/o/oauth2/token',
-    #   parse_json:       true
-    # )
+    @@client ||= OAuth2::Client.new(
+      configatron.gapps.oauth.for_gmail.consumer_key,
+      configatron.gapps.oauth.for_gmail.consumer_secret,
+      site:             'https://accounts.google.com',
+      authorize_url:    '/o/oauth2/auth',
+      access_token_url: '/o/oauth2/token',
+      parse_json:       true
+    )
     @@client    
   end
 

@@ -8,9 +8,7 @@ class GoogleCalendarCreator
     if (@user != nil)
       @user.find_or_create_calendars
     end
-  rescue OAuth2::HTTPError => e
-    @user.update_attributes(
-      :expired => 1
-    )    
+  rescue OAuth2::Error => e
+    @user.update_attributes(:expired => 1)    
   end
 end
