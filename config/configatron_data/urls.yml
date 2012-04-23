@@ -16,7 +16,7 @@
     :geo_direction: "v1/geo/direction"
     :calendar: "v1/calendar"
     :http:
-      :url: "http://service-staging.timejust.com"        
+      :url: "http://service-staging.timejust.com:8001"        
 :development:
   :api:
     :url: "http://api-staging.timejust.com:50001/v1"
@@ -35,7 +35,7 @@
     :geo_direction: "v1/geo/direction"
     :calendar: "v1/calendar"
     :http:
-      :url: "http://service-staging.timejust.com"        
+      :url: "http://service-staging.timejust.com:8001"        
 :staging:
   :api:
     :url: "https://api-staging.timejust.com/v1"
@@ -49,12 +49,12 @@
   :ratp_proxy:
     :url: "http://proxy.timejust.com:80"
   :service:
-    :url: "https://service-staging.timejust.com"
+    :url: "https://service-staging.timejust.com:8002"
     :geo_recognition: "v1/geo/recognition"
     :geo_direction: "v1/geo/direction"
     :calendar: "v1/calendar"
     :http:
-      :url: "http://service-staging.timejust.com"        
+      :url: "http://service-staging.timejust.com:8001"        
 :production:
   :api:
     :url: "https://api.timejust.com/v1"

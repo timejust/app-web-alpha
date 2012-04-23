@@ -91,7 +91,10 @@ App.Views.EventView = Backbone.View.extend({
                                           -1, 
                                           this.handlePreviousEvent, 
                                           true);  
-      }      
+      } else if (e.get("eventType") == "event-travel") {
+        this.showError("You have selected a trip you saved in your calendar. \
+Please select an event where you want to go to or leave from.")
+      }    
     }    
   },
   handlePreviousEvent: function(response) {
@@ -254,6 +257,12 @@ App.Views.EventView = Backbone.View.extend({
     } else{
       $(this.el).html("<div class=\"title\">Select an event</div>");
     }
+    gadgets.window.adjustHeight();
+  },
+  showError: function(message) {
+    hideLoader();
+    this.$('.error').remove();
+    $(this.el).append('<div class="error">' + message + '</div>');
     gadgets.window.adjustHeight();
   },
   error: function(response) {
