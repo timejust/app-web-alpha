@@ -15,8 +15,8 @@ class EventAbstractApiProvider
     i = 0    
     direction_map = {}    
     
-    #["bus", "train", "car"].each do |mode| 
-    ["car"].each do |mode| 
+    ["bus", "train", "car"].each do |mode| 
+    #["car"].each do |mode| 
       #itinerary_backward = OpenStruct.new
       itinerary = OpenStruct.new
       travel = Travel.create(event_id: event.id,
