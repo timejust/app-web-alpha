@@ -58,9 +58,9 @@ module Timejust
     end
         
     def post_request(url, body)
-      puts("Timejust:Calendars.post_request: uri = #{url}")
+      puts("Timejust:Calendars.post_request: uri = #{@url}#{url}")
       puts("Timejust:Calendars.post_request: body = #{JSON.generate(body)}")
-      Rails.logger.info("Timejust:Calendars.post_request: uri = #{url}")
+      Rails.logger.info("Timejust:Calendars.post_request: uri = #{@url}#{url}")
       Rails.logger.info("Timejust:Calendars.post_request: body = #{JSON.generate(body)}")
 
       resp = self.connection.post do |req|
