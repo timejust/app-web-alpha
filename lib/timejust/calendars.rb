@@ -60,6 +60,8 @@ module Timejust
     def post_request(url, body)
       puts("Timejust:Calendars.post_request: uri = #{url}")
       puts("Timejust:Calendars.post_request: body = #{JSON.generate(body)}")
+      Rails.logger.info("Timejust:Calendars.post_request: uri = #{url}")
+      Rails.logger.info("Timejust:Calendars.post_request: body = #{JSON.generate(body)}")
 
       resp = self.connection.post do |req|
         req.url url
@@ -71,6 +73,7 @@ module Timejust
         message = JSON.parse(resp.body)["status"]
         status = resp.status
         Rails.logger.info("response => #{status}, #{message}")
+        puts("response => #{status}, #{message}")
       
         if status == 200 and message == 'ok'
           OK.new(resp.status)
