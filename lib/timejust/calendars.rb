@@ -72,8 +72,9 @@ module Timejust
       unless resp.status == 500 and resp.status == 405
         message = JSON.parse(resp.body)["status"]
         status = resp.status
-        Rails.logger.info("response => #{status}, #{message}")
-        puts("response => #{status}, #{message}")
+        reason = JSON.parse(resp.body)["reason"]
+        Rails.logger.info("response => #{status}, #{message}, #{reason}")
+        puts("response => #{status}, #{message}, #{reason}")
       
         if status == 200 and message == 'ok'
           OK.new(resp.status)

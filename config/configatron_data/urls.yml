@@ -30,12 +30,12 @@
   :ratp_proxy:
     :url: "http://proxy.timejust.com:80"
   :service:
-    :url: "https://service-staging.timejust.com:8002"
-    :geo_recognition: "v1/geo/recognition"
-    :geo_direction: "v1/geo/direction"
-    :calendar: "v1/calendar"
+    :url: "http://dev.timejust.com:9000"
+    :geo_recognition: "service-geo/v1/geo/recognition"
+    :geo_direction: "service-geo/v1/geo/direction"
+    :calendar: "service-calendar/v1/calendars"
     :http:
-      :url: "http://service-staging.timejust.com:8001"        
+      :url: "http://dev.timejust.com:9000"        
 :staging:
   :api:
     :url: "https://api-staging.timejust.com/v1"
