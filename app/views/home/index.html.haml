@@ -12,20 +12,55 @@
 
 
   <!--[if !IE]> -->
-  #bInstallTitle
+  .bInstallTitle
+    %h1 Timejust for Google Calendar
+  #bInstallDetails
+    %ol
+      %li
+        Click the green install button below.
+      %li
+        Google will ask you to authorize Timejust. Click Grant Access.
+        %br
+        %img{:id => 'authPopUp', :src => 'http://www.timejust.com/images/authPopUp.png', :alt => 'click grant access'}
+      %li
+        Google Calendar will open, and a pop-up will appear. Click yes.
+        %br
+        %img{:id => 'installPopUp', :src => 'http://www.timejust.com/images/installPopUp.png', :alt => 'click yes'}
+      %li
+        Finally a right pane should open up next to your calendar.
+        %br
+        %img{:id => 'rightPane', :src => 'http://www.timejust.com/images/rightPane.png', :alt => 'right pane Timejust'}
+      %li
+        If it does not open, click the small triangle to open the pane.
+        %img{:id => 'triangle', :src => 'http://www.timejust.com/images/triangle.png', :alt => 'click on the triangle'}
+    As you clic an event, timejust will offer to plan a trip.
+    %br
+    %br 
+    If you have inadvertantly suppressed timejust... just reload <a href='http://beta.timejust.com'>beta.timejust.com</a>
+    %br
+    %br
+    If Timejust does not work properly, or if you would like to chat, we are reachable at <a href='mailto:beta@timejust.com'>beta@timejust.com</a>
+  .bInstallTitle
     %a{:href => oauth2_authorize_path}
       %img{:id => 'install-button', :src => 'http://www.timejust.com/images/InstallTJb.png', :alt => 'install timejust beta!'}
-    %h1   let your Google Calendar guide you<br>from your appointment to the next<br>around the world by car, in the Paris<br>Region for public transportation
-  #bInstallDetails
-    Google will ask you to install the Gadget in Google Calendar. It will appear on the ride side of the screen, next to the calendar view. Then click an event and start planning trips. More destinations coming soon.
-    %a{:href => 'http://www.timejust.com/FAQ/index.php'}Questions: FAQ!
-    \-
-    %a{:href => 'mailto:beta@timejust.com'}Problems: mail us!
-    -#linkFAQ
-      = link_to "Questions: FAQ!", "http://www.timejust.com/FAQ/index.php"
+  <!-- <![endif]-->
+
+  -#
+    <!--[if !IE]> -->
+    #bInstallTitle
+      %a{:href => oauth2_authorize_path}
+        %img{:id => 'install-button', :src => 'http://www.timejust.com/images/InstallTJb.png', :alt => 'install timejust beta!'}
+      %h1   let your Google Calendar guide you<br>from your appointment to the next<br>around the world by car, in the Paris<br>Region for public transportation
+    #bInstallDetails
+      Google will ask you to install the Gadget in Google Calendar. It will appear on the ride side of the screen, next to the calendar view. Then click an event and start planning trips. More destinations coming soon.
+      %a{:href => 'http://www.timejust.com/FAQ/index.php'}Questions: FAQ!
       \-
-      = link_to "Problems: mail us!", "mailto:beta@timejust.com"
-  <!-- <![endif]-->  
+      %a{:href => 'mailto:beta@timejust.com'}Problems: mail us!
+      -#linkFAQ
+        = link_to "Questions: FAQ!", "http://www.timejust.com/FAQ/index.php"
+        \-
+        = link_to "Problems: mail us!", "mailto:beta@timejust.com"
+    <!-- <![endif]-->  
     
   <!--[if IE]>
   %table{:id => "IETable"}
@@ -39,22 +74,5 @@
     %tr{"class" => "instrContent"}
       %td Timejust Gadget needs the Google Chrome Frame add-on to work correctly on Internet Explorer
   <![endif]-->
-    
-  -#  
-    -# COMMIT STRANGE CHANGES
-      -#
-        -#
-          %td Timejust Gadget needs the Google Chrome Frame add-on to work correctly on Internet Explorer
-            %h4{:class => user_signed_in? ? "grey" : ""}
-              = link_to "Grant access to your calendar", oauth2_authorize_path
-          <!-- <![endif]-->
-          - if user_signed_in?        
-            %td
-              %h4{:id => "secondtitle"}
-                = link_to "Install the Gadget", "https://www.google.com/calendar/render?gadgeturl=#{configatron.gadget.url}?auth_token=#{current_user.authentication_token}&#{Rails.env}=#{Time.now.to_i}", {:target => "_blank", :onclick => "document.getElementById('third').className = ''; document.getElementById('thirdtext').className = ''; document.getElementById('thirdtitle').className = ''; document.getElementById('second').className = 'grey'; document.getElementById('secondtext').className = 'grey'; document.getElementById('secondtitle').className = 'grey';"} 
-          - else
-            %td
-              %h4{:class => "grey"} Install the Gadget
-              -#= link_to "Sign in with Google Apps Strategy (OpenId, will be usefull for google apps domains)", user_omniauth_authorize_path(:openid, :domain => 'gmail.com')
 
 = render partial: 'layouts/footer'
