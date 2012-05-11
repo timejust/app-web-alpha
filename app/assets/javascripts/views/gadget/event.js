@@ -60,10 +60,14 @@ App.Views.EventView = Backbone.View.extend({
       if (this.selectedEvent != null) {
         this.clear();
       }
-      // don't use event from proposals calendars
-      if (!App.config.calendar_names || 
+      
+      if (calendarEvent.calendar.email != this.user.email) {
+        this.showError("Currently Timejust support only your primary calendar \
+(the first in your calendar list). Please select an event in that calendar.")
+      } else if (!App.config.calendar_names || 
         $.inArray(calendarEvent['calendar']['name'], 
                   App.config.calendar_names) == -1) {
+        // don't use event from proposals calendars
         this.selectedEvent = calendarEvent;
         if (this.travelsView) {
           this.travelsView.clear();

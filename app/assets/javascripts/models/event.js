@@ -17,15 +17,12 @@ App.Models.Event = Backbone.Model.extend({
   },
   fetchWithEid: function(callback) {
     var self = this;
-    alert(this.urlWithEid() + "?nocache=" + new Date().getTime())
     GoogleRequest.get({
       url: this.urlWithEid() + "?nocache=" + new Date().getTime(),
-      error: function() {  
-        alert("fetchWithEid: error")
+      error: function() {          
         callback(null);
       },
       success: function(resp) {
-        alert("fetchWithEid: success, rc(" + resp.rc + "), status(" + resp.data.status + ")")
         if (resp.rc == 200 && resp.data.status == 'ok') {
           var e = resp.data.event;
           self.set({_id: e.id, 
