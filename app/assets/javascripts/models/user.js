@@ -18,7 +18,7 @@ var User = Backbone.Model.extend({
   // Store user preferences, and call API to get user state
   preferencesCallback: function(prefs){
     this.preferences = prefs;
-    this.email = prefs.viewer;
+    this.email = prefs.viewer;    
     this.trigger('preferences:loaded');
   },
 

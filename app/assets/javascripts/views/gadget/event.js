@@ -10,7 +10,8 @@ App.Views.EventView = Backbone.View.extend({
     _.bindAll(this, 'eventWithEidFetched');
     _.bindAll(this, 'datesCallback');
     this.ip = this.options.ip;
-    this.user = this.options.user;      
+    this.user = this.options.user;     
+    alert(this.preferences.timezone_offset); 
     // Bind event on calendar event click
     google.calendar.read.subscribeToEvents(this.calendarEventOccured);
     google.calendar.subscribeToDataChange(this.dataChangeCallback);
@@ -75,6 +76,7 @@ App.Views.EventView = Backbone.View.extend({
             ip: this.ip, 
             eventView: this });
         }      
+        alert("timezone: " + calendarEvent.tz)
         var e = new App.Models.Event({eId: calendarEvent.id, 
                                       calendarId: calendarEvent.calendar.email})
         e.fetchWithEid(this.eventWithEidFetched);        

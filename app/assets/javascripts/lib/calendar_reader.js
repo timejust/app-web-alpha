@@ -35,8 +35,6 @@ function CalendarReader() {
     startDate = utils.timeToUnix(startDate);
     endDate = utils.timeToUnix(endDate);
 
-    alert("start: " + startDate + ", end: " + endDate)
-    
     this.taskQueue.push({email: email, startTime: startDate, 
       endTime: endDate, callback: callback, params: params});          
     if (this.taskQueue.length == 1) {
