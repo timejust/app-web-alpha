@@ -116,6 +116,8 @@ Please select an event where you want to go to or leave from.")
           e = events[i].event;
           var endTime = utils.rfc3389ToTimeObject(e.end)
           endTime.hour += this.tz
+          alert(endTime.hour + ":" + endTime.minute + ":" + endTime.second)
+          alert(this.selectedEvent.startTime.hour + ":" + this.selectedEvent.startTime.minute + ":" + this.selectedEvent.startTime.second)
           // Make sure the given event is valid in the given time range
           if (utils.timeCompare(endTime, 
                                 this.selectedEvent.startTime) <= 0) {
