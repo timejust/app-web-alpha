@@ -6,14 +6,10 @@ function CalendarReader() {
   var instance;  
   var self = this;
   this.taskQueue = new Array();   
-  this.read = function(email, currentTime, dayDiff, callback, cutoff, timezone_offset, params) {
+  this.read = function(email, currentTime, dayDiff, callback, cutoff, tz, params) {
     var startDate = {};
     var endDate = {};
-    var tz = 0;
-    if (timezone_offset > 0) {
-      tz = ((timezone_offset / 1000) / 3600)      
-      currentTime.hour = currentTime.hour - tz  
-    }    
+    currentTime.hour = currentTime.hour - tz  
     
     if (dayDiff > 0) {
       startDate = currentTime
@@ -35,6 +31,7 @@ function CalendarReader() {
       // endDate = utils.getTimeWithMinuteDiff(currentTime, -1);
       endDate = currentTime;
     }
+
     startDate = utils.timeToUnix(startDate);
     endDate = utils.timeToUnix(endDate);
 

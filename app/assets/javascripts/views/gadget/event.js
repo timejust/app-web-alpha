@@ -10,7 +10,12 @@ App.Views.EventView = Backbone.View.extend({
     _.bindAll(this, 'eventWithEidFetched');
     _.bindAll(this, 'datesCallback');
     this.ip = this.options.ip;
-    this.user = this.options.user;              
+    this.user = this.options.user;      
+    this.tz = 0;
+    if (this.user.preferences.timezone_offset > 0) {
+      this.tz = ((this.user.preferences.timezone_offset / 1000) / 3600)            
+    }
+            
     // Bind event on calendar event click
     google.calendar.read.subscribeToEvents(this.calendarEventOccured);
     google.calendar.subscribeToDataChange(this.dataChangeCallback);
@@ -91,7 +96,7 @@ App.Views.EventView = Backbone.View.extend({
                                           -1, 
                                           this.handlePreviousEvent, 
                                           true,
-                                          this.user.preferences.timezone_offset);  
+                                          this.tz);  
       } else if (e.get("eventType") == "event-travel") {
         this.showError("You have selected a trip you saved in your calendar. \
 Please select an event where you want to go to or leave from.")
@@ -109,8 +114,10 @@ Please select an event where you want to go to or leave from.")
         for (var i = events.length - 1; i >= 0; i--) {
           // Get latest event from the list    
           e = events[i].event;
+          var endTime = utils.rfc3389ToTimeObject(e.end)
+          endTime.hour += this.tz
           // Make sure the given event is valid in the given time range
-          if (utils.timeCompare(utils.rfc3389ToTimeObject(e.end), 
+          if (utils.timeCompare(endTime, 
                                 this.selectedEvent.startTime) <= 0) {
             break;
           } else {
@@ -120,7 +127,7 @@ Please select an event where you want to go to or leave from.")
       }             
       this.previousEvent = e;               
       CalendarReader.getInstance().read(this.user.email, this.selectedEvent.endTime, 
-        1, this.handleNextEvent, true, this.user.preferences.timezone_offset); 
+        1, this.handleNextEvent, true, this.tz); 
     } else {
       
     }    
@@ -133,8 +140,10 @@ Please select an event where you want to go to or leave from.")
         for (var i = 0; i < events.length; i++) {
           // Get latest event from the list    
           e = events[i].event;
+          var startTime = utils.rfc3389ToTimeObject(e.start)
+          startTime.hour += this.tz
           // Make sure the given event is valid in the given time range
-          if (utils.timeCompare(utils.rfc3389ToTimeObject(e.start), 
+          if (utils.timeCompare(startTime, 
                                 this.selectedEvent.endTime) >= 0) {
             break;
           } else {
