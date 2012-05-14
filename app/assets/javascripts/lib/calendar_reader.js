@@ -10,10 +10,8 @@ function CalendarReader() {
     var startDate = {};
     var endDate = {};
     var tz = 0;
-    alert("timezone_offset: " + timezone_offset);
     if (timezone_offset > 0) {
       tz = ((timezone_offset / 1000) / 3600)      
-      alert("tz: " + tz);
       currentTime.hour = currentTime.hour - tz  
     }    
     
@@ -34,11 +32,9 @@ function CalendarReader() {
       } else {
         startDate = utils.getTimeWithDayDiff(currentTime, dayDiff);  
       }      
-      endDate = utils.getTimeWithMinuteDiff(currentTime, -1);
+      // endDate = utils.getTimeWithMinuteDiff(currentTime, -1);
+      endDate = currentTime;
     }
-    alert(startDate.year + "-" + startDate.month + "-" + startDate.date + " " + startDate.hour + ":" + startDate.minute + ":" + startDate.second);
-    alert(endDate.year + "-" + endDate.month + "-" + endDate.date + " " + endDate.hour + ":" + endDate.minute + ":" + endDate.second);
-    
     startDate = utils.timeToUnix(startDate);
     endDate = utils.timeToUnix(endDate);
 
