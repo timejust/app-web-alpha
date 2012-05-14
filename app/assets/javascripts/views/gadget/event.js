@@ -60,11 +60,7 @@ App.Views.EventView = Backbone.View.extend({
       if (this.selectedEvent != null) {
         this.clear();
       }
-      
-      if (calendarEvent.calendar.email != this.user.email) {
-        this.showError("Currently Timejust support only your primary calendar \
-(the first in your calendar list). Please select an event in that calendar.")
-      } else if (!App.config.calendar_names || 
+      if (!App.config.calendar_names || 
         $.inArray(calendarEvent['calendar']['name'], 
                   App.config.calendar_names) == -1) {
         // don't use event from proposals calendars
@@ -99,7 +95,10 @@ App.Views.EventView = Backbone.View.extend({
         this.showError("You have selected a trip you saved in your calendar. \
 Please select an event where you want to go to or leave from.")
       }    
-    }    
+    } else {
+        this.showError("Currently Timejust support only your primary calendar \
+(the first in your calendar list). Please select an event in that calendar.")          
+    } 
   },
   handlePreviousEvent: function(response) {
     if (response != null) {
