@@ -10,8 +10,7 @@ App.Views.EventView = Backbone.View.extend({
     _.bindAll(this, 'eventWithEidFetched');
     _.bindAll(this, 'datesCallback');
     this.ip = this.options.ip;
-    this.user = this.options.user;     
-    alert(this.preferences.timezone_offset); 
+    this.user = this.options.user;              
     // Bind event on calendar event click
     google.calendar.read.subscribeToEvents(this.calendarEventOccured);
     google.calendar.subscribeToDataChange(this.dataChangeCallback);
@@ -76,7 +75,6 @@ App.Views.EventView = Backbone.View.extend({
             ip: this.ip, 
             eventView: this });
         }      
-        alert("timezone: " + calendarEvent.tz)
         var e = new App.Models.Event({eId: calendarEvent.id, 
                                       calendarId: calendarEvent.calendar.email})
         e.fetchWithEid(this.eventWithEidFetched);        
@@ -92,7 +90,8 @@ App.Views.EventView = Backbone.View.extend({
                                           this.selectedEvent.startTime, 
                                           -1, 
                                           this.handlePreviousEvent, 
-                                          true);  
+                                          true,
+                                          this.user.preferences.timezone_offset);  
       } else if (e.get("eventType") == "event-travel") {
         this.showError("You have selected a trip you saved in your calendar. \
 Please select an event where you want to go to or leave from.")
@@ -121,7 +120,7 @@ Please select an event where you want to go to or leave from.")
       }             
       this.previousEvent = e;               
       CalendarReader.getInstance().read(this.user.email, this.selectedEvent.endTime, 
-        1, this.handleNextEvent, true); 
+        1, this.handleNextEvent, true, this.user.preferences.timezone_offset); 
     } else {
       
     }    
