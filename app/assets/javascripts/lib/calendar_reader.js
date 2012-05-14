@@ -10,7 +10,8 @@ function CalendarReader() {
     var startDate = {};
     var endDate = {};
     if (dayDiff > 0) {
-      startDate = utils.getTimeWithMinuteDiff(currentTime, 1);
+      // startDate = utils.getTimeWithMinuteDiff(currentTime, 1);
+      startDate = currentTime
       endDate = utils.getTimeWithDayDiff(currentTime, dayDiff);
       if (cutoff) {
         endDate.hour = 0;
@@ -28,8 +29,13 @@ function CalendarReader() {
       }      
       endDate = utils.getTimeWithMinuteDiff(currentTime, -1);
     }
+    alert(startDate.year + "-" + startDate.month + "-" + startDate.date + " " + startDate.hour + ":" + startDate.minute + ":" + startDate.second)
+    alert(endDate.year + "-" + endDate.month + "-" + endDate.date + " " + endDate.hour + ":" + endDate.minute + ":" + endDate.second)
+    
     startDate = utils.timeToUnix(startDate);
     endDate = utils.timeToUnix(endDate);
+
+    alert("start: " + startDate + ", end: " + endDate)
     
     this.taskQueue.push({email: email, startTime: startDate, 
       endTime: endDate, callback: callback, params: params});          
