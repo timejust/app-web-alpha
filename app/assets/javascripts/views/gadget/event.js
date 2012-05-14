@@ -115,7 +115,8 @@ Please select an event where you want to go to or leave from.")
           // Get latest event from the list    
           e = events[i].event;
           var endTime = utils.rfc3389ToTimeObject(e.end)
-          endTime.hour += this.tz
+          // endTime.hour += this.tz
+          alert(e.end)
           alert(endTime.hour + ":" + endTime.minute + ":" + endTime.second)
           alert(this.selectedEvent.startTime.hour + ":" + this.selectedEvent.startTime.minute + ":" + this.selectedEvent.startTime.second)
           // Make sure the given event is valid in the given time range
@@ -143,7 +144,7 @@ Please select an event where you want to go to or leave from.")
           // Get latest event from the list    
           e = events[i].event;
           var startTime = utils.rfc3389ToTimeObject(e.start)
-          startTime.hour += this.tz
+          // startTime.hour += this.tz
           // Make sure the given event is valid in the given time range
           if (utils.timeCompare(startTime, 
                                 this.selectedEvent.endTime) >= 0) {
