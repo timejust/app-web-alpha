@@ -1,8 +1,16 @@
 var utils = {
   timeToUnix: function(time) {
-    var date = new Date();
-    date.setFullYear(time.year, time.month-1, time.date);
-    date.setHours(time.hour, time.minute, time.second, 0);
+    var date = new Date(
+      Date.UTC(time.year, 
+               time.month-1, 
+               time.date, 
+               time.hour, 
+               time.minute, 
+               time.second, 
+               0)
+    );
+    // date.setFullYear(time.year, time.month-1, time.date);
+    // date.setHours(time.hour, time.minute, time.second, 0);
     return parseInt(date / 1000);
   },
   timeCompare: function(t1, t2) {
