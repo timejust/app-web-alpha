@@ -93,7 +93,7 @@ class TravelStep
       },
       "location" => self.invitation_location,
       "summary" => self.summary.join('-'),
-      "description" => self.summary.join('-'),
+      "description" => strip_tags(self.google_event_detail).gsub('&nbsp;', ' '),
       "eventType" => Timejust::Calendars::EVENT_TRAVEL
     })
     

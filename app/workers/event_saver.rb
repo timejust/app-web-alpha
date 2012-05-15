@@ -17,22 +17,12 @@ class EventSaver
   #end
 
   def self.perform(event_id)    
-    timer = Timejust::LatencySniffer.new('Event:EventSaver')
-    timer.start()
-    
     event = Event.first(conditions: {id: event_id})       
     @user = User.first(conditions: {id: event.user_id})
 
     #event.remove_duplicate_provider_errors
 
-    ctimer = Timejust::LatencySniffer.new('Task:TravelToGoogleCalendar')
-    ctimer.start()
-    
-    event.write_travels_to_calendar
-    
-    ctimer.end()        
-    timer.end()
-    
+    event.write_travels_to_calendar    
     event.update_attribute(:state, 'travels_done')
   rescue OAuth2::Error => e
     @user.update_attributes(

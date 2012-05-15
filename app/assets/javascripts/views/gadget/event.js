@@ -115,7 +115,7 @@ Please select an event where you want to go to or leave from.")
           // Get latest event from the list    
           e = events[i].event;
           // Make sure the given event is valid in the given time range
-          if (utils.timeCompare(utils.rfc3389ToUTCTimeObject(e.end), 
+          if (utils.timeCompare(utils.rfc3389ToTimeObject(e.end), 
                                 this.selectedEvent.startTime) <= 0) {
             break;
           } else {
@@ -139,7 +139,7 @@ Please select an event where you want to go to or leave from.")
           // Get latest event from the list    
           e = events[i].event;
           // Make sure the given event is valid in the given time range
-          if (utils.timeCompare(utils.rfc3389ToUTCTimeObject(e.start), 
+          if (utils.timeCompare(utils.rfc3389ToTimeObject(e.start), 
                                 this.selectedEvent.endTime) >= 0) {
             break;
           } else {

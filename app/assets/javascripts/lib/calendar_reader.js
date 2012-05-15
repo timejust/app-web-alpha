@@ -9,27 +9,28 @@ function CalendarReader() {
   this.read = function(email, currentTime, dayDiff, callback, cutoff, tz, params) {
     var startDate = {};
     var endDate = {};
-    currentTime.hour = currentTime.hour - tz  
+    var c = utils.copyTimeObject(currentTime);
+    c.hour = c.hour - tz  
     
     if (dayDiff > 0) {
-      startDate = currentTime
-      endDate = utils.getTimeWithDayDiff(currentTime, dayDiff);
+      startDate = c
+      endDate = utils.getTimeWithDayDiff(c, dayDiff);
       if (cutoff) {
         endDate.hour = 0;
         endDate.minute = 0;
         endDate.second = 0;
       }
     } else {
-      if (cutoff && currentTime.hour > 0) {        
-        startDate = utils.getTimeWithDayDiff(currentTime, dayDiff + 1);  
+      if (cutoff && c.hour > 0) {        
+        startDate = utils.getTimeWithDayDiff(c, dayDiff + 1);  
         startDate.hour = 0;
         startDate.minute = 0;
         startDate.second = 0;
       } else {
-        startDate = utils.getTimeWithDayDiff(currentTime, dayDiff);  
+        startDate = utils.getTimeWithDayDiff(c, dayDiff);  
       }      
-      // endDate = utils.getTimeWithMinuteDiff(currentTime, -1);
-      endDate = currentTime;
+      // endDate = utils.getTimeWithMinuteDiff(c, -1);
+      endDate = c;
     }
 
     startDate = utils.timeToUnix(startDate);
