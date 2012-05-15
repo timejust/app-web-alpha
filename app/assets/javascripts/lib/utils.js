@@ -23,6 +23,11 @@ var utils = {
     } 
     return -1;
   },
+  rfc3389ToUTCTimeObject: function(r) {
+    date = new Date(Date.parse(r));
+    return {year: date.getUTCFullYear(), month: date.getUTCMonth() + 1, date: date.getUTCDate(), 
+        hour: date.getUTCHours(), minute: date.getUTCMinutes(), second: date.getUTCSeconds()};
+  },
   rfc3389ToTimeObject: function(r) {    
     date = new Date(Date.parse(r));
     return {year: date.getFullYear(), month: date.getMonth() + 1, date: date.getDate(), 

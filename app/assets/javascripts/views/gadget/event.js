@@ -114,13 +114,8 @@ Please select an event where you want to go to or leave from.")
         for (var i = events.length - 1; i >= 0; i--) {
           // Get latest event from the list    
           e = events[i].event;
-          var endTime = utils.rfc3389ToTimeObject(e.end)
-          // endTime.hour += this.tz
-          alert(e.end)
-          alert(endTime.hour + ":" + endTime.minute + ":" + endTime.second)
-          alert(this.selectedEvent.startTime.hour + ":" + this.selectedEvent.startTime.minute + ":" + this.selectedEvent.startTime.second)
           // Make sure the given event is valid in the given time range
-          if (utils.timeCompare(endTime, 
+          if (utils.timeCompare(utils.rfc3389ToUTCTimeObject(e.end), 
                                 this.selectedEvent.startTime) <= 0) {
             break;
           } else {
@@ -143,10 +138,8 @@ Please select an event where you want to go to or leave from.")
         for (var i = 0; i < events.length; i++) {
           // Get latest event from the list    
           e = events[i].event;
-          var startTime = utils.rfc3389ToTimeObject(e.start)
-          // startTime.hour += this.tz
           // Make sure the given event is valid in the given time range
-          if (utils.timeCompare(startTime, 
+          if (utils.timeCompare(utils.rfc3389ToUTCTimeObject(e.start), 
                                 this.selectedEvent.endTime) >= 0) {
             break;
           } else {
@@ -286,8 +279,7 @@ Please select an event where you want to go to or leave from.")
     this.$('.error').remove();
     if (response.rc == 401) {
       $(this.el).append("<div class='error'>You must authorize Timejust to access your calendar by clicking : <a href='" + App.config.web_url + "/oauth2/authorize?return_to=http://google.com/calendar' target='blank'>here</a></div>");
-    }
-    else{
+    } else {
       $(this.el).append('<div class="error">An error occurred when calculating your route, please try again</div>');
     }
     gadgets.window.adjustHeight();
