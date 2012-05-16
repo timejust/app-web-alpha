@@ -264,7 +264,7 @@ Please select an event where you want to go to or leave from.")
       title.time = this.selectedEvent.startTime;
       title.render();
     } else{
-      $(this.el).html("<div class=\"title\">Select an event</div>");
+      $(this.el).html("<div class=\"title\">To begin, click an event</div>");
     }
     gadgets.window.adjustHeight();
   },

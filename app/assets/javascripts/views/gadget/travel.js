@@ -55,7 +55,13 @@ App.Views.TravelView = Backbone.View.extend({
       }
       html += '<div class="' + color + '"><div class="travel_container"><ul class="travel"><li class="toggle"><a class="';
       html += color + '_toggle off" href="#"></a></li>';
-      html += '<li><a class="travel_title" href="#"><div class="title">' + travel.travel_mode.toUpperCase() + '</div></a></li>';      
+      if (travel.travel_mode == 'car')
+        html += '<li><a class="travel_title" href="#"><div class="title">' + 'Easy by car' + '</div></a></li>';
+      else if (travel.travel_mode == 'rail')
+        html += '<li><a class="travel_title" href="#"><div class="title">' + 'Fastest by metro' + '</div></a></li>';
+      else {
+        html += '<li><a class="travel_title" href="#"><div class="title">' + 'sightseeing by bus' + '</div></a></li>';
+      }    
       html += '<a class="plus_container" href="#" id="' + travel._id + '"></a></ul>';
       html += '<div id="tooltip_' + travel._id + '" class="tooltip">copy to my calendar</div>';
       html += '<ul><li class="' + color +'_estimate">' + estimated_time + '</li>';

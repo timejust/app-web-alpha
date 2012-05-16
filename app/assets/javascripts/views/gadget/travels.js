@@ -218,26 +218,26 @@ Please use 'else where' button to choose proper location");
     btn.attr("style", "margin-top: 9px");
     btn.attr("planable", "true");
     btn.parent('div').find('.button_text').html("");
-    btn.html('PLAN TRIP');
+    btn.html('Plan trip');
   },
   setUnplanableButton: function(view, btn, btnStage) {
     if (view.summary.original_address) {
       // Set information text
-      btn.html('PLEASE CLARIFY ');
+      btn.html('Please clarify ');
       btn.attr("style", "margin-top: 1px");
       btn.parent('div').find('.button_text').html(
         view.summary.original_address);      
     } else {
       btn.attr("style", "margin-top: 1px");
       if (view.stage == "previous")
-        btn.html("WHERE ARE YOU LEAVING FROM?");     
+        btn.html("Where are you leaving from?");     
       else if (view.stage == "next")
-        btn.html("WHERE ARE YOU GOING TO?");     
+        btn.html("Where are you going to?");     
       else {
         if (btnStage == "previous")
-          btn.html("WHERE ARE YOU GOING TO?");     
+          btn.html("Where are you going to?");     
         else 
-          btn.html("WHERE ARE YOU LEAVING FROM?");     
+          btn.html("Where are you leaving from?");     
       }
       btn.parent('div').find('.button_text').html("");
     }        
