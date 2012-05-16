@@ -45,12 +45,12 @@ def mock_google_event_json
     attendeeCount: 0,
     calendar: {
       email: "qmd97k7m5akkcs6f8ko9q40g34@group.calendar.google.com",
-      name: "PinkProposal"
+      name: "xTimejustPink"
     },
     creator: "null",
     owner: {
       email: "qmd97k7m5akkcs6f8ko9q40g34@group.calendar.google.com",
-      name: "PinkProposal"
+      name: "xTimejustPink"
     },
     accessLevel: "read"
   }.to_json

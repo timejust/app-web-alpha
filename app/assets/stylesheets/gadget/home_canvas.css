@@ -102,15 +102,15 @@ ul li {
   display: inline-block; 
   padding: 4px 5px; 
 }
-.GreenProposal { 
+.xTimejustGreen { 
   background: #88CB8C; 
   color: #000; 
 }
-.PinkProposal { 
+.xTimejustPink { 
   background: #EEA2BB; 
   color: #000; 
 }
-.YellowProposal { 
+.xTimejustYellow { 
   background: #E0C240; 
   color: #000; 
 }

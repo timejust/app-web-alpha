@@ -17,7 +17,7 @@ describe("TravelsView", function(){
       travels: [
         {
           transports: ['car'],
-          calendar: "BlackProposal",
+          calendar: "xTimejustBlack",
           travel_steps: [
             {
               '_id': 19,
@@ -28,13 +28,13 @@ describe("TravelsView", function(){
               'estimated_time': 9,
               'distance': 42,
               'travel_type': 'backward',
-              'calendar': 'BlackProposal'
+              'calendar': 'xTimejustBlack'
             }
           ]
         },
         {
           transports: ['metro', 'tram'],
-          calendar: "BlackProposal",
+          calendar: "xTimejustBlack",
           travel_steps: [
             {
               '_id': 18,
@@ -45,13 +45,13 @@ describe("TravelsView", function(){
               'estimated_time': 9,
               'steps': ['step1', 'step2'],
               'travel_type': 'backward',
-              'calendar': 'BlackProposal'
+              'calendar': 'xTimejustBlack'
             }
           ]
         },
         {
           transports: [],
-          calendar: "BlackProposal",
+          calendar: "xTimejustBlack",
           travel_steps: [
             {
               'provider': 'fake_provider'

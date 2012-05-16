@@ -102,8 +102,8 @@ describe("EventView", function() {
 
     it("should not assign selectedEvent is event is from a calendar listed in App.config.calendar_names", function(){
 
-      App.config.calendar_names = ['YellowProposal']
-      this.google_event['calendar']['name'] = 'YellowProposal'
+      App.config.calendar_names = ['xTimejustYellow']
+      this.google_event['calendar']['name'] = 'xTimejustYellow'
       this.view.calendarEventOccured(this.google_event);
       expect(this.view.selectedEvent).toBe(undefined);
     });

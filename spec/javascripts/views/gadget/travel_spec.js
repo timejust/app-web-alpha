@@ -14,7 +14,7 @@ describe("TravelView", function(){
       travel.set({
         provider: 'fake_provider',
         transports: ['fake_transport', 'another_fake_transport'],
-        calendar: 'BlackProposal',
+        calendar: 'xTimejustBlack',
         travel_steps: [
           {
             _id: 42,
