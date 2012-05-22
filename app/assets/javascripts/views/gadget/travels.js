@@ -321,7 +321,7 @@ Please use 'else where' button to choose proper location");
       travel.callback = this.handleTravel;
       travel.type = "previous";
       this.showLoadingProgress("previous");
-      travel.handleTravelCreated({"data": {"_id" : this.previousTravel}});
+      travel.handleTravelCreated({"data": {"_id" : this.previousTravel}}, true);
     }
         
     if (this.nextTravel != "") {
@@ -329,7 +329,7 @@ Please use 'else where' button to choose proper location");
       travel.callback = this.handleTravel;
       travel.type = "next";
       this.showLoadingProgress("next");
-      travel.handleTravelCreated({"data": {"_id" : this.nextTravel}});
+      travel.handleTravelCreated({"data": {"_id" : this.nextTravel}}, true);
     }
     
     // alert($('#previous_event').innerWidth());    

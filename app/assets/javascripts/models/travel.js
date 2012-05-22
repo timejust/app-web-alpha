@@ -59,7 +59,7 @@ App.Models.Travel = Backbone.Model.extend({
       });
     });
   },  
-  handleTravelCreated: function(response) {    
+  handleTravelCreated: function(response, no_polling) {    
     this.apiEventId = response.data._id;
     var self = this;        
     
@@ -75,7 +75,13 @@ App.Models.Travel = Backbone.Model.extend({
         },
         error: function(response) {
           if (response.rc == 404) {
-            retry();
+            if (no_polling == true) {
+              if (self.callback != null) {
+                self.callback(null);
+              }              
+            } else {
+              retry();
+            }
           } else {
             if (self.callback != null) {
               self.callback(null);
