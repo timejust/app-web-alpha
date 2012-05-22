@@ -14,10 +14,7 @@ class Api::EventsController < Api::BaseController
   # @return   [JSON]    JSON representation of event
   #
   def create
-    if params[:event]
-      timer = Timejust::LatencySniffer.new('Event:create')
-      timer.start()      
-      
+    if params[:event]      
       Resque.enqueue(GoogleCalendarCreator, current_user.email)      
       @event = Event.parse_from_google_gadget(params[:event])
       @event.base = params[:base]
@@ -37,7 +34,6 @@ class Api::EventsController < Api::BaseController
       else
         render :json => @event.errors, :status => :unprocessable_entity
       end
-      timer.end()
     else
       render :nothing => true, :status => :unprocessable_entity
     end
@@ -96,7 +92,6 @@ class Api::EventsController < Api::BaseController
     @event.set_current_ip(params[:current_ip])
     @event.create_previous_travel_node(params[:previous_travel_node]) if params[:previous_travel_node] && params[:previous_travel_node][:address].present?
     @event.create_current_travel_node(params[:current_travel_node]) if params[:current_travel_node] && params[:current_travel_node][:address].present?
-    # @event.create_next_travel_node(params[:next_travel_node]) if params[:next_travel_node] && params[:next_travel_node][:address].present?
     @event.save
     @event.wait
     # @event.check_for_favorite_locations

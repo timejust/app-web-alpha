@@ -44,17 +44,18 @@ class Travel
 
   # Write travels to Google Calendar
   #
-  def write_travel_steps_to_calendar(calendar = nil)
+  def write_travel_steps_to_calendar(calendar = nil, id)
     self.primary_calendar_color = user.calendar_color
+    
     # TODO not_in(state: ['error'])
     self.travel_steps.each do |travel_step|
       # Rails.logger.info calendar.inspect
       # Before create something, delete if already exists
       #travel_step.destroy_google_event_when(calendar.google_event_id, )
       if calendar == nil
-        travel_step.create_google_event(user.email, user.email) unless travel_step.error?
+        travel_step.create_google_event(user.email, user.email, id) unless travel_step.error?
       else
-        travel_step.create_google_event(calendar.google_short_id, calendar.name) unless travel_step.error?
+        travel_step.create_google_event(calendar.google_short_id, calendar.name, id) unless travel_step.error?
       end
     end
   end

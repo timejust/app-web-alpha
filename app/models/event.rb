@@ -198,7 +198,7 @@ class Event
     self.travels.each do |travel|
       calendar = self.user.shared_calendars.where(name: travel.calendar).first
       if calendar
-        travel.write_travel_steps_to_calendar(calendar)
+        travel.write_travel_steps_to_calendar(calendar, self.id)
       end
     end
   end
@@ -216,6 +216,18 @@ class Event
     )
   end
 
+  def linkup_travel_with_events
+    calendar = Timejust::Calendars.new(user.email, user.refresh_token)
+    calendar.update_with_eid(Timejust::Calendars::GOOGLE_CALENDAR, 
+                             { "calendarId" => user.email,
+                               "eid" => self.previous_travel_node.event_google_id,
+                               "nextTravelId" => self.id.to_s })
+    calendar.update_with_eid(Timejust::Calendars::GOOGLE_CALENDAR, 
+                             { "calendarId" => user.email,
+                               "eid" => self.current_travel_node.event_google_id,
+                               "previousTravelId" => self.id.to_s })
+  end
+  
   # Is all travel nodes are confirmed by user
   #
   # @return [Boolean]

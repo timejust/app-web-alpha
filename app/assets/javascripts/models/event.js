@@ -38,6 +38,8 @@ App.Models.Event = Backbone.Model.extend({
                     description: e.description,
                     eventType: e.eventType,
                     eId: e.eid,
+                    nextTravel: e.nextTravel,
+                    previousTravel: e.previousTravel,
                     created: e.created,
                     updated: e.updated});  
           if (callback != null) {

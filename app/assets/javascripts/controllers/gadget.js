@@ -18,11 +18,13 @@ App.Controllers.GadgetController = Backbone.Router.extend({
       $('#notifications').html("<p>You must authorize Timejust to access your calendar by clicking : <a href='" + App.config.web_url + "/oauth2/authorize?return_to=http://google.com/calendar' target='blank'>here</a></p>");
       gadgets.window.adjustHeight();
     } else {
+      /* We don't purge travels now.      
       this.user.purgeTravels({
         success: function() {
           google.calendar.refreshEvents();
         }
       });
+      */
       new App.Views.EventView({ el: $('#selectedEvent').get(0), ip: this.ip, user: this.user });
     }
   },

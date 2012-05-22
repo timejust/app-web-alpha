@@ -7,7 +7,13 @@ App.Models.EventSummary = Backbone.Model.extend({
         this.calendarEvent.summary : this.calendarEvent.title));
     if (this.calendarEvent != null) {
       // this.color = this.calendarEvent.palette.medium;
-      this.googleEventId = this.calendarEvent.id;      
+      
+      // We're using eid instead of id from google calendar event because
+      // the given calendar event id is associated with the Google Calendar
+      // UI system not with google backend system. In order to hook them up
+      // with the given item, we need to use eid in the given object.
+      this.googleEventId = (this.calendarEvent.eid == null ? 
+        this.calendarEvent.id : this.calendarEvent.eid);
       this.original_address = this.calendarEvent.location;      
     } else {
       this.original_address = "";

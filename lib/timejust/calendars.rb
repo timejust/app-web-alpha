@@ -88,6 +88,35 @@ module Timejust
       ERROR.new(resp.status, "")
     end
     
+    def put_request(url, body)
+      puts("Timejust:Calendars.put_request: uri = #{@url}#{url}")
+      puts("Timejust:Calendars.put_request: body = #{JSON.generate(body)}")
+      
+      resp = self.connection.put do |req|
+        req.url url
+        req.headers['Content-Type'] = 'application/json'
+        req.body = JSON.generate(body)
+      end
+      
+      unless resp.status == 500 and resp.status == 405
+        message = JSON.parse(resp.body)["status"]
+        status = resp.status
+        reason = JSON.parse(resp.body)["reason"]
+        Rails.logger.info("response => #{status}, #{message}, #{reason}")
+        puts("response => #{status}, #{message}, #{reason}")
+      
+        if status == 200 and message == 'ok'
+          OK.new(resp.status)
+        else
+          ERROR.new(resp.status, message)
+        end
+      else
+        ERROR.new(resp.status, "")
+      end      
+    rescue JSON::ParserError
+      ERROR.new(resp.status, "")
+    end
+    
     def sync(calendar_type, min = 0, max = 0)            
       body = {
         "calendar-type" => calendar_type,
@@ -96,8 +125,23 @@ module Timejust
         "time-max" => max.to_i
         }
 
-      self.post_request("/#{configatron.service.calendar}/#{@email}/sync", 
+      # @url = "http://192.168.15.1:9000"
+      # self.post_request("/service-calendar/v1/calendars/#{@email}/sync",
+      self.post_request("/#{configatron.service.calendar}/#{@email}/sync",       
                         body)
+    end
+    
+    def update_with_eid(calendar_type, event)
+      puts "update_with_eid: #{event["eid"]}, event: #{event}"        
+      body = {
+        "calendar-type" => calendar_type,
+        "refresh-token" => @refresh_token,
+        "event" => event
+      }        
+      # @url = "http://192.168.15.1:9000"
+      # self.put_request("/service-calendar/v1/calendars/#{@email}/events/eid/#{event["eid"]}",
+      self.put_request("/#{configatron.service.calendar}/#{@email}/events/eid/#{event["eid"]}",
+                       body)
     end
     
     def insert(calendar_type, event)      

@@ -93,6 +93,7 @@ App.Models.Travel.getTravel = function(params, callback) {
   var to = params.to;
   travel.callback = callback;
   travel.type = params.type;
+  
   GoogleRequest.post({
     url: App.config.api_url + "/events",
     params: {
@@ -104,18 +105,14 @@ App.Models.Travel.getTravel = function(params, callback) {
       base: params.base,
       'previous_travel_node[address]': from.address,
       'previous_travel_node[title]': from.title,
-      'previous_travel_node[state]': 'confirmed',
       'previous_travel_node[event_google_id]': params.from.summary.googleEventId,
       'previous_travel_node[lat]' : from.lat,
       'previous_travel_node[lng]' : from.lng,
-      'previous_travel_node[has_normalized]' : '1',
       'current_travel_node[address]': to.address,
       'current_travel_node[title]': to.title,
-      'current_travel_node[state]': 'confirmed',
-      'current_travel_node[event_google_id]': to.summary.googleEventId,
+      'current_travel_node[event_google_id]': params.to.summary.googleEventId,
       'current_travel_node[lat]' : to.lat,
-      'current_travel_node[lng]' : to.lng,
-      'current_travel_node[has_normalized]' : '1',
+      'current_travel_node[lng]' : to.lng
     },
     success: travel.handleTravelCreated,
     error: function(response) { 
