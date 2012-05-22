@@ -25,11 +25,11 @@ App.Views.TravelView = Backbone.View.extend({
     var html = '<div id="travel_container" class="travels">';
     $.each(travels, function(i, travel) {
       var color = 'yellow';
-      if (travel.calendar == 'YellowProposal') 
+      if (travel.calendar == 'xTimejustYellow') 
         color = 'yellow';
-      else if (travel.calendar == 'GreenProposal') 
+      else if (travel.calendar == 'xTimejustGreen') 
         color = 'green';
-      else if (travel.calendar == 'PinkProposal') 
+      else if (travel.calendar == 'xTimejustPink') 
         color = 'pink';      
       var step = travel.travel_steps[0];
       if (step == null || step.state == "error") {
@@ -55,7 +55,13 @@ App.Views.TravelView = Backbone.View.extend({
       }
       html += '<div class="' + color + '"><div class="travel_container"><ul class="travel"><li class="toggle"><a class="';
       html += color + '_toggle off" href="#"></a></li>';
-      html += '<li><a class="travel_title" href="#"><div class="title">' + travel.travel_mode.toUpperCase() + '</div></a></li>';      
+      if (travel.travel_mode == 'car')
+        html += '<li><a class="travel_title" href="#"><div class="title">' + 'Easy by car' + '</div></a></li>';
+      else if (travel.travel_mode == 'rail')
+        html += '<li><a class="travel_title" href="#"><div class="title">' + 'Fastest by metro' + '</div></a></li>';
+      else {
+        html += '<li><a class="travel_title" href="#"><div class="title">' + 'sightseeing by bus' + '</div></a></li>';
+      }    
       html += '<a class="plus_container" href="#" id="' + travel._id + '"></a></ul>';
       html += '<div id="tooltip_' + travel._id + '" class="tooltip">copy to my calendar</div>';
       html += '<ul><li class="' + color +'_estimate">' + estimated_time + '</li>';

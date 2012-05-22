@@ -1,15 +1,15 @@
 :all:
   :shared_calendars:
     :bus:
-      :name: 'GreenProposal'
+      :name: 'xTimejustGreen'
       :color: '#0D7813'
       :color_id: '13'
     :train:
-      :name: 'PinkProposal'
+      :name: 'xTimejustPink'
       :color: '#B1365F'
       :color_id: '22'
     :car:
-      :name: 'YellowProposal'
+      :name: 'xTimejustYellow'
       :color: '#AB8B00'
       :color_id: '11'
       
