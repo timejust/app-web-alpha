@@ -1,5 +1,5 @@
 .headline {
-  margin-bottom: 18px;
+  margin-bottom: 8px;
   font-size: 16px;
   font-weight: bold;
 }
@@ -297,6 +297,7 @@ div.results_block {
 div.result_block {
   display: block;
   margin-bottom: 35px;
+  padding-top: 10px;
 }
 div.search_box {
   vertical-align: middle;

@@ -129,8 +129,9 @@ App.Views.TravelsView = Backbone.View.extend({
   },
   handleTravel: function(travel) {
     this.hideLoadingProgress(travel.type);
-    if (travel != null) {
-      // Render trave view
+    
+    if (travel.data != null) {
+    // Render trave view
       var travelView = null;      
       if (travel.type == 'previous') {
         travelView = this.previousTravelView;
@@ -153,8 +154,6 @@ App.Views.TravelsView = Backbone.View.extend({
       }
       
       travel.handleEventCreated(this.handleEventCreated);
-    } else {
-      // Something has gone wrong.
     }
   },  
   // Launch request to API to create event in database

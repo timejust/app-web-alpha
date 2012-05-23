@@ -71,20 +71,21 @@ App.Models.Travel = Backbone.Model.extend({
           self.data = response.data;
           if (self.callback != null) {
             self.callback(self);
-          }
+          } 
         },
         error: function(response) {
+          self.data = null;
           if (response.rc == 404) {
             if (no_polling == true) {
               if (self.callback != null) {
-                self.callback(null);
+                self.callback(self);
               }              
             } else {
               retry();
             }
           } else {
             if (self.callback != null) {
-              self.callback(null);
+              self.callback(self);
             }            
           }
         }

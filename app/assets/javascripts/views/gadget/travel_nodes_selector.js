@@ -1,6 +1,7 @@
 App.Views.TravelNodesSelectorView = Backbone.View.extend({
   events: {
     'click .search_button'                      : 'search',
+    'click #add_alias'                          : 'addAlias',
     'click #google_result.control_block'        : 'bookmarkAddress',
     'click #alias_result.alias_delete'          : 'bookmarkDelete',
     'click #use_google_result'                  : 'selectAddress',
@@ -204,7 +205,7 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       <div id="google_result" class="control_block">\
         <div class="alias_symbol off"></div>\
         <div class="save_as_alias">Click to save as alias</div>\
-        <img class="loader" src="<%=asset_server%>/assets/loader.gif" style="display: none;margin-top: 5px;" />\
+        <img class="loader" src="<%=asset_server%>/assets/loader.gif" style="display: none;margin-top: 10px;" />\
       </div>\
     </div>\
   '),
@@ -348,47 +349,52 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
     // Refresh alias result view
     this.showAliasResult(null, true);    
   },
+  addAlias: function(e) {
+    var el = $("#alias_input");
+    var alias = el.parent('div');
+    var ab = el.parent('div').parent('div').parent('div').find('.address_block');        
+    var loader = el.parent('div').parent('div').find('.loader');
+    var title = this.cleanupAliasTitle(el[0].value);
+    var o = { 
+      address: ab.attr('data-address'),
+      lat: ab.attr('data-lat'),
+      lng: ab.attr('data-lng'),
+      title: '@' + title
+    };        
+    // Once we get 'hit' key, disable input box first.
+    el.attr('disabled', true);
+    loader[0].style.display = "inline-block"
+
+    var self = this;
+    
+    // Add the given alias to server system
+    GoogleRequest.post({
+      url: App.config.api_url + "/users/add_alias",
+      params: { 
+        'email' : self.email,
+        'address': o.address,
+        'title': o.title,
+        'lat': o.lat,
+        'lng': o.lng
+      },
+      error: function() {
+        // If we get an error, reverse back input box to normal mode and 
+        // disappear loading gif
+        el.attr('disabled', false);
+        loader[0].style.display = "none"
+      },
+      success: function() {                    
+        self.handleAliasAdded(alias, loader, o);            
+      }          
+    });
+  },
   saveAlias: function(node) {
     var self = this;
     $('#' + node).focus();
     $('#' + node).keypress(function(e) {
       code = (e.keyCode ? e.keyCode : e.which);
       if (code == 13) {
-        var el = $(e.currentTarget);
-        var alias = el.parent('div');
-        var ab = el.parent('div').parent('div').parent('div').find('.address_block');        
-        var loader = el.parent('div').parent('div').find('.loader');
-        var title = self.cleanupAliasTitle(el[0].value);
-        var o = { 
-          address: ab.attr('data-address'),
-          lat: ab.attr('data-lat'),
-          lng: ab.attr('data-lng'),
-          title: '@' + title
-        };        
-        // Once we get 'hit' key, disable input box first.
-        el.attr('disabled', true);
-        loader[0].style.display = "inline-block"
-        
-        // Add the given alias to server system
-        GoogleRequest.post({
-          url: App.config.api_url + "/users/add_alias",
-          params: { 
-            'email' : self.email,
-            'address': o.address,
-            'title': o.title,
-            'lat': o.lat,
-            'lng': o.lng
-          },
-          error: function() {
-            // If we get an error, reverse back input box to normal mode and 
-            // disappear loading gif
-            el.attr('disabled', false);
-            loader[0].style.display = "none"
-          },
-          success: function() {                    
-            self.handleAliasAdded(alias, loader, o);            
-          }          
-        });     
+        self.addAlias(e);  
       }
     });
   },
@@ -399,9 +405,10 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       star.toggleClass('on');
       star.toggleClass('off'); 
       var alias = $(e.currentTarget).find('.save_as_alias');
-      alias.html('<input id="alias_input" placeholder="Alias name..." />');  
+      alias.html('<input id="alias_input" placeholder="Alias name..." style="height: 25px;"/>\
+<div id="add_alias" class="accessory_button base_button accessory" style="display: inline-block; margin-left: 10px; vertical-align: 0px; height: 25px;">Add</div>');  
       this.saveAlias("alias_input");      
-    }        
+    }          
   },
   deleteAlias: function(title) {
     var title = this.cleanupAliasTitle(title);
