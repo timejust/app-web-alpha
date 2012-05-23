@@ -63,7 +63,7 @@ App.Views.EventView = Backbone.View.extend({
     }    
     if (calendarEvent && calendarEvent['id']) {
       if (this.selectedEvent != null) {
-        this.clear();
+        // this.clear();
       }
       if (!App.config.calendar_names || 
         $.inArray(calendarEvent['calendar']['name'], 
@@ -90,6 +90,9 @@ App.Views.EventView = Backbone.View.extend({
   eventWithEidFetched: function(e) {
     if (e != null) {
       if (e.get("eventType") == "event-calendar") {
+        this.travelsView.nextTravel = e.get("nextTravel")
+        this.travelsView.previousTravel = e.get("previousTravel")
+        
         // Load previous and next events within 1 day from google calendar
         CalendarReader.getInstance().read(this.user.email, 
                                           this.selectedEvent.startTime, 

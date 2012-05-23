@@ -80,7 +80,7 @@ class TravelStep
   end
 
   # Create event(s) from travel
-  def create_google_event(calendar_id, calendar_name = nil)
+  def create_google_event(calendar_id, calendar_name = nil, event_id)
     tz = TZInfo::Timezone.get(event['timezone'])    
     calendar = Timejust::Calendars.new(user.email, user.refresh_token)
     calendar.insert(Timejust::Calendars::GOOGLE_CALENDAR, {

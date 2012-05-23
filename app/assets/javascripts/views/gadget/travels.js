@@ -43,6 +43,8 @@ App.Views.TravelsView = Backbone.View.extend({
     this.travelQueue = new Array();   
     this.eventLoop = EventLoop.getInstance();
     this.eventLoop.callback = this.handleEvent;
+    this.previousTravel = null;
+    this.nextTravel = null;
   },
   appendEventSummary: function(i, summary) {
     this.summaries[i] = summary;
@@ -311,6 +313,24 @@ Please use 'else where' button to choose proper location");
     this.currentEventView.render();
     this.nextEventView.render();    
     this.renderButton();
+    
+    // Let's render travels if exist
+    if (this.previousTravel != "") {
+      // alert("previous = " + this.previousTravel)
+      var travel = new App.Models.Travel();  
+      travel.callback = this.handleTravel;
+      travel.type = "previous";
+      this.showLoadingProgress("previous");
+      travel.handleTravelCreated({"data": {"_id" : this.previousTravel}}, true);
+    }
+        
+    if (this.nextTravel != "") {
+      var travel = new App.Models.Travel();  
+      travel.callback = this.handleTravel;
+      travel.type = "next";
+      this.showLoadingProgress("next");
+      travel.handleTravelCreated({"data": {"_id" : this.nextTravel}}, true);
+    }
     
     // alert($('#previous_event').innerWidth());    
     

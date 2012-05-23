@@ -20,10 +20,14 @@ class EventSaver
     event = Event.first(conditions: {id: event_id})       
     @user = User.first(conditions: {id: event.user_id})
 
-    #event.remove_duplicate_provider_errors
-
+    # event.remove_duplicate_provider_errors
     event.write_travels_to_calendar    
-    event.update_attribute(:state, 'travels_done')
+    
+    # After finishing to write calendar events, we need to link up 
+    # the given travel event with previous and current events
+    event.linkup_travel_with_events
+    event.update_attribute(:state, 'travels_done')    
+  
   rescue OAuth2::Error => e
     @user.update_attributes(
       :expired => 1
