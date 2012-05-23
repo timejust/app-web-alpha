@@ -48,6 +48,12 @@ class Users::Oauth2Controller < ApplicationController
     # Sign in user
     sign_in(:user, user)
     
+    if !(session[:Haddress].blank? || session[:Hlat].blank? || session[:Hlng].blank?)
+      add_alias(user, Home, session[:Haddress], session[:Hlat], session[:Hlng])
+    
+    if !(session[:Waddress].blank? || session[:Wlat].blank? || session[:Wlng].blank?)
+      add_alias(user, Work, session[:Waddress], session[:Wlat], session[:Wlng])
+    
     current_user.set_google_api_client(@client)
     calendars = current_user.find_or_create_calendars
 
@@ -67,9 +73,23 @@ class Users::Oauth2Controller < ApplicationController
   def failure
     @reason = params[:reason]||'unauthorized'
   end
+  
+  def add_alias(user, title, address, lat, lng)
+    favorite = FavoriteLocation.find_or_initialize_by(user_id: user.id, title: title)
+    favorite.address = address
+    favorite.lat = lat
+    favorite.lng = lng
+    favorite.save
+  end
 
   def authorize
-    session[:return_to] = params[:return_to]||nil        
+    session[:return_to] = params[:return_to]||nil
+    session[:Haddress] = params[:Haddress]||nil
+    session[:Hlat] = params[:Hlat]||nil
+    session[:Hlng] = params[:Hlng]||nil
+    session[:Waddress] = params[:Waddress]||nil
+    session[:Wlat] = params[:Wlat]||nil
+    session[:Wlng] = params[:Wlng]||nil
     redirect_to @client.authorization.authorization_uri.to_s, :status => 303    
   end
 end
