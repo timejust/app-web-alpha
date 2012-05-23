@@ -546,8 +546,8 @@ App.Views.TravelNodesSelectorView = Backbone.View.extend({
       results += '</div>';
       container.html(results);  
     }        
-    if (this.getCurrentStage() == this.kResultContainer)
-      self.adjustGoogleMap();   
+    // if (this.getCurrentStage() == this.kResultContainer)
+    self.adjustGoogleMap();   
   },
   showAliasResult: function(e, reload) {
     if (e != null)
