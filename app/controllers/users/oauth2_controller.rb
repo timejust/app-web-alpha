@@ -49,11 +49,11 @@ class Users::Oauth2Controller < ApplicationController
     sign_in(:user, user)
     
     if !(session[:Haddress].blank? || session[:Hlat].blank? || session[:Hlng].blank?)
-      add_alias(user, 'Home', session[:Haddress], session[:Hlat], session[:Hlng])
+      add_alias(user, '@home', session[:Haddress], session[:Hlat], session[:Hlng])
     end
     
     if !(session[:Waddress].blank? || session[:Wlat].blank? || session[:Wlng].blank?)
-      add_alias(user, 'Work', session[:Waddress], session[:Wlat], session[:Wlng])
+      add_alias(user, '@work', session[:Waddress], session[:Wlat], session[:Wlng])
     end
     
     current_user.set_google_api_client(@client)
