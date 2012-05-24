@@ -198,7 +198,7 @@ class Event
     self.travels.each do |travel|
       calendar = self.user.shared_calendars.where(name: travel.calendar).first
       if calendar
-        travel.write_travel_steps_to_calendar(calendar, self.id)
+        travel.write_travel_steps_to_calendar(calendar, self.id)        
       end
     end
   end

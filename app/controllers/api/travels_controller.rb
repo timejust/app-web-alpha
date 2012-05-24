@@ -37,7 +37,7 @@ class Api::TravelsController < Api::BaseController
   # Copy it to user calendar
   #
   def save
-    @travel.write_travel_steps_to_calendar
+    @travel.write_travel_steps_to_calendar(nil, params[:id])
     # Rails.logger.info(@travel.to_json)
     render :json => @travel.to_json, :status => :ok
   end

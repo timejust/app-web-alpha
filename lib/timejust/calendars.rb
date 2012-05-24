@@ -157,9 +157,9 @@ module Timejust
             "lng" => event['lng']
             },
           "location" => event['location'],
-          "summary" => event['summary'],
+          "summary" => event['summary'].encode("UTF-8"),
           "eventType" => event['eventType'],
-          "description" => event['description']
+          "description" => event['description'].encode("UTF-8")
         }
       }
       self.post_request("/#{configatron.service.calendar}/#{event["calendar_id"]}/events", 
