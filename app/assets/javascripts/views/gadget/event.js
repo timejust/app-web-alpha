@@ -105,8 +105,8 @@ App.Views.EventView = Backbone.View.extend({
 Please select an event where you want to go to or leave from.")
       }    
     } else {
-        this.showError("Currently Timejust support only your primary calendar \
-(the first in your calendar list). Please select an event in that calendar.")          
+        this.showError("Currently Timejust support only events in your \
+primary calendar.")          
     } 
   },
   handlePreviousEvent: function(response) {
