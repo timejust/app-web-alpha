@@ -58,7 +58,7 @@ App.Views.TravelView = Backbone.View.extend({
       if (travel.travel_mode == 'car')
         html += '<li><a class="travel_title" href="#"><div class="title">' + 'Easy by car' + '</div></a></li>';
       else if (travel.travel_mode == 'rail')
-        html += '<li><a class="travel_title" href="#"><div class="title">' + 'Fastest by metro' + '</div></a></li>';
+        html += '<li><a class="travel_title" href="#"><div class="title">' + 'Reliable by metro' + '</div></a></li>';
       else {
         html += '<li><a class="travel_title" href="#"><div class="title">' + 'Sightseeing by bus' + '</div></a></li>';
       }    
