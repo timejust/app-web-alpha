@@ -229,16 +229,17 @@ Please use 'else where' button to choose proper location");
       btn.parent('div').find('.button_text').html(
         view.summary.original_address);      
     } else {
-      btn.attr("style", "margin-top: 1px");
       if (view.stage == "previous")
-        btn.html("Where are you leaving from?");     
+        btn.html("Where are you leaving from?");
+        btn.attr("style", "margin-top: 1px");
       else if (view.stage == "next")
         btn.html("Where are you going to?");     
       else {
         if (btnStage == "previous")
           btn.html("Where are you going to?");     
         else 
-          btn.html("Where are you leaving from?");     
+          btn.html("Where are you leaving from?");
+          btn.attr("style", "margin-top: 1px");     
       }
       btn.parent('div').find('.button_text').html("");
     }        
