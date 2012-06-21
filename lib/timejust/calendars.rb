@@ -69,15 +69,17 @@ module Timejust
         req.body = JSON.generate(body)
       end      
       
+      puts("Timejust:Calendars.post_request: response status => #{resp.status}")
+      
       unless resp.status == 500 and resp.status == 405
         message = JSON.parse(resp.body)["status"]
         status = resp.status
         reason = JSON.parse(resp.body)["reason"]
         Rails.logger.info("response => #{status}, #{message}, #{reason}")
         puts("response => #{status}, #{message}, #{reason}")
-      
+              
         if status == 200 and message == 'ok'
-          OK.new(resp.status)
+          OK.new(resp.body)
         else
           ERROR.new(resp.status, message)
         end
@@ -103,10 +105,35 @@ module Timejust
         status = resp.status
         reason = JSON.parse(resp.body)["reason"]
         Rails.logger.info("response => #{status}, #{message}, #{reason}")
-        puts("response => #{status}, #{message}, #{reason}")
-      
+        puts("response => #{status}, #{message}, #{reason}")      
         if status == 200 and message == 'ok'
           OK.new(resp.status)
+        else
+          ERROR.new(resp.status, message)
+        end
+      else
+        ERROR.new(resp.status, "")
+      end      
+    rescue JSON::ParserError
+      ERROR.new(resp.status, "")
+    end
+    
+    def delete_request(url, params)
+      resp = self.connection.delete do |req|
+        req.url url
+        params.keys.each do |key|
+          req.params[key] = params[key]
+        end        
+        Rails.logger.info("delete request: #{req.inspect}")        
+      end            
+      
+      Rails.logger.info("Timejust:Calendars.delete_request: response status => #{resp.status}")
+      unless resp.status == 500 and resp.status == 405
+        message = JSON.parse(resp.body)["status"]
+        status = resp.status
+                      
+        if status == 200 and message == 'ok'
+          OK.new(resp.body)
         else
           ERROR.new(resp.status, message)
         end
@@ -144,6 +171,13 @@ module Timejust
                        body)
     end
     
+    def delete(calendar_id, event_id)
+      resp = self.delete_request(
+        "/#{configatron.service.calendar}/#{calendar_id}/events/#{event_id}",
+        {"refresh-token" => @refresh_token}
+      )
+    end
+    
     def insert(calendar_type, event)      
       body = {
         "calendar-type" => calendar_type,
@@ -162,8 +196,14 @@ module Timejust
           "description" => event['description'].encode("UTF-8")
         }
       }
-      self.post_request("/#{configatron.service.calendar}/#{event["calendar_id"]}/events", 
-                        body)                        
+      resp = self.post_request(
+        "/#{configatron.service.calendar}/#{event["calendar_id"]}/events", 
+        body)                        
+      if resp.status == Service::OK and resp.message
+        JSON.parse(resp.message)['event']
+      else
+        nil
+      end
     end
     
   end

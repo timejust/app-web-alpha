@@ -31,24 +31,20 @@ var User = Backbone.Model.extend({
       success: this.setStatus
     });
   },
-
   // Set attributes from API response
   setStatus: function(response){
     if (response.rc == 404) {
       this.state = 'not_registered';
-    }
-    else if (response.rc == 401) {
+    } else if (response.rc == 401) {
       this.state = 'unauthorized';
-    }
-    else{
+    } else{
       this.state = 'registered';
       if (response.rc == 200) {
         this.pendingEvent = response.data;
       }
     }
     this.trigger('status:loaded');
-  },
-
+  },  
   // Purge waiting travels
   purgeTravels: function(options) {
     GoogleRequest.put({
@@ -60,8 +56,7 @@ var User = Backbone.Model.extend({
         if (options.error) {options.error();}
       }
     });
-  },
-  
+  },  
   syncCalendar: function(min, max) {
     var self = this
     GoogleRequest.post({

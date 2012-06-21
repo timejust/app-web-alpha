@@ -83,7 +83,7 @@ class TravelStep
   def create_google_event(calendar_id, calendar_name = nil, event_id)
     tz = TZInfo::Timezone.get(event['timezone'])    
     calendar = Timejust::Calendars.new(user.email, user.refresh_token)
-    calendar.insert(Timejust::Calendars::GOOGLE_CALENDAR, {
+    event = calendar.insert(Timejust::Calendars::GOOGLE_CALENDAR, {
       "calendar_id" => calendar_id,
       "start" => tz.local_to_utc(self.departure_time).to_time.to_i,
       "end" => tz.local_to_utc(self.arrival_time).to_time.to_i,
@@ -96,6 +96,12 @@ class TravelStep
       "description" => strip_tags(self.google_event_detail).gsub('&nbsp;', ' '),
       "eventType" => Timejust::Calendars::EVENT_TRAVEL
     })
+    
+    puts("create_google_event: event.calendarId(#{event['calendarId']}), calendar_id(#{calendar_id}), event.id(#{event['id']})")
+    puts("====>#{event.inspect}")
+    self.google_calendar_id = event['calendarId']
+    self.google_event_id = event['id']
+    self.save
     
     # Rails.logger.info "create_google_event - calendar_id: #{calendar_id}, calendar_name: #{calendar_name}"            
     # if !google_event['error'] && google_event['data']
@@ -241,17 +247,20 @@ class TravelStep
 
   # Destroy all associated google events
   def destroy_google_event
-    destroy_google_event_when(self.google_event_id, self.google_calendar_id)
+    destroy_google_event_when(self.google_calendar_id, self.google_event_id)
   end
 
-  def destroy_google_event_when(google_event_id, google_calendar_id)
+  def destroy_google_event_when(google_calendar_id, google_event_id)
     if google_event_id && google_calendar_id
       Rails.logger.info "destroy_google_event_when - google_calendar_id: #{google_calendar_id}, google_event_id: #{google_event_id}"
-      Google::Event.destroy(
-        self.event.user.access_token,
-        google_calendar_id,
-        google_event_id
-      )
+      calendar = Timejust::Calendars.new(user.email, user.refresh_token)
+      event = calendar.delete(google_calendar_id, google_event_id)
+        
+      # Google::Event.destroy(
+      #   self.event.user.access_token,
+      #   google_calendar_id,
+      #   google_event_id
+      # )
     end
   end
   

@@ -16,10 +16,16 @@ class Api::EventsController < Api::BaseController
   def create
     if params[:event]      
       Resque.enqueue(GoogleCalendarCreator, current_user.email)      
+      Rails.logger.info("the request came from #{params[:current_ip]}")
+      
+      # If old_travel_id exists, grab travel step ids belonging to 
+      # the given old travel id
+      if params[:old_travel_id].present?
+        delete_travels_if_exist(params[:old_travel_id])
+      end
+      
       @event = Event.parse_from_google_gadget(params[:event])
       @event.base = params[:base]
-      
-      Rails.logger.info("the request came from #{params[:current_ip]}")
       @event.create_previous_travel_node(params[:previous_travel_node]) if params[:previous_travel_node] && params[:previous_travel_node][:address].present?
       @event.create_current_travel_node(params[:current_travel_node]) if params[:current_travel_node] && params[:current_travel_node][:address].present?      
       @event.set_current_ip(params[:current_ip])            
@@ -195,5 +201,21 @@ class Api::EventsController < Api::BaseController
   def require_event_owner!
     unauthorized! if @event.user != current_user
   end
-
+  
+  # Delete travels and travel steps belonging to the given event id
+  def delete_travels_if_exist(id)    
+    event = Event.find(id)
+    if event != nil && event.travels != nil
+      event.travels.each do |travel|
+        begin
+          # delete travel record
+          travel.destroy
+        rescue Exception => e
+          Rails.logger.error(e)
+        end        
+      end             
+    end
+  rescue Exception => e
+    Rails.logger.error(e)
+  end
 end

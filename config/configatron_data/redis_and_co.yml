@@ -7,7 +7,7 @@
     :services:
       :resque:
         :namespace: resque
-
+        
 :development:
   :redis:
     :server:

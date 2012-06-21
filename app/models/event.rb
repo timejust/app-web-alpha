@@ -396,34 +396,6 @@ class Event
     (date || self.end_time) + estimated_time + self.after_end_time.minutes
   end
 
-  # Return all events around the current one
-  #
-  # @param  [Integer]   offset, num of days to search for events
-  #
-  # @return  [Array]    Collection of Event
-  #
-  def fetch_around_events(offset = 1)
-    google_events = Google::Event.search_by_date_range(
-      self.user.access_token,
-      (self.start_time - offset.to_i.days).at_beginning_of_day,
-      (self.end_time + offset.to_i.days).end_of_day,
-      self.google_calendar_id
-    )
-    events = []
-    if google_events && !google_events['error'] && google_events['data']['totalResults'].to_i > 0
-      self.around_events.delete_all
-      google_events['data']['items'].each do |event|
-        events = events | Event.parse_from_google_data(event)
-      end
-      events.each do |e|
-        e.user = self.user
-        self.around_events << e
-      end
-      self.save
-    end
-    self.around_events
-  end
-
   # Get the last located event before the current one
   #
   def previous_events
@@ -438,35 +410,6 @@ class Event
     self.around_events.select{|event|
       event.location.present? && event.start_time > self.end_time
     }.sort{|a,b| a.start_time <=> b.start_time}
-  end
-
-  # Parse all travel nodes to find favorite
-  #
-  def extract_favorite_locations_from_addresses
-    #[:previous, :current, :next].each do |type|
-    [:previous, :current].each do |type|
-      proposals = "#{type}_travel_nodes"
-      selected = "#{type}_travel_node"
-
-      # For each travel node proposals
-      self.send(proposals).each_with_index do |travel_node, index|
-        if travel_node.address.present? &&
-          favorite = self.user.favorite_locations.where(title: travel_node.address.strip).first
-          travel_node.update_attributes(
-            address: favorite.address
-          )
-        end
-      end
-
-      # For user submitted travel nodes
-      if self.send(selected) && self.send(selected).address.present? &&
-        favorite = self.user.favorite_locations.where(title: self.send(selected).address.strip).first
-        self.send(selected).update_attributes(
-          title: favorite.title,
-          address: favorite.address
-        )
-      end
-    end
   end
 
   # Geo location data is important to get valid result from geo service so 
@@ -503,39 +446,6 @@ class Event
       :base => self.base }
   end
   
-  ##
-  # @param [String] RATP travetype see RATP::Itinerary initialize
-  # @return [RATP::Itinerary]
-  def ratp_itinerary_forward(traveltype='plus_rapide')
-    query = {
-      :type1 => 'adresse',
-      :type2 => 'adresse',
-      :traveltype => traveltype,
-    }
-    query = query.merge(:proxy => configatron.ratp_proxy.url) if configatron.ratp_proxy.url.present?
-    RATP::Itinerary.new({:datestart => 'false', # Arrivée à
-                        :datedate => self.forward_arrival.strftime('%Y%m%d%H%M'),
-                        :name1 => self.previous_travel_node.address.unistrip,
-                        :name2 => self.current_travel_node.address.unistrip}.merge(query))
-  end
-
-  ##
-  # @param [String] RATP travetype see RATP::Itinerary initialize
-  # @return [RATP::Itinerary]
-  def ratp_itinerary_backward(traveltype='plus_rapide')
-    query = {
-      :type1 => 'adresse',
-      :type2 => 'adresse',
-      :traveltype => traveltype,
-    }
-    query = query.merge(:proxy => configatron.ratp_proxy.url) if configatron.ratp_proxy.url.present?
-    RATP::Itinerary.new({:datestart => 'true', # Départ à
-                        :datedate => self.backward_departure.strftime('%Y%m%d%H%M'),
-                        :traveltype => traveltype,
-                        :name1 => self.current_travel_node.address.unistrip,
-                        :name2 => self.next_travel_node.address.unistrip}.merge(query))
-  end
-
   # Ugly code to remove duplicate travels errors for the same provider
   #
   def remove_duplicate_provider_errors

@@ -289,6 +289,7 @@ primary calendar.")
   },
   // TODO spec
   clear: function() {
+    /*
     showLoader();
     var self = this;
     app.user.purgeTravels({
@@ -301,5 +302,6 @@ primary calendar.")
         hideLoader();
       }
     });
+    */
   }
 });

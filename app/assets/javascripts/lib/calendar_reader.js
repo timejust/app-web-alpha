@@ -54,6 +54,11 @@ function CalendarReader() {
   }  
   this.getCalendarEvent = function(email, startTime, endTime, callback) {    
     var self = this;
+    /*
+    alert(App.config.service_url + "/v1/calendar/" + email + 
+         "/events?start=" + startTime + "&end=" + endTime + 
+         "&type=event-calendar" + "&nocache=" + new Date().getTime())
+         */
     GoogleRequest.get({
       url: App.config.service_url + "/v1/calendar/" + email + 
            "/events?start=" + startTime + "&end=" + endTime + 

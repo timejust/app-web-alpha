@@ -135,8 +135,10 @@ App.Views.TravelsView = Backbone.View.extend({
       var travelView = null;      
       if (travel.type == 'previous') {
         travelView = this.previousTravelView;
+        this.previousTravel = travel.apiEventId;
       } else {
         travelView = this.nextTravelView;
+        this.nextTravel = travel.apiEventId;
       }      
       travelView.model = travel.data;
       travelView.render();  
@@ -158,16 +160,20 @@ App.Views.TravelsView = Backbone.View.extend({
   },  
   // Launch request to API to create event in database
   // If it was created successfully, show travel nodes selector view
-  generateTrip: function(event, base, type){
+  generateTrip: function(event, base, type) {
     event.preventDefault();
     var from = null;
     var to = null;
+    var oldTravelId = null;
+    
     if (type == 'previous') {
       from = this.previousEventView;
       to = this.currentEventView;
+      oldTravelId = this.previousTravel;
     } else {
       from = this.currentEventView;
       to = this.nextEventView;
+      oldTravelId = this.nextTravel;
     }    
     if (this.sanityCheck(from, to) != true) {      
       alert("The address in your events is not valid.\n\
@@ -181,7 +187,8 @@ Please use 'else where' button to choose proper location");
 
     // Soon as we push travel request, show loading progress bar.
     this.travelQueue.push({current: this.selectedEvent, 
-      from: from, to: to, ip: this.ip, base: base, type: type});
+      from: from, to: to, ip: this.ip, base: base,
+       oldTravelId: oldTravelId, type: type});
     this.showLoadingProgress(type);          
     if (this.travelQueue.length == 1) {
       // We only do job when the queue has only one item
@@ -229,12 +236,12 @@ Please use 'else where' button to choose proper location");
       btn.parent('div').find('.button_text').html(
         view.summary.original_address);      
     } else {
-      if (view.stage == "previous")
+      if (view.stage == "previous") {
         btn.html("Where are you leaving from?");
         btn.attr("style", "margin-top: 1px");
-      else if (view.stage == "next")
+      } else if (view.stage == "next") {
         btn.html("Where are you going to?");     
-      else {
+      } else {
         if (btnStage == "previous")
           btn.html("Where are you going to?");     
         else 

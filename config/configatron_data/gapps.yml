@@ -1,15 +1,15 @@
 :all:
   :shared_calendars:
     :bus:
-      :name: 'xTimejustGreen'
+      :name: 'GreenProposal'
       :color: '#0D7813'
       :color_id: '13'
     :train:
-      :name: 'xTimejustPink'
+      :name: 'PinkProposal'
       :color: '#B1365F'
       :color_id: '22'
     :car:
-      :name: 'xTimejustYellow'
+      :name: 'YellowProposal'
       :color: '#AB8B00'
       :color_id: '11'
       
@@ -17,15 +17,15 @@
   :gapps:
     :oauth:
       :for_domains:
+        # :consumer_key: '42901100597.apps.googleusercontent.com'
+        # :consumer_secret: '4vY64qUlVQDdd3uYbH0k9hmD'
         :consumer_key: '492334720932.apps.googleusercontent.com'
         :consumer_secret: 'JgfEGLXljg6zQfrOL--h2MKw'
-      #  :consumer_key: '42901100597.apps.googleusercontent.com'
-      #  :consumer_secret: '4vY64qUlVQDdd3uYbH0k9hmD'
       :for_gmail:
+        # :consumer_key: '42901100597.apps.googleusercontent.com'
+        # :consumer_secret: '4vY64qUlVQDdd3uYbH0k9hmD'
         :consumer_key: '492334720932.apps.googleusercontent.com'
-        :consumer_secret: 'JgfEGLXljg6zQfrOL--h2MKw'
-      #  :consumer_key: '42901100597.apps.googleusercontent.com'
-      #  :consumer_secret: '4vY64qUlVQDdd3uYbH0k9hmD'
+        :consumer_secret: 'JgfEGLXljg6zQfrOL--h2MKw'        
         
 :staging:
   :gapps:

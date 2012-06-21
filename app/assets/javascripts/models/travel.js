@@ -110,6 +110,7 @@ App.Models.Travel.getTravel = function(params, callback) {
       )),
       current_ip: params.ip,        
       base: params.base,
+      old_travel_id: params.oldTravelId,
       'previous_travel_node[address]': from.address,
       'previous_travel_node[title]': from.title,
       'previous_travel_node[event_google_id]': params.from.summary.googleEventId,
@@ -123,7 +124,7 @@ App.Models.Travel.getTravel = function(params, callback) {
     },
     success: travel.handleTravelCreated,
     error: function(response) { 
-      callback(null);
+      callback(travel);
     }
   });    
 }

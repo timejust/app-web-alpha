@@ -24,7 +24,7 @@ App.Views.EventSummaryView = Backbone.View.extend({
     this.startTime = null;
     this.endTime = null;
     this.summary = null;
-  },
+  },  
   bind: function(summary) {
     this.summary = summary;
     if (this.summary.calendarEvent != null) {

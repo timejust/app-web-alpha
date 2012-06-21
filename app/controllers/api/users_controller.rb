@@ -39,7 +39,7 @@ class Api::UsersController < Api::BaseController
   # Purge all waiting travel proposals
   #
   def purge_travels
-    current_user.purge_travels
+    # current_user.purge_travels
     render :nothing => true, :status => :accepted
   end
 

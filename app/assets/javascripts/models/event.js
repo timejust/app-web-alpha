@@ -12,8 +12,7 @@ App.Models.Event = Backbone.Model.extend({
     var base = this.base + this.email + '/events/eid/'    
     return this.eId != null ? base + this.eId : base
   },
-  fetch: function() {
-    
+  fetch: function() {    
   },
   fetchWithEid: function(callback) {
     var self = this;
